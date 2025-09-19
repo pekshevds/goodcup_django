@@ -27,7 +27,13 @@ SECRET_KEY = environ.get("SECRET_KEY", "")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "backend.goodcup.annasoft.site",
+    "www.backend.goodcup.annasoft.site",
+]
+
 
 # Application definition
 
@@ -78,12 +84,28 @@ WSGI_APPLICATION = "server.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if environ.get("DEV", True):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": environ.get("DB_ENGINE", ""),
+            "HOST": environ.get("DB_HOST", ""),
+            "NAME": environ.get("DB_NAME", ""),
+            "USER": environ.get("DB_USER", ""),
+            "PASSWORD": environ.get("DB_PASSWORD", ""),
+            "OPTION": {
+                "init_command": "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
+                "charset": "utf8mb4",
+                "autocommit": True,
+            },
+        }
+    }
 
 
 # Password validation
