@@ -1,5 +1,6 @@
 # media and static
 public/
+tmp/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
