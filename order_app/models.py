@@ -1,7 +1,16 @@
 from django.db import models
-from server.models import Document, Record
+from server.models import Directory, Document, Record
 from catalog_app.models import Good
 from client_app.models import Client
+
+
+class StatusOrder(Directory):
+    class Meta:
+        verbose_name = "Статус заказа"
+        verbose_name_plural = "Статусы заказов"
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class Order(Document):
@@ -9,6 +18,13 @@ class Order(Document):
         Client,
         verbose_name="Клиент",
         related_name="orders",
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
+    status = models.ForeignKey(
+        StatusOrder,
+        verbose_name="Статус",
         on_delete=models.PROTECT,
         blank=True,
         null=True,
