@@ -98,6 +98,9 @@ class GoodAdmin(admin.ModelAdmin):
     )
     list_display = (
         "name",
+        "art",
+        "code",
+        "okei",
         "is_active",
         "category",
         "balance",
@@ -108,6 +111,7 @@ class GoodAdmin(admin.ModelAdmin):
         "id",
     )
     readonly_fields = ("preview",)
+    search_fields = ("name", "art")
 
     def preview(self, obj: Good) -> str:
         if obj.preview_image:

@@ -1,4 +1,3 @@
-from datetime import timedelta
 from django.db import models
 from server.models import Directory, Record
 
