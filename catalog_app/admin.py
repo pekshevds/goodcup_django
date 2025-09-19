@@ -25,7 +25,7 @@ class ImageAdmin(admin.ModelAdmin):
             },
         ),
     )
-    list_display = ("name", "is_active", "preview", "id")
+    list_display = ("name", "is_active", "preview", "created_at", "updated_at", "id")
     readonly_fields = ("preview",)
 
     def preview(self, obj: Image) -> str:
@@ -56,7 +56,15 @@ class CategoryAdmin(admin.ModelAdmin):
             },
         ),
     )
-    list_display = ("name", "is_active", "parent", "preview", "id")
+    list_display = (
+        "name",
+        "is_active",
+        "parent",
+        "preview",
+        "created_at",
+        "updated_at",
+        "id",
+    )
     readonly_fields = ("preview",)
 
     def preview(self, obj: Category) -> str:
@@ -95,6 +103,8 @@ class GoodAdmin(admin.ModelAdmin):
         "balance",
         "price",
         "preview",
+        "created_at",
+        "updated_at",
         "id",
     )
     readonly_fields = ("preview",)

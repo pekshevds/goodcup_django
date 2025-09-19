@@ -27,7 +27,7 @@ class OrderAdmin(admin.ModelAdmin):
             },
         ),
     )
-    list_display = ("__str__", "is_active", "client", "id")
+    list_display = ("__str__", "is_active", "client", "updated_at", "id")
     list_filter = ("client",)
     readonly_fields = (
         "number",

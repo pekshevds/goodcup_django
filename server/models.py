@@ -32,6 +32,12 @@ class Directory(Record):
     )
     comment = models.TextField(verbose_name="Комментарий", blank=True, default="")
     is_active = models.BooleanField(verbose_name="Активный", default=False)
+    created_at = models.DateTimeField(
+        verbose_name="Создан", blank=False, null=True, auto_now_add=True
+    )
+    updated_at = models.DateTimeField(
+        verbose_name="Изменен", blank=False, null=True, auto_now=True
+    )
 
     def __str__(self) -> str:
         return f"{self.name}"
@@ -49,6 +55,9 @@ class Document(Record):
     )
     comment = models.TextField(verbose_name="Комментарий", blank=True, default="")
     is_active = models.BooleanField(verbose_name="Активный", default=False)
+    updated_at = models.DateTimeField(
+        verbose_name="Изменен", blank=False, null=True, auto_now=True
+    )
 
     def __str__(self, name: str = "Документ") -> str:
         return f"{name} №{self.number} от {format(self.date, 'd F Y')}"

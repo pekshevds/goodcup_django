@@ -16,7 +16,7 @@ class RegionAdmin(admin.ModelAdmin):
             },
         ),
     )
-    list_display = ("name", "is_active", "id")
+    list_display = ("name", "is_active", "created_at", "updated_at", "id")
 
 
 @admin.register(Client)
@@ -34,5 +34,5 @@ class ClientAdmin(admin.ModelAdmin):
             },
         ),
     )
-    list_display = ("name", "region", "is_active", "id")
+    list_display = ("name", "region", "is_active", "created_at", "updated_at", "id")
     list_filter = ("region",)
