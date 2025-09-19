@@ -1,5 +1,6 @@
+from datetime import timedelta
 from django.db import models
-from server.models import Directory
+from server.models import Directory, Record
 
 
 class Region(Directory):
@@ -25,3 +26,15 @@ class Client(Directory):
     class Meta:
         verbose_name = "Клиент"
         verbose_name_plural = "Клиенты"
+
+
+class Pin(Record):
+    client = models.ForeignKey(Client, verbose_name="Клиента", on_delete=models.CASCADE)
+    code = models.CharField("Код", max_length=6)
+
+    class Meta:
+        verbose_name = "Пин-код"
+        verbose_name_plural = "Пин-коды"
+
+    def __str__(self) -> str:
+        return f"{self.code} ({self.client})"

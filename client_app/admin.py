@@ -1,5 +1,5 @@
 from django.contrib import admin
-from client_app.models import Region, Client
+from client_app.models import Region, Client, Pin
 
 
 @admin.register(Region)
@@ -36,3 +36,15 @@ class ClientAdmin(admin.ModelAdmin):
     )
     list_display = ("name", "region", "is_active", "created_at", "updated_at", "id")
     list_filter = ("region",)
+
+
+@admin.register(Pin)
+class PinAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {"fields": ("client", "code")},
+        ),
+    )
+    list_display = ("code", "client", "created_at", "id")
+    list_filter = ("client",)

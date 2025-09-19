@@ -7,16 +7,19 @@ from server.services import ganerate_new_number
 
 class Record(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(
+        verbose_name="Создан", blank=False, null=True, auto_now_add=True
+    )
 
     def as_dict(self) -> dict[str, Any]:
-        _ = {}
+        result = {}
         for field in self._meta.fields:
-            _[field.name] = (
+            result[field.name] = (
                 str(getattr(self, field.name))
                 if isinstance(getattr(self, field.name), uuid.UUID)
                 else getattr(self, field.name)
             )
-        return _
+        return result
 
     class Meta:
         abstract = True
@@ -32,9 +35,6 @@ class Directory(Record):
     )
     comment = models.TextField(verbose_name="Комментарий", blank=True, default="")
     is_active = models.BooleanField(verbose_name="Активный", default=False)
-    created_at = models.DateTimeField(
-        verbose_name="Создан", blank=False, null=True, auto_now_add=True
-    )
     updated_at = models.DateTimeField(
         verbose_name="Изменен", blank=False, null=True, auto_now=True
     )
