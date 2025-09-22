@@ -10,7 +10,13 @@ from client_app.schemas import (
 )
 from catalog_app.schemas import GoodListSchema
 from api_app.schemas import DataSchema
-from services import good_service, client_service, region_service, price_service
+from services import (
+    good_service,
+    client_service,
+    region_service,
+    price_service,
+    order_service,
+)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -57,4 +63,5 @@ class DataView(View):
         good_service.create_or_update_goods(data.goods)
         region_service.create_or_update_regions(data.regions)
         price_service.create_or_update_price(data.prices)
+        order_service.create_or_update_statuses(data.order_statuses)
         return JsonResponse(data.model_dump())
