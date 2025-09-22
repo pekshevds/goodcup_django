@@ -1,16 +1,24 @@
 from django.http import HttpRequest
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
+from client_app.models import Client
 from client_app.schemas import ClientCredentialSchema, ClientSchema
 from repositories import client_repository
 from services.jwt_tokens import HS256
+
+
+def check_clients_pin(client: Client, code: str) -> bool:
+    return code in [
+        pin.code for pin in client_repository.fetch_active_clients_pins(client)
+    ]
 
 
 def check_credentials(client_schema: ClientCredentialSchema) -> None:
     client = client_repository.fetch_client_by_name(name=client_schema.name)
     if not client:
         raise PermissionDenied("invalid clientname or pin")
-    # check pin here
+    if not check_clients_pin(client, client_schema.pin):
+        raise PermissionDenied("invalid clientname or pin")
 
 
 def fetch_token_by_credentials(client_schema: ClientCredentialSchema) -> str:
@@ -22,7 +30,7 @@ def fetch_pin_by_client(client_schema: ClientSchema) -> str:
     client = client_repository.fetch_client_by_name(name=client_schema.name)
     if not client:
         raise PermissionDenied("invalid clientname or pin")
-    return "1234"
+    return client_repository.create_new_pin(client)
 
 
 def check_token(token: str) -> None:
