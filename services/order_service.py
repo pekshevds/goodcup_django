@@ -3,9 +3,14 @@ from order_app.schemas import (
     OrderSchemaOutgoing,
     OrderListSchemaOutgoing,
     OrderItemSchemaOutgoing,
+    OrderStatusListUpdateSchemaIncoming,
 )
 from order_app.models import StatusOrder
 from repositories import order_repository
+
+
+def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
+    pass
 
 
 def fetch_new_orders() -> OrderListSchemaOutgoing:

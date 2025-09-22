@@ -33,3 +33,12 @@ class OrderSchemaOutgoing(BaseModel):
 
 class OrderListSchemaOutgoing(BaseModel):
     orders: list[OrderSchemaOutgoing] = Field()
+
+
+class OrderStatusUpdateSchemaIncoming(BaseModel):
+    order_id: str = Field()
+    status_id: str = Field()
+
+
+class OrderStatusListUpdateSchemaIncoming(BaseModel):
+    statuses: list[OrderStatusUpdateSchemaIncoming] = Field()

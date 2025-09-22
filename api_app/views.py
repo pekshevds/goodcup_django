@@ -9,6 +9,7 @@ from client_app.schemas import (
     TokenSchema,
 )
 from catalog_app.schemas import GoodListSchema
+from order_app.schemas import OrderStatusListUpdateSchemaIncoming
 from api_app.schemas import DataSchema
 from services import (
     good_service,
@@ -74,3 +75,15 @@ class NewOrderView(View):
         client_service.check_token(token)
         new_orders = order_service.fetch_new_orders()
         return JsonResponse(new_orders.model_dump())
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class UpdateOrderStatusView(View):
+    def post(self, request: HttpRequest) -> JsonResponse:
+        token = client_service.extract_token(request)
+        client_service.check_token(token)
+        data = OrderStatusListUpdateSchemaIncoming.model_validate_json(
+            request.body.decode("utf-8")
+        )
+        order_service.update_order_statuses(data)
+        return JsonResponse(data=None)
