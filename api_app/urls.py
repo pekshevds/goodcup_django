@@ -1,5 +1,5 @@
 from django.urls import path
-from api_app.views import PinView, TokenView, GoodView, DataView
+from api_app.views import PinView, TokenView, GoodView, DataView, NewOrderView
 
 app_name = "api_app"
 
@@ -8,4 +8,5 @@ urlpatterns = [
     path("v1/token/", TokenView.as_view()),
     path("v1/good/", GoodView.as_view()),
     path("v1/data/", DataView.as_view()),
+    path("v1/new-orders/", NewOrderView.as_view()),
 ]

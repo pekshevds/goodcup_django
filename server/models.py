@@ -14,11 +14,12 @@ class Record(models.Model):
     def as_dict(self) -> dict[str, Any]:
         result = {}
         for field in self._meta.fields:
-            result[field.name] = (
-                str(getattr(self, field.name))
-                if isinstance(getattr(self, field.name), uuid.UUID)
-                else getattr(self, field.name)
-            )
+            value = getattr(self, field.name)
+            if isinstance(value, uuid.UUID):
+                value = str(value)
+            if isinstance(value, models.Model):
+                value = value.as_dict()
+            result[field.name] = value
         return result
 
     class Meta:

@@ -1,4 +1,8 @@
-from order_app.models import StatusOrder
+from order_app.models import StatusOrder, Order
+
+
+def fetch_new_orders() -> list[Order]:
+    return Order.objects.all()
 
 
 def fetch_all_statuses() -> list[StatusOrder]:

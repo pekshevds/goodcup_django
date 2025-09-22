@@ -1,6 +1,22 @@
-from order_app.schemas import StatusSchema
+from order_app.schemas import (
+    StatusSchema,
+    OrderSchema,
+    OrderListSchema,
+    OrderItemSchema,
+)
 from order_app.models import StatusOrder
 from repositories import order_repository
+
+
+def fetch_new_orders() -> OrderListSchema:
+    orders = []
+    for order in order_repository.fetch_new_orders():
+        order_schema = OrderSchema.model_validate(order.as_dict())
+        order_schema.items = [
+            OrderItemSchema.model_validate(item.as_dict()) for item in order.items.all()
+        ]
+        orders.append(order_schema)
+    return OrderListSchema(orders=orders)
 
 
 def fetch_all_regions() -> list[StatusOrder]:

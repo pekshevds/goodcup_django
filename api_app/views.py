@@ -65,3 +65,12 @@ class DataView(View):
         price_service.create_or_update_price(data.prices)
         order_service.create_or_update_statuses(data.order_statuses)
         return JsonResponse(data.model_dump())
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class NewOrderView(View):
+    def get(self, request: HttpRequest) -> JsonResponse:
+        token = client_service.extract_token(request)
+        client_service.check_token(token)
+        new_orders = order_service.fetch_new_orders()
+        return JsonResponse(new_orders.model_dump())
