@@ -10,7 +10,27 @@ from repositories import order_repository
 
 
 def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
-    pass
+    """
+    Обновляет статусы заказов клиентов"""
+    statuses = order_repository.fetch_status_by_ids(
+        [item.status_id for item in data.statuses]
+    )
+    statuses_dict = {str(status.id): status for status in statuses}
+    orders = order_repository.fetch_status_by_ids(
+        [item.order_id for item in data.statuses]
+    )
+    orders_dict = {str(order.id): order for order in orders}
+    orders_to_update = []
+    for item in data.statuses:
+        order = orders_dict.get(item.order_id)
+        if not order:
+            continue
+        status = statuses_dict.get(item.status_id)
+        if not status:
+            continue
+        order.status = status
+        orders_to_update.append(order)
+    order_repository.update_orders_stutuses(orders_to_update)
 
 
 def fetch_new_orders() -> OrderListSchemaOutgoing:

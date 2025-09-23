@@ -25,7 +25,7 @@ class PinView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
         client_schema = ClientSchema.model_validate_json(request.body.decode("utf-8"))
         pin = client_service.fetch_pin_by_client(client_schema)
-        return JsonResponse(PinSchema(pin=pin).model_dump())
+        return JsonResponse(PinSchema(pin=pin).model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -35,7 +35,7 @@ class TokenView(View):
             request.body.decode("utf-8")
         )
         token = client_service.fetch_token_by_credentials(credential)
-        response = JsonResponse(TokenSchema(token=token).model_dump())
+        response = JsonResponse(TokenSchema(token=token).model_dump(), status=200)
         response.set_cookie("Authorization", token)
         return response
 
@@ -46,13 +46,13 @@ class GoodView(View):
         token = client_service.extract_token(request)
         client_service.check_token(token)
         goods = GoodListSchema.model_validate_json(request.body.decode("utf-8"))
-        return JsonResponse(goods.model_dump())
+        return JsonResponse(goods.model_dump(), status=200)
 
     def get(self, request: HttpRequest) -> JsonResponse:
         token = client_service.extract_token(request)
         client_service.check_token(token)
         goods = good_service.fetch_all_goods_as_schema()
-        return JsonResponse(goods.model_dump())
+        return JsonResponse(goods.model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -65,7 +65,7 @@ class DataView(View):
         region_service.create_or_update_regions(data.regions)
         price_service.create_or_update_price(data.prices)
         order_service.create_or_update_statuses(data.order_statuses)
-        return JsonResponse(data.model_dump())
+        return JsonResponse(data.model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -74,7 +74,7 @@ class NewOrderView(View):
         token = client_service.extract_token(request)
         client_service.check_token(token)
         new_orders = order_service.fetch_new_orders()
-        return JsonResponse(new_orders.model_dump())
+        return JsonResponse(new_orders.model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -86,4 +86,4 @@ class UpdateOrderStatusView(View):
             request.body.decode("utf-8")
         )
         order_service.update_order_statuses(data)
-        return JsonResponse(data=None)
+        return JsonResponse({}, status=200)
