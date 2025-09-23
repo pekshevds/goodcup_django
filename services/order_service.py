@@ -28,7 +28,7 @@ def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
         status = statuses_dict.get(item.status_id)
         if not status:
             raise StatusOrder.DoesNotExist(
-                f"status with id={item.order_id} does not exist"
+                f"status with id={item.status_id} does not exist"
             )
         order.status = status
         orders_to_update.append(order)
