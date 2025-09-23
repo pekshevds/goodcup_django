@@ -5,7 +5,7 @@ from order_app.schemas import (
     OrderItemSchemaOutgoing,
     OrderStatusListUpdateSchemaIncoming,
 )
-from order_app.models import StatusOrder
+from order_app.models import StatusOrder, Order
 from repositories import order_repository
 
 
@@ -24,10 +24,12 @@ def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
     for item in data.statuses:
         order = orders_dict.get(item.order_id)
         if not order:
-            continue
+            raise Order.DoesNotExist(f"order with id={item.order_id} does not exist")
         status = statuses_dict.get(item.status_id)
         if not status:
-            continue
+            raise StatusOrder.DoesNotExist(
+                f"status with id={item.order_id} does not exist"
+            )
         order.status = status
         orders_to_update.append(order)
     order_repository.update_orders_stutuses(orders_to_update)
