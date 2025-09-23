@@ -16,7 +16,7 @@ def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
         [item.status_id for item in data.statuses]
     )
     statuses_dict = {str(status.id): status for status in statuses}
-    orders = order_repository.fetch_status_by_ids(
+    orders = order_repository.fetch_orders_by_ids(
         [item.order_id for item in data.statuses]
     )
     orders_dict = {str(order.id): order for order in orders}
