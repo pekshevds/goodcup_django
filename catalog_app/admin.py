@@ -112,6 +112,7 @@ class GoodAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("preview",)
     search_fields = ("name", "art")
+    list_filter = ("is_active",)
 
     def preview(self, obj: Good) -> str:
         if obj.preview_image:
