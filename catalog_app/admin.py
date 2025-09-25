@@ -1,6 +1,7 @@
 from django.utils.html import format_html
 from django.contrib import admin
 from catalog_app.models import Good, Category, Image
+from server.admin import make_active
 
 admin.site.site_header = "Панель администрирования goodcup"
 admin.site.site_title = "Панель администрирования goodcup"
@@ -27,6 +28,7 @@ class ImageAdmin(admin.ModelAdmin):
     )
     list_display = ("name", "is_active", "preview", "created_at", "updated_at", "id")
     readonly_fields = ("preview",)
+    actions = [make_active]
 
     def preview(self, obj: Image) -> str:
         if obj.image:
@@ -66,6 +68,7 @@ class CategoryAdmin(admin.ModelAdmin):
         "id",
     )
     readonly_fields = ("preview",)
+    actions = [make_active]
 
     def preview(self, obj: Category) -> str:
         if obj.preview_image:
@@ -113,6 +116,7 @@ class GoodAdmin(admin.ModelAdmin):
     readonly_fields = ("preview",)
     search_fields = ("name", "art")
     list_filter = ("is_active",)
+    actions = [make_active]
 
     def preview(self, obj: Good) -> str:
         if obj.preview_image:

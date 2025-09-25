@@ -1,4 +1,5 @@
 from django.contrib import admin
+from server.admin import make_active
 from client_app.models import Region, Client, Pin
 
 
@@ -17,6 +18,7 @@ class RegionAdmin(admin.ModelAdmin):
         ),
     )
     list_display = ("name", "is_active", "created_at", "updated_at", "id")
+    actions = [make_active]
 
 
 @admin.register(Client)
@@ -49,6 +51,7 @@ class ClientAdmin(admin.ModelAdmin):
         "contract",
     )
     list_filter = ("region",)
+    actions = [make_active]
 
 
 @admin.register(Pin)
