@@ -44,6 +44,10 @@ class ClientAdmin(admin.ModelAdmin):
         "updated_at",
         "id",
     )
+    search_fields = (
+        "name",
+        "contract",
+    )
     list_filter = ("region",)
 
 
