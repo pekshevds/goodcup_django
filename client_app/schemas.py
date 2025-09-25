@@ -10,6 +10,7 @@ class RegionSchema(BaseModel):
 
 class ClientSchema(BaseModel):
     name: str = Field()
+    contract: str = Field()
 
 
 class PinSchema(BaseModel):

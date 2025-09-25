@@ -28,13 +28,22 @@ class ClientAdmin(admin.ModelAdmin):
                 "fields": (
                     "name",
                     "region",
+                    "contract",
                     "is_active",
                     "comment",
                 )
             },
         ),
     )
-    list_display = ("name", "region", "is_active", "created_at", "updated_at", "id")
+    list_display = (
+        "name",
+        "region",
+        "contract",
+        "is_active",
+        "created_at",
+        "updated_at",
+        "id",
+    )
     list_filter = ("region",)
 
 
