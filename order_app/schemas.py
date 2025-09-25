@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, Field
-from client_app.schemas import ClientSchema
+from client_app.schemas import ClientSchemaOutgoing
 from catalog_app.schemas import GoodSchemaOutgoing
 
 
@@ -26,7 +26,7 @@ class OrderSchemaOutgoing(BaseModel):
     number: int = Field()
     date: datetime = Field()
     comment: str = Field()
-    client: ClientSchema = Field()
+    client: ClientSchemaOutgoing = Field()
     status: StatusSchemaOutgoing = Field()
     items: list[OrderItemSchemaOutgoing] = Field(default=[])
 

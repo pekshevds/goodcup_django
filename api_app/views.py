@@ -3,7 +3,7 @@ from django.utils.decorators import method_decorator
 from django.http import HttpRequest, JsonResponse
 from django.views.generic import View
 from client_app.schemas import (
-    ClientSchema,
+    ClientSchemaIncoming,
     PinSchema,
     ClientCredentialSchema,
     TokenSchema,
@@ -23,7 +23,9 @@ from services import (
 @method_decorator(csrf_exempt, name="dispatch")
 class PinView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
-        client_schema = ClientSchema.model_validate_json(request.body.decode("utf-8"))
+        client_schema = ClientSchemaIncoming.model_validate_json(
+            request.body.decode("utf-8")
+        )
         pin = client_service.fetch_pin_by_client(client_schema)
         return JsonResponse(PinSchema(pin=pin).model_dump(), status=200)
 

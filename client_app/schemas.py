@@ -8,7 +8,11 @@ class RegionSchema(BaseModel):
     is_active: bool = Field(default=False)
 
 
-class ClientSchema(BaseModel):
+class ClientSchemaIncoming(BaseModel):
+    name: str = Field()
+
+
+class ClientSchemaOutgoing(BaseModel):
     name: str = Field()
     contract: str = Field()
 
