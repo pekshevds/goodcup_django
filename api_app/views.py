@@ -1,3 +1,4 @@
+from typing import Callable, Any
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpRequest, JsonResponse
@@ -18,6 +19,15 @@ from services import (
     price_service,
     order_service,
 )
+
+
+def check_token(view_function: Callable) -> Callable:
+    def wrapper(obj: Any, request: HttpRequest) -> JsonResponse:
+        token = client_service.extract_token(request)
+        client_service.check_token(token)
+        return view_function(obj, request)
+
+    return wrapper
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -44,24 +54,21 @@ class TokenView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class GoodView(View):
+    @check_token
     def post(self, request: HttpRequest) -> JsonResponse:
-        token = client_service.extract_token(request)
-        client_service.check_token(token)
         goods = GoodListSchema.model_validate_json(request.body.decode("utf-8"))
         return JsonResponse(goods.model_dump(), status=200)
 
+    @check_token
     def get(self, request: HttpRequest) -> JsonResponse:
-        token = client_service.extract_token(request)
-        client_service.check_token(token)
         goods = good_service.fetch_all_goods_as_schema()
         return JsonResponse(goods.model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class DataView(View):
+    @check_token
     def post(self, request: HttpRequest) -> JsonResponse:
-        token = client_service.extract_token(request)
-        client_service.check_token(token)
         data = DataSchema.model_validate_json(request.body.decode("utf-8"))
         good_service.create_or_update_goods(data.goods)
         region_service.create_or_update_regions(data.regions)
@@ -72,18 +79,16 @@ class DataView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class NewOrderView(View):
+    @check_token
     def get(self, request: HttpRequest) -> JsonResponse:
-        token = client_service.extract_token(request)
-        client_service.check_token(token)
         new_orders = order_service.fetch_new_orders()
         return JsonResponse(new_orders.model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class UpdateOrderStatusView(View):
+    @check_token
     def post(self, request: HttpRequest) -> JsonResponse:
-        token = client_service.extract_token(request)
-        client_service.check_token(token)
         data = OrderStatusListUpdateSchemaIncoming.model_validate_json(
             request.body.decode("utf-8")
         )
