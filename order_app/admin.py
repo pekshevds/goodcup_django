@@ -1,5 +1,6 @@
 from django.contrib import admin
 from order_app.models import Order, OrderItem, CartItem, WishItem, StatusOrder
+from client_app.models import Client
 
 
 @admin.register(StatusOrder)
@@ -37,7 +38,7 @@ class OrderAdmin(admin.ModelAdmin):
                     ),
                     "is_active",
                     (
-                        "client",
+                        "contract",
                         "status",
                         "comment",
                     ),
@@ -45,15 +46,29 @@ class OrderAdmin(admin.ModelAdmin):
             },
         ),
     )
-    list_display = ("__str__", "is_active", "client", "status", "updated_at", "id")
-    list_filter = (
+    list_display = (
+        "__str__",
+        "is_active",
+        "contract",
         "client",
+        "status",
+        "updated_at",
+        "id",
+    )
+    list_filter = (
+        "contract__client",
         "status",
     )
     readonly_fields = (
         "number",
         "date",
     )
+    search_fields = ("contract__name",)
+
+    def client(self, obj: Order) -> Client:
+        return obj.contract.client
+
+    setattr(client, "short_description", "Клиент")
 
 
 @admin.register(CartItem)

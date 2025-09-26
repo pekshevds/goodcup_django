@@ -21,9 +21,6 @@ class Client(Directory):
         null=True,
         blank=True,
     )
-    contract = models.CharField(
-        "Договор", max_length=25, null=True, blank=True, default=""
-    )
 
     class Meta:
         verbose_name = "Клиент"
@@ -46,7 +43,7 @@ class Contract(Directory):
     )
 
     def __str__(self) -> str:
-        return f"{self} ({self.client})"
+        return f"{self.name} ({self.client})"
 
     class Meta:
         verbose_name = "Договор"

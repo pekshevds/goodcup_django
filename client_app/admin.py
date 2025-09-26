@@ -53,7 +53,6 @@ class ClientAdmin(admin.ModelAdmin):
                 "fields": (
                     "name",
                     "region",
-                    "contract",
                     "is_active",
                     "comment",
                 )
@@ -63,16 +62,12 @@ class ClientAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "region",
-        "contract",
         "is_active",
         "created_at",
         "updated_at",
         "id",
     )
-    search_fields = (
-        "name",
-        "contract",
-    )
+    search_fields = ("name",)
     list_filter = ("region",)
     actions = [make_active]
 

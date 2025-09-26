@@ -14,7 +14,10 @@ class ClientSchemaIncoming(BaseModel):
 
 class ClientSchemaOutgoing(BaseModel):
     name: str = Field()
-    contract: str = Field()
+
+
+class ContractSchemaOutgoing(BaseModel):
+    name: str = Field()
 
 
 class PinSchema(BaseModel):

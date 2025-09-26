@@ -1,7 +1,7 @@
 from django.db import models
 from server.models import Directory, Document, Record
 from catalog_app.models import Good
-from client_app.models import Client
+from client_app.models import Client, Contract
 
 
 class StatusOrder(Directory):
@@ -14,9 +14,9 @@ class StatusOrder(Directory):
 
 
 class Order(Document):
-    client = models.ForeignKey(
-        Client,
-        verbose_name="Клиент",
+    contract = models.ForeignKey(
+        Contract,
+        verbose_name="Договор",
         related_name="orders",
         on_delete=models.PROTECT,
         blank=True,
@@ -85,7 +85,7 @@ class OrderItem(Record):
 
 class CartItem(Record):
     client = models.ForeignKey(
-        Client,
+        Contract,
         verbose_name="Клиент",
         related_name="cart",
         on_delete=models.PROTECT,
