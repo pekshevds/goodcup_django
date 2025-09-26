@@ -30,8 +30,31 @@ class Client(Directory):
         verbose_name_plural = "Клиенты"
 
 
+class Contract(Directory):
+    client = models.ForeignKey(
+        Client,
+        verbose_name="Клиент",
+        related_name="contracts",
+        on_delete=models.CASCADE,
+    )
+    name = models.CharField(
+        verbose_name="Наименование",
+        max_length=25,
+        blank=False,
+        db_index=True,
+        default="",
+    )
+
+    def __str__(self) -> str:
+        return f"{self} ({self.client})"
+
+    class Meta:
+        verbose_name = "Договор"
+        verbose_name_plural = "Договора"
+
+
 class Pin(Record):
-    client = models.ForeignKey(Client, verbose_name="Клиента", on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, verbose_name="Клиент", on_delete=models.CASCADE)
     code = models.CharField("Код", max_length=6)
 
     class Meta:

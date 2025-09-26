@@ -1,6 +1,28 @@
+from typing import Any
+from django.http import HttpRequest
 from django.contrib import admin
 from server.admin import make_active
-from client_app.models import Region, Client, Pin
+from client_app.models import Region, Client, Pin, Contract
+
+
+class ContractsReadonlyInline(admin.TabularInline):
+    model = Contract
+    extra = 0
+    verbose_name = "Договор"
+    verbose_name_plural = "Договора"
+    fieldsets = (
+        (
+            None,
+            {"fields": ("name",)},
+        ),
+    )
+    readonly_fields = ("name",)
+
+    def has_add_permission(self, request: HttpRequest, obj: Any = None) -> bool:
+        return False
+
+    def has_delete_permission(self, request: HttpRequest, obj: Any = None) -> bool:
+        return False
 
 
 @admin.register(Region)
@@ -23,6 +45,7 @@ class RegionAdmin(admin.ModelAdmin):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
+    inlines = [ContractsReadonlyInline]
     fieldsets = (
         (
             None,
@@ -52,6 +75,18 @@ class ClientAdmin(admin.ModelAdmin):
     )
     list_filter = ("region",)
     actions = [make_active]
+
+
+@admin.register(Contract)
+class ContractAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {"fields": ("client", "name")},
+        ),
+    )
+    list_display = ("name", "client", "created_at", "updated_at", "id")
+    list_filter = ("client",)
 
 
 @admin.register(Pin)
