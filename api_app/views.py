@@ -18,6 +18,7 @@ from services import (
     region_service,
     price_service,
     order_service,
+    property_service,
 )
 
 
@@ -71,10 +72,11 @@ class DataView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
         data = DataSchema.model_validate_json(request.body.decode("utf-8"))
         good_service.create_or_update_goods(data.goods)
+        property_service.create_properties(data.properties)
         region_service.create_or_update_regions(data.regions)
         price_service.create_or_update_price(data.prices)
         order_service.create_or_update_statuses(data.order_statuses)
-        return JsonResponse(data.model_dump(), status=200)
+        return JsonResponse({}, status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

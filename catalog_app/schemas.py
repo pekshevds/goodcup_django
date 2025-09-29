@@ -1,6 +1,12 @@
 from pydantic import BaseModel, Field
 
 
+class PropertySchemaIncoming(BaseModel):
+    good_id: str = Field()
+    name: str = Field(max_length=150)
+    value: str = Field(max_length=150, default="")
+
+
 class GoodSchema(BaseModel):
     id: str = Field()
     name: str = Field(max_length=150)
@@ -11,6 +17,7 @@ class GoodSchema(BaseModel):
     description: str = Field(max_length=2048, default="")
     balance: int = Field(default=0)
     is_active: bool = Field(default=False)
+    # properties: list[PropertySchemaIncoming] | None = Field()
 
 
 class GoodSchemaIncoming(BaseModel):
@@ -23,6 +30,7 @@ class GoodSchemaIncoming(BaseModel):
     description: str = Field(max_length=2048, default="")
     balance: int = Field(default=0)
     is_active: bool = Field(default=False)
+    # properties: list[PropertySchemaIncoming] | None = Field()
 
 
 class GoodSchemaOutgoing(BaseModel):

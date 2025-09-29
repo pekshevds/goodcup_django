@@ -1,5 +1,5 @@
 from django.db import models
-from server.models import Directory
+from server.models import Directory, Record
 
 
 class Image(Directory):
@@ -76,3 +76,22 @@ class Good(Directory):
     class Meta:
         verbose_name = "Номенклатура"
         verbose_name_plural = "Номенклатура"
+
+
+class PropertyRecord(Record):
+    good = models.ForeignKey(
+        Good, verbose_name="Товар", on_delete=models.CASCADE, related_name="properties"
+    )
+    name = models.CharField(
+        verbose_name="Свойство", max_length=150, blank=True, null=False, default=""
+    )
+    value = models.CharField(
+        verbose_name="Значение", max_length=150, blank=True, null=False, default=""
+    )
+
+    def __str__(self) -> str:
+        return self.name
+
+    class Meta:
+        verbose_name = "Запись свойство/значение"
+        verbose_name_plural = "Свойства товара"
