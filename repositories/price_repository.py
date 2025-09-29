@@ -36,8 +36,8 @@ def create_or_update_price(
         PriceItem.objects.bulk_update(price_to_update, ["price", "balance"])
 
 
+@transaction.atomic
 def create_price(price_to_create: list[PriceItem]) -> None:
-    with transaction.atomic():
-        clear_price_by_goods([item.good for item in price_to_create])
-        if price_to_create:
-            PriceItem.objects.bulk_create(price_to_create)
+    clear_price_by_goods([item.good for item in price_to_create])
+    if price_to_create:
+        PriceItem.objects.bulk_create(price_to_create)
