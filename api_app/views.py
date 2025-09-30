@@ -26,12 +26,14 @@ from services import (
 
 def auth(only: bool = True) -> Callable:
     def out_wrapper(view_function: Callable) -> Callable:
-        def in_wrapper(obj: Any, request: HttpRequest) -> JsonResponse:
+        def in_wrapper(
+            obj: Any, request: HttpRequest, **kwargs: dict[str, Any]
+        ) -> JsonResponse:
             token = client_service.extract_token(request)
             client = client_service.client_by_token(token)
             if only and client is None:
                 raise PermissionDenied("bad Auth token")
-            return view_function(obj, request, client)
+            return view_function(obj, request, client, **kwargs)
 
         return in_wrapper
 
@@ -70,8 +72,12 @@ class GoodView(View):
         return JsonResponse(goods.model_dump(), status=200)
 
     @auth(False)
-    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+    def get(self, request: HttpRequest, client: Client, slug: str = "") -> JsonResponse:
         region = client.region if client else None
+        if slug:
+            return JsonResponse(
+                good_service.fetch_good_by_slug(slug, region).model_dump(), status=200
+            )
         search = request.GET.get("search")
         if search:
             return JsonResponse(
