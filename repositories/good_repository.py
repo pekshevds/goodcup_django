@@ -1,11 +1,21 @@
+from django.db.models import QuerySet
+from django.db.models import Q
 from catalog_app.models import Good
 
 
-def fetch_all_goods() -> list[Good]:
+def fetch_all_goods() -> QuerySet[Good]:
     return Good.objects.all()
 
 
-def fetch_goods_by_ids(ids: list[str]) -> list[Good]:
+def search_goods(search: str) -> QuerySet[Good]:
+    return Good.objects.filter(Q(name__icontains=search) | Q(art__icontains=search))
+
+
+def fetch_good_by_slug(slug: str) -> Good:
+    return Good.objects.filter(slug=slug).first()
+
+
+def fetch_goods_by_ids(ids: list[str]) -> QuerySet[Good]:
     return Good.objects.filter(id__in=ids).all()
 
 

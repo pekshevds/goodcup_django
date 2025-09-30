@@ -72,6 +72,11 @@ class GoodView(View):
     @auth(False)
     def get(self, request: HttpRequest, client: Client) -> JsonResponse:
         region = client.region if client else None
+        search = request.GET.get("search")
+        if search:
+            return JsonResponse(
+                good_service.search_goods(search, region).model_dump(), status=200
+            )
         goods = good_service.fetch_all_goods(region)
         return JsonResponse(goods.model_dump(), status=200)
 

@@ -42,6 +42,7 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
         id=str(good.id),
         name=good.name,
         art=good.art,
+        slug=good.slug,
         code=good.code,
         okei=good.okei,
         price=good.price,

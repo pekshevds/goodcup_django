@@ -45,6 +45,7 @@ class GoodSchemaOutgoing(BaseModel):
     id: str = Field()
     name: str = Field(max_length=150)
     art: str = Field(max_length=50, default="")
+    slug: str = Field(max_length=300, default="")
     code: str = Field(max_length=11, default="")
     okei: str = Field(max_length=50, default="")
     price: float = Field(default=0)
