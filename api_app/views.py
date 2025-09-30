@@ -9,7 +9,7 @@ from client_app.schemas import (
     ClientCredentialSchema,
     TokenSchema,
 )
-from catalog_app.schemas import GoodListSchema
+from catalog_app.schemas import GoodListSchemaIncoming
 from order_app.schemas import OrderStatusListUpdateSchemaIncoming
 from api_app.schemas import DataSchema
 from services import (
@@ -57,10 +57,9 @@ class TokenView(View):
 class GoodView(View):
     @check_token
     def post(self, request: HttpRequest) -> JsonResponse:
-        goods = GoodListSchema.model_validate_json(request.body.decode("utf-8"))
+        goods = GoodListSchemaIncoming.model_validate_json(request.body.decode("utf-8"))
         return JsonResponse(goods.model_dump(), status=200)
 
-    @check_token
     def get(self, request: HttpRequest) -> JsonResponse:
         goods = good_service.fetch_all_goods()
         return JsonResponse(goods.model_dump(), status=200)

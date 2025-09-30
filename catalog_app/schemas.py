@@ -7,6 +7,15 @@ class PropertySchemaIncoming(BaseModel):
     value: str = Field(max_length=150, default="")
 
 
+class PropertySchemaOutgoing(BaseModel):
+    name: str = Field(max_length=150, default="")
+    value: str = Field(max_length=150, default="")
+
+
+class ImageSchemaOutgoing(BaseModel):
+    path: str = Field(max_length=2048, default="")
+
+
 class GoodSchema(BaseModel):
     id: str = Field()
     name: str = Field(max_length=150)
@@ -30,12 +39,26 @@ class GoodSchemaIncoming(BaseModel):
     description: str = Field(max_length=2048, default="")
     balance: int = Field(default=0)
     is_active: bool = Field(default=False)
-    # properties: list[PropertySchemaIncoming] | None = Field()
 
 
 class GoodSchemaOutgoing(BaseModel):
     id: str = Field()
+    name: str = Field(max_length=150)
+    art: str = Field(max_length=50, default="")
+    code: str = Field(max_length=11, default="")
+    okei: str = Field(max_length=50, default="")
+    price: float = Field(default=0)
+    description: str = Field(max_length=2048, default="")
+    balance: int = Field(default=0)
+    is_active: bool = Field(default=False)
+    preview_image: ImageSchemaOutgoing | None = Field(default=None)
+    properties: list[PropertySchemaOutgoing] | None = Field(default=None)
+    images: list[ImageSchemaOutgoing] | None = Field(default=None)
 
 
-class GoodListSchema(BaseModel):
-    goods: list[GoodSchema] = Field()
+class GoodListSchemaIncoming(BaseModel):
+    goods: list[GoodSchemaIncoming] = Field()
+
+
+class GoodListSchemaOutgoing(BaseModel):
+    goods: list[GoodSchemaOutgoing] = Field()

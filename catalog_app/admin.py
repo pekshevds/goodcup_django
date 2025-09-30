@@ -1,6 +1,6 @@
 from django.utils.html import format_html
 from django.contrib import admin
-from catalog_app.models import Good, Category, Image, PropertyRecord
+from catalog_app.models import Good, Category, Image, PropertyRecord, GoodImage
 from server.admin import make_active
 
 admin.site.site_header = "Панель администрирования goodcup"
@@ -83,9 +83,13 @@ class PropertyRecordInLine(admin.TabularInline):
     model = PropertyRecord
 
 
+class GoodImageInLine(admin.TabularInline):
+    model = GoodImage
+
+
 @admin.register(Good)
 class GoodAdmin(admin.ModelAdmin):
-    inlines = [PropertyRecordInLine]
+    inlines = [PropertyRecordInLine, GoodImageInLine]
     fieldsets = (
         (
             None,

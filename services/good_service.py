@@ -1,18 +1,21 @@
 from catalog_app.models import Good
-from catalog_app.schemas import GoodSchema, GoodListSchema
+from catalog_app.schemas import (
+    GoodSchemaIncoming,
+    GoodListSchemaOutgoing,
+)
+from catalog_app.converters import good_to_outgoing_schema
 from repositories import good_repository
 
 
-def fetch_all_goods() -> GoodListSchema:
-    return GoodListSchema(
+def fetch_all_goods() -> GoodListSchemaOutgoing:
+    return GoodListSchemaOutgoing(
         goods=[
-            GoodSchema.model_validate(good.as_dict())
-            for good in good_repository.fetch_all_goods()
+            good_to_outgoing_schema(good) for good in good_repository.fetch_all_goods()
         ]
     )
 
 
-def create_or_update_goods(goods_list: list[GoodSchema]) -> None:
+def create_or_update_goods(goods_list: list[GoodSchemaIncoming]) -> None:
     ids = [
         str(_.id)
         for _ in good_repository.fetch_goods_by_ids(

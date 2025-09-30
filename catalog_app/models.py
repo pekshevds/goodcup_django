@@ -78,6 +78,19 @@ class Good(Directory):
         verbose_name_plural = "Номенклатура"
 
 
+class GoodImage(Record):
+    good = models.ForeignKey(
+        Good, verbose_name="Товар", on_delete=models.CASCADE, related_name="images"
+    )
+    image = models.ForeignKey(
+        Image, verbose_name="Изображение", on_delete=models.PROTECT
+    )
+
+    class Meta:
+        verbose_name = "Изображение товара"
+        verbose_name_plural = "Изображения товаров"
+
+
 class PropertyRecord(Record):
     good = models.ForeignKey(
         Good, verbose_name="Товар", on_delete=models.CASCADE, related_name="properties"

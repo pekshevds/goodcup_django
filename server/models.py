@@ -15,10 +15,11 @@ class Record(models.Model):
         result = {}
         for field in self._meta.fields:
             value = getattr(self, field.name)
+            if isinstance(value, models.Model):
+                # value = value.as_dict()
+                continue
             if isinstance(value, uuid.UUID):
                 value = str(value)
-            if isinstance(value, models.Model):
-                value = value.as_dict()
             result[field.name] = value
         return result
 
