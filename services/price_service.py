@@ -5,11 +5,7 @@ from catalog_app.models import Good
 from client_app.models import Region
 
 
-def fetch_all_price() -> list[PriceItem]:
-    return price_repository.fetch_all_price()
-
-
-def _fetch_goods_from_prices(prices: list[PriceSchema]) -> dict[str, Good]:
+def __fetch_goods_from_prices(prices: list[PriceSchema]) -> dict[str, Good]:
     return {
         str(good.id): good
         for good in good_repository.fetch_goods_by_ids(
@@ -18,7 +14,7 @@ def _fetch_goods_from_prices(prices: list[PriceSchema]) -> dict[str, Good]:
     }
 
 
-def _fetch_regions_from_prices(prices: list[PriceSchema]) -> dict[str, Region]:
+def __fetch_regions_from_prices(prices: list[PriceSchema]) -> dict[str, Region]:
     return {
         str(region.id): region
         for region in region_repository.fetch_regions_by_ids(
@@ -27,9 +23,13 @@ def _fetch_regions_from_prices(prices: list[PriceSchema]) -> dict[str, Region]:
     }
 
 
+def fetch_all_price() -> list[PriceItem]:
+    return price_repository.fetch_all_price()
+
+
 def create_or_update_price(prices: list[PriceSchema]) -> None:
-    goods = _fetch_goods_from_prices(prices)
-    regions = _fetch_regions_from_prices(prices)
+    goods = __fetch_goods_from_prices(prices)
+    regions = __fetch_regions_from_prices(prices)
     to_create = []
     for record in prices:
         region = regions.get(record.region_id)

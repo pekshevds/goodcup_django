@@ -3,13 +3,12 @@ from catalog_app.schemas import GoodSchema, GoodListSchema
 from repositories import good_repository
 
 
-def fetch_all_goods() -> list[Good]:
-    return good_repository.fetch_all_goods()
-
-
-def fetch_all_goods_as_schema() -> GoodListSchema:
+def fetch_all_goods() -> GoodListSchema:
     return GoodListSchema(
-        goods=[GoodSchema.model_validate(good.as_dict()) for good in fetch_all_goods()]
+        goods=[
+            GoodSchema.model_validate(good.as_dict())
+            for good in good_repository.fetch_all_goods()
+        ]
     )
 
 

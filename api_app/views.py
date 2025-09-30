@@ -62,7 +62,7 @@ class GoodView(View):
 
     @check_token
     def get(self, request: HttpRequest) -> JsonResponse:
-        goods = good_service.fetch_all_goods_as_schema()
+        goods = good_service.fetch_all_goods()
         return JsonResponse(goods.model_dump(), status=200)
 
 
