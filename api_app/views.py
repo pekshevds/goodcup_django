@@ -1,4 +1,5 @@
 from typing import Callable, Any
+from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpRequest, JsonResponse
@@ -10,6 +11,7 @@ from client_app.schemas import (
     TokenSchema,
 )
 from catalog_app.schemas import GoodListSchemaIncoming
+from client_app.models import Client
 from order_app.schemas import OrderStatusListUpdateSchemaIncoming
 from api_app.schemas import DataSchema
 from services import (
@@ -22,13 +24,18 @@ from services import (
 )
 
 
-def check_token(view_function: Callable) -> Callable:
-    def wrapper(obj: Any, request: HttpRequest) -> JsonResponse:
-        token = client_service.extract_token(request)
-        client_service.check_token(token)
-        return view_function(obj, request)
+def auth(only: bool = True) -> Callable:
+    def out_wrapper(view_function: Callable) -> Callable:
+        def in_wrapper(obj: Any, request: HttpRequest) -> JsonResponse:
+            token = client_service.extract_token(request)
+            client = client_service.client_by_token(token)
+            if only and client is None:
+                raise PermissionDenied("bad Auth token")
+            return view_function(obj, request, client)
 
-    return wrapper
+        return in_wrapper
+
+    return out_wrapper
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -48,6 +55,8 @@ class TokenView(View):
             request.body.decode("utf-8")
         )
         token = client_service.fetch_token_by_credentials(credential)
+        if not token:
+            raise PermissionDenied("bad name or pin")
         response = JsonResponse(TokenSchema(token=token).model_dump(), status=200)
         response.set_cookie("Authorization", token)
         return response
@@ -55,20 +64,22 @@ class TokenView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class GoodView(View):
-    @check_token
-    def post(self, request: HttpRequest) -> JsonResponse:
+    @auth()
+    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
         goods = GoodListSchemaIncoming.model_validate_json(request.body.decode("utf-8"))
         return JsonResponse(goods.model_dump(), status=200)
 
-    def get(self, request: HttpRequest) -> JsonResponse:
-        goods = good_service.fetch_all_goods()
+    @auth(False)
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        region = client.region if client else None
+        goods = good_service.fetch_all_goods(region)
         return JsonResponse(goods.model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class DataView(View):
-    @check_token
-    def post(self, request: HttpRequest) -> JsonResponse:
+    @auth()
+    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
         data = DataSchema.model_validate_json(request.body.decode("utf-8"))
         good_service.create_or_update_goods(data.goods)
         property_service.create_properties(data.properties)
@@ -80,16 +91,16 @@ class DataView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class NewOrderView(View):
-    @check_token
-    def get(self, request: HttpRequest) -> JsonResponse:
+    @auth()
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
         new_orders = order_service.fetch_new_orders()
         return JsonResponse(new_orders.model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
 class UpdateOrderStatusView(View):
-    @check_token
-    def post(self, request: HttpRequest) -> JsonResponse:
+    @auth()
+    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
         data = OrderStatusListUpdateSchemaIncoming.model_validate_json(
             request.body.decode("utf-8")
         )

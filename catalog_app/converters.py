@@ -1,3 +1,4 @@
+from typing import Any
 from catalog_app.models import Good, Image, PropertyRecord
 from catalog_app.schemas import (
     GoodSchemaOutgoing,

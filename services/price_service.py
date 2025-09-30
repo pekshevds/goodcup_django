@@ -27,6 +27,10 @@ def fetch_all_price() -> list[PriceItem]:
     return price_repository.fetch_all_price()
 
 
+def fetch_region_price(goods: list[Good], region: Region) -> list[PriceItem]:
+    return price_repository.fetch_price(goods, [region])
+
+
 def create_or_update_price(prices: list[PriceSchema]) -> None:
     goods = __fetch_goods_from_prices(prices)
     regions = __fetch_regions_from_prices(prices)

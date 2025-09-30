@@ -1,6 +1,6 @@
 from django.http import HttpRequest
 from django.conf import settings
-from django.core.exceptions import PermissionDenied
+
 from client_app.models import Client
 from client_app.schemas import ClientCredentialSchema, ClientSchemaIncoming
 from repositories import client_repository
@@ -13,33 +13,33 @@ def check_clients_pin(client: Client, code: str) -> bool:
     ]
 
 
-def check_credentials(client_schema: ClientCredentialSchema) -> None:
+def check_credentials(client_schema: ClientCredentialSchema) -> bool:
     client = client_repository.fetch_client_by_name(name=client_schema.name)
     if not client:
-        raise PermissionDenied("invalid clientname or pin")
+        return False
     if not check_clients_pin(client, client_schema.pin):
-        raise PermissionDenied("invalid clientname or pin")
+        return False
+    return True
 
 
 def fetch_token_by_credentials(client_schema: ClientCredentialSchema) -> str:
-    check_credentials(client_schema)
+    if not check_credentials(client_schema):
+        return ""
     return HS256.get_token(client_schema.name, settings.SECRET_KEY)
 
 
 def fetch_pin_by_client(client_schema: ClientSchemaIncoming) -> str:
     client = client_repository.fetch_client_by_name(name=client_schema.name)
     if not client:
-        raise PermissionDenied("invalid clientname or pin")
+        return ""
     return client_repository.create_new_pin(client)
 
 
-def check_token(token: str) -> None:
+def client_by_token(token: str) -> Client | None:
     payload = HS256.extract_data(token, settings.SECRET_KEY)
     if not payload:
-        raise PermissionDenied("invalid token")
-    user = client_repository.fetch_client_by_name(name=payload.name)
-    if not user:
-        raise PermissionDenied("invalid token")
+        return None
+    return client_repository.fetch_client_by_name(name=payload.name)
 
 
 def extract_token_from_headers(request: HttpRequest) -> str:
