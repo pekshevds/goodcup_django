@@ -1,14 +1,25 @@
+from django.core.paginator import Paginator
 from django.db.models import QuerySet
 from django.db.models import Q
 from catalog_app.models import Good
 
-
-def fetch_all_goods() -> QuerySet[Good]:
-    return Good.objects.all()
+PER_PAGE: int = 25
 
 
-def search_goods(search: str) -> QuerySet[Good]:
-    return Good.objects.filter(Q(name__icontains=search) | Q(art__icontains=search))
+def fetch_all_goods(page_number: int = 0) -> QuerySet[Good]:
+    queryset = Good.objects.all()
+    if page_number == 0:
+        return queryset
+    paginator = Paginator(queryset, PER_PAGE)
+    return paginator.get_page(page_number)
+
+
+def search_goods(search: str, page_number: int = 0) -> QuerySet[Good]:
+    queryset = Good.objects.filter(Q(name__icontains=search) | Q(art__icontains=search))
+    if page_number == 0:
+        return queryset
+    paginator = Paginator(queryset, PER_PAGE)
+    return paginator.get_page(page_number)
 
 
 def fetch_good_by_slug(slug: str) -> Good:

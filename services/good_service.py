@@ -46,12 +46,16 @@ def __fetch_goods(
     return GoodListSchemaOutgoing(goods=goods)
 
 
-def search_goods(search: str, region: Region | None = None) -> GoodListSchemaOutgoing:
-    return __fetch_goods(good_repository.search_goods(search), region)
+def search_goods(
+    search: str, region: Region | None = None, page_number: int = 0
+) -> GoodListSchemaOutgoing:
+    return __fetch_goods(good_repository.search_goods(search, page_number), region)
 
 
-def fetch_all_goods(region: Region | None = None) -> GoodListSchemaOutgoing:
-    return __fetch_goods(good_repository.fetch_all_goods(), region)
+def fetch_all_goods(
+    region: Region | None = None, page_number: int = 0
+) -> GoodListSchemaOutgoing:
+    return __fetch_goods(good_repository.fetch_all_goods(page_number), region)
 
 
 def fetch_good_by_slug(slug: str, region: Region | None = None) -> GoodSchemaOutgoing:

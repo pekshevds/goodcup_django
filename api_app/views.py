@@ -74,16 +74,15 @@ class GoodView(View):
     @auth(False)
     def get(self, request: HttpRequest, client: Client, slug: str = "") -> JsonResponse:
         region = client.region if client else None
+        page_number = request.GET.get("page", 0)
         if slug:
-            return JsonResponse(
-                good_service.fetch_good_by_slug(slug, region).model_dump(), status=200
-            )
+            good = good_service.fetch_good_by_slug(slug, region)
+            return JsonResponse(good.model_dump(), status=200)
         search = request.GET.get("search")
         if search:
-            return JsonResponse(
-                good_service.search_goods(search, region).model_dump(), status=200
-            )
-        goods = good_service.fetch_all_goods(region)
+            goods = good_service.search_goods(search, region, page_number)
+            return JsonResponse(goods.model_dump(), status=200)
+        goods = good_service.fetch_all_goods(region, page_number)
         return JsonResponse(goods.model_dump(), status=200)
 
 
