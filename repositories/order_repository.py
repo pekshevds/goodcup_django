@@ -1,19 +1,20 @@
+from django.db.models import QuerySet
 from order_app.models import StatusOrder, Order
 
 
-def fetch_new_orders() -> list[Order]:
+def fetch_new_orders() -> QuerySet[Order]:
     return Order.objects.all()
 
 
-def fetch_all_statuses() -> list[StatusOrder]:
+def fetch_all_statuses() -> QuerySet[StatusOrder]:
     return StatusOrder.objects.all()
 
 
-def fetch_status_by_ids(ids: list[str]) -> list[StatusOrder]:
+def fetch_status_by_ids(ids: list[str]) -> QuerySet[StatusOrder]:
     return StatusOrder.objects.filter(id__in=ids).all()
 
 
-def fetch_orders_by_ids(ids: list[str]) -> list[Order]:
+def fetch_orders_by_ids(ids: list[str]) -> QuerySet[Order]:
     return Order.objects.filter(id__in=ids).all()
 
 

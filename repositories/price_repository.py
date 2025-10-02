@@ -1,6 +1,5 @@
-from django.db.models import QuerySet
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from price_app.models import PriceItem
 from catalog_app.models import Good
 from client_app.models import Region

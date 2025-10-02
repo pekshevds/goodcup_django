@@ -1,11 +1,12 @@
+from django.db.models import QuerySet
 from client_app.models import Region
 
 
-def fetch_all_regions() -> list[Region]:
+def fetch_all_regions() -> QuerySet[Region]:
     return Region.objects.all()
 
 
-def fetch_regions_by_ids(ids: list[str]) -> list[Region]:
+def fetch_regions_by_ids(ids: list[str]) -> QuerySet[Region]:
     return Region.objects.filter(id__in=ids).all()
 
 

@@ -1,6 +1,5 @@
 from django.core.paginator import Paginator
-from django.db.models import QuerySet
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from catalog_app.models import Good
 
 PER_PAGE: int = 25

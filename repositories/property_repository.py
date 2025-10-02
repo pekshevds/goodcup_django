@@ -1,16 +1,17 @@
 from django.db import transaction
+from django.db.models import QuerySet
 from catalog_app.models import PropertyRecord, Good
 
 
-def fetch_all_properties() -> list[PropertyRecord]:
+def fetch_all_properties() -> QuerySet[PropertyRecord]:
     return PropertyRecord.objects.all()
 
 
-def fetch_properties_by_goods(goods: list[Good]) -> list[Good]:
+def fetch_properties_by_goods(goods: list[Good]) -> QuerySet[Good]:
     return PropertyRecord.objects.filter(good__in=goods).all()
 
 
-def fetch_goods_properties(good: Good) -> list[Good]:
+def fetch_goods_properties(good: Good) -> QuerySet[Good]:
     return PropertyRecord.objects.filter(good=good).all()
 
 
