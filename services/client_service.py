@@ -1,6 +1,6 @@
+from typing import Any
 from django.http import HttpRequest
 from django.conf import settings
-
 from client_app.models import Client
 from client_app.schemas import ClientCredentialSchema, ClientSchemaIncoming
 from repositories import client_repository
@@ -42,18 +42,19 @@ def client_by_token(token: str) -> Client | None:
     return client_repository.fetch_client_by_name(name=payload.name)
 
 
-def extract_token_from_headers(request: HttpRequest) -> str:
-    raw_token = request.META.get("HTTP_AUTHORIZATION")
+def __extract_token_from(token_storage: dict[str, Any]) -> str:
+    raw_token = token_storage.get("Authorization")
     if raw_token:
         return raw_token.replace("Bearer", "").strip()
     return ""
 
 
+def extract_token_from_headers(request: HttpRequest) -> str:
+    return __extract_token_from(request.META)
+
+
 def extract_token_from_cookies(request: HttpRequest) -> str:
-    raw_token = request.COOKIES.get("Authorization")
-    if raw_token:
-        return raw_token.strip()
-    return ""
+    return __extract_token_from(request.COOKIES)
 
 
 def extract_token(request: HttpRequest) -> str:
