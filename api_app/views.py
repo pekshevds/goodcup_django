@@ -9,6 +9,7 @@ from client_app.schemas import (
     PinSchema,
     ClientCredentialSchema,
     TokenSchema,
+    RequestSchemaIncoming,
 )
 from catalog_app.schemas import GoodListSchemaIncoming
 from client_app.models import Client
@@ -115,4 +116,12 @@ class UpdateOrderStatusView(View):
             request.body.decode("utf-8")
         )
         order_service.update_order_statuses(data)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class RequestView(View):
+    def post(self, request: HttpRequest) -> JsonResponse:
+        data = RequestSchemaIncoming.model_validate_json(request.body.decode("utf-8"))
+        client_service.process_incoming_request(request=data)
         return JsonResponse({}, status=200)

@@ -2,7 +2,11 @@ from typing import Any
 from django.http import HttpRequest
 from django.conf import settings
 from client_app.models import Client
-from client_app.schemas import ClientCredentialSchema, ClientSchemaIncoming
+from client_app.schemas import (
+    ClientCredentialSchema,
+    ClientSchemaIncoming,
+    RequestSchemaIncoming,
+)
 from repositories import client_repository
 from services.jwt_tokens import HS256
 
@@ -57,7 +61,5 @@ def extract_token_from_cookies(request: HttpRequest) -> str:
     return __extract_token_from(request.COOKIES)
 
 
-def extract_token(request: HttpRequest) -> str:
-    token_from_header = extract_token_from_headers(request)
-    token_from_cookie = extract_token_from_cookies(request)
-    return token_from_header or token_from_cookie
+def process_incoming_request(request: RequestSchemaIncoming) -> None:
+    pass

@@ -31,3 +31,9 @@ class ClientCredentialSchema(BaseModel):
 
 class TokenSchema(BaseModel):
     token: str = Field()
+
+
+class RequestSchemaIncoming(BaseModel):
+    name: str = Field()
+    phone: str = Field()
+    email: str = Field(default="")

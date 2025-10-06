@@ -6,6 +6,7 @@ from api_app.views import (
     DataView,
     NewOrderView,
     UpdateOrderStatusView,
+    RequestView,
 )
 
 app_name = "api_app"
@@ -18,4 +19,5 @@ urlpatterns = [
     path("v1/data/", DataView.as_view()),
     path("v1/orders/get-new/", NewOrderView.as_view()),
     path("v1/orders/update-statuses/", UpdateOrderStatusView.as_view()),
+    path("v1/request/", RequestView.as_view()),
 ]
