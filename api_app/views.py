@@ -10,6 +10,7 @@ from client_app.schemas import (
     ClientCredentialSchema,
     TokenSchema,
     RequestSchemaIncoming,
+    FeedbackSchemaIncoming,
 )
 from catalog_app.schemas import GoodListSchemaIncoming
 from client_app.models import Client
@@ -124,4 +125,12 @@ class RequestView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
         data = RequestSchemaIncoming.model_validate_json(request.body.decode("utf-8"))
         client_service.process_incoming_request(request=data)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class FeedbackView(View):
+    def post(self, request: HttpRequest) -> JsonResponse:
+        data = FeedbackSchemaIncoming.model_validate_json(request.body.decode("utf-8"))
+        client_service.process_feedback(feedback=data)
         return JsonResponse({}, status=200)

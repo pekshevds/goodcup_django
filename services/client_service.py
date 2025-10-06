@@ -6,6 +6,7 @@ from client_app.schemas import (
     ClientCredentialSchema,
     ClientSchemaIncoming,
     RequestSchemaIncoming,
+    FeedbackSchemaIncoming,
 )
 from repositories import client_repository
 from services.jwt_tokens import HS256
@@ -62,4 +63,8 @@ def extract_token_from_cookies(request: HttpRequest) -> str:
 
 
 def process_incoming_request(request: RequestSchemaIncoming) -> None:
+    pass
+
+
+def process_feedback(feedback: FeedbackSchemaIncoming) -> None:
     pass
