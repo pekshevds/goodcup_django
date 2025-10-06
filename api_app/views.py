@@ -1,4 +1,5 @@
 from typing import Callable, Any
+import logging
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -24,6 +25,8 @@ from services import (
     order_service,
     property_service,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def auth(only: bool = True) -> Callable:
@@ -124,6 +127,7 @@ class UpdateOrderStatusView(View):
 class RequestView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
         data = RequestSchemaIncoming.model_validate_json(request.body.decode("utf-8"))
+        logger.info({"request_data": data})
         client_service.process_incoming_request(request=data)
         return JsonResponse({}, status=200)
 
@@ -132,5 +136,6 @@ class RequestView(View):
 class FeedbackView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
         data = FeedbackSchemaIncoming.model_validate_json(request.body.decode("utf-8"))
+        logger.info({"feedback_data": data})
         client_service.process_feedback(feedback=data)
         return JsonResponse({}, status=200)
