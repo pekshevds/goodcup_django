@@ -30,7 +30,9 @@ def check_credentials(client_schema: ClientCredentialSchema) -> bool:
 def fetch_token_by_credentials(client_schema: ClientCredentialSchema) -> str:
     if not check_credentials(client_schema):
         return ""
-    return HS256.get_token(client_schema.name, settings.SECRET_KEY)
+    return HS256.get_token(
+        client_schema.name, settings.SECRET_KEY, settings.TOKEN_EXP_MIN
+    )
 
 
 def fetch_pin_by_client(client_schema: ClientSchemaIncoming) -> str:

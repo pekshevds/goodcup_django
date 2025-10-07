@@ -23,6 +23,7 @@ load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = environ.get("SECRET_KEY", "")
+TOKEN_EXP_MIN = int(environ.get("TOKEN_EXP_MIN", "1440"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
