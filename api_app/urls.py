@@ -2,6 +2,7 @@ from django.urls import path
 from api_app.views import (
     PinView,
     TokenView,
+    CategoryView,
     GoodView,
     DataView,
     NewOrderView,
@@ -15,6 +16,8 @@ app_name = "api_app"
 urlpatterns = [
     path("v1/pin/", PinView.as_view()),
     path("v1/token/", TokenView.as_view()),
+    path("v1/category/", CategoryView.as_view()),
+    path("v1/category/<str:slug>/", CategoryView.as_view()),
     path("v1/good/", GoodView.as_view()),
     path("v1/good/<str:slug>/", GoodView.as_view()),
     path("v1/data/", DataView.as_view()),

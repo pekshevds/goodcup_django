@@ -1,6 +1,8 @@
 from catalog_app.models import Good
 from client_app.models import Region
 from catalog_app.schemas import (
+    CategorySchemaOutgoing,
+    CategoryListSchemaOutgoing,
     GoodSchemaIncoming,
     GoodSchemaOutgoing,
     GoodListSchemaOutgoing,
@@ -52,10 +54,33 @@ def search_goods(
     return __fetch_goods(good_repository.search_goods(search, page_number), region)
 
 
+def fetch_all_categories() -> CategoryListSchemaOutgoing:
+    return CategoryListSchemaOutgoing(
+        categories=[
+            converters.category_to_outgoing_schema(cat)
+            for cat in good_repository.fetch_all_categories()
+        ]
+    )
+
+
 def fetch_all_goods(
     region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing:
     return __fetch_goods(good_repository.fetch_all_goods(page_number), region)
+
+
+def fetch_category_by_slug(slug: str) -> CategorySchemaOutgoing:
+    category = good_repository.fetch_category_by_slug(slug)
+    return converters.category_to_outgoing_schema(category)
+
+
+def fetch_good_by_category(
+    category_slug: str, region: Region | None = None, page_number: int = 0
+) -> GoodListSchemaOutgoing:
+    category = good_repository.fetch_category_by_slug(category_slug)
+    return __fetch_goods(
+        good_repository.fetch_goods_by_category(category, page_number), region
+    )
 
 
 def fetch_good_by_slug(slug: str, region: Region | None = None) -> GoodSchemaOutgoing:

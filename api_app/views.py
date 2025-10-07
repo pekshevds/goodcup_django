@@ -70,6 +70,16 @@ class TokenView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+class CategoryView(View):
+    def get(self, request: HttpRequest, slug: str = "") -> JsonResponse:
+        if slug:
+            category = good_service.fetch_category_by_slug(slug)
+            return JsonResponse(category.model_dump(), status=200)
+        categories = good_service.fetch_all_categories()
+        return JsonResponse(categories.model_dump(), status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
 class GoodView(View):
     @auth()
     def post(self, request: HttpRequest, client: Client) -> JsonResponse:
@@ -86,6 +96,12 @@ class GoodView(View):
         search = request.GET.get("search")
         if search:
             goods = good_service.search_goods(search, region, page_number)
+            return JsonResponse(goods.model_dump(), status=200)
+        category_slug = request.GET.get("category")
+        if category_slug:
+            goods = good_service.fetch_good_by_category(
+                category_slug, region, page_number
+            )
             return JsonResponse(goods.model_dump(), status=200)
         goods = good_service.fetch_all_goods(region, page_number)
         return JsonResponse(goods.model_dump(), status=200)

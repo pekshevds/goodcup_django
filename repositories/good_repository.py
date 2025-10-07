@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 from django.db.models import Q, QuerySet
-from catalog_app.models import Good
+from catalog_app.models import Good, Category
 
 PER_PAGE: int = 25
 
@@ -21,8 +21,29 @@ def search_goods(search: str, page_number: int = 0) -> QuerySet[Good]:
     return paginator.get_page(page_number)
 
 
+def fetch_all_categories() -> QuerySet[Category]:
+    queryset = Category.objects.all()
+    return queryset
+
+
+def fetch_category_by_slug(slug: str) -> Category:
+    return Category.objects.filter(slug=slug).first()
+
+
+def fetch_categories_by_ids(ids: list[str]) -> QuerySet[Category]:
+    return Category.objects.filter(id__in=ids).all()
+
+
 def fetch_good_by_slug(slug: str) -> Good:
     return Good.objects.filter(slug=slug).first()
+
+
+def fetch_goods_by_category(category: Category, page_number: int = 0) -> QuerySet[Good]:
+    queryset = Good.objects.filter(category=category).all()
+    if page_number == 0:
+        return queryset
+    paginator = Paginator(queryset, PER_PAGE)
+    return paginator.get_page(page_number)
 
 
 def fetch_goods_by_ids(ids: list[str]) -> QuerySet[Good]:

@@ -62,6 +62,10 @@ def extract_token_from_cookies(request: HttpRequest) -> str:
     return __extract_token_from(request.COOKIES)
 
 
+def extract_token(request: HttpRequest) -> str:
+    return extract_token_from_headers(request) or extract_token_from_cookies(request)
+
+
 def process_incoming_request(request: RequestSchemaIncoming) -> None:
     pass
 

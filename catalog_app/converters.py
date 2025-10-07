@@ -1,6 +1,6 @@
-from typing import Any
-from catalog_app.models import Good, Image, PropertyRecord
+from catalog_app.models import Category, Good, Image, PropertyRecord
 from catalog_app.schemas import (
+    CategorySchemaOutgoing,
     GoodSchemaOutgoing,
     ImageSchemaOutgoing,
     PropertySchemaOutgoing,
@@ -35,6 +35,16 @@ def images_to_outgoing_schema(
     if images:
         return [image_to_outgoing_schema(image.image) for image in images]
     return None
+
+
+def category_to_outgoing_schema(category: Category) -> CategorySchemaOutgoing:
+    model = CategorySchemaOutgoing(
+        id=str(category.id),
+        name=category.name,
+        slug=category.slug,
+        preview_image=image_to_outgoing_schema(category.preview_image),
+    )
+    return model
 
 
 def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:

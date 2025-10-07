@@ -16,6 +16,13 @@ class ImageSchemaOutgoing(BaseModel):
     path: str = Field(max_length=2048, default="")
 
 
+class CategorySchemaOutgoing(BaseModel):
+    id: str = Field()
+    name: str = Field(max_length=150)
+    slug: str = Field(max_length=300, default="")
+    preview_image: ImageSchemaOutgoing | None = Field(default=None)
+
+
 class GoodSchema(BaseModel):
     id: str = Field()
     name: str = Field(max_length=150)
@@ -63,3 +70,7 @@ class GoodListSchemaIncoming(BaseModel):
 
 class GoodListSchemaOutgoing(BaseModel):
     goods: list[GoodSchemaOutgoing] = Field()
+
+
+class CategoryListSchemaOutgoing(BaseModel):
+    categories: list[CategorySchemaOutgoing] = Field()
