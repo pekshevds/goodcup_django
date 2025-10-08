@@ -1,7 +1,14 @@
 from pydantic import BaseModel, Field
 
 
-class RegionSchema(BaseModel):
+class RegionSchemaIncoming(BaseModel):
+    id: str = Field()
+    name: str = Field(max_length=150)
+    code: str = Field(max_length=11, default="")
+    is_active: bool = Field(default=False)
+
+
+class RegionSchemaOutgoing(BaseModel):
     id: str = Field()
     name: str = Field(max_length=150)
     code: str = Field(max_length=11, default="")

@@ -1,13 +1,16 @@
 from client_app.models import Region
-from client_app.schemas import RegionSchema
+from client_app.schemas import RegionSchemaIncoming, RegionSchemaOutgoing
 from repositories import region_repository
 
 
-def fetch_all_regions() -> list[Region]:
-    return region_repository.fetch_all_regions()
+def fetch_all_regions() -> list[RegionSchemaOutgoing]:
+    return [
+        RegionSchemaOutgoing.model_validate(region)
+        for region in region_repository.fetch_all_regions()
+    ]
 
 
-def create_or_update_regions(regions_list: list[RegionSchema]) -> None:
+def create_or_update_regions(regions_list: list[RegionSchemaIncoming]) -> None:
     ids = [
         str(_.id)
         for _ in region_repository.fetch_regions_by_ids(

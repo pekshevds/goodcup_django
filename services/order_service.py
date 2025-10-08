@@ -47,10 +47,6 @@ def fetch_new_orders() -> OrderListSchemaOutgoing:
     return OrderListSchemaOutgoing(orders=orders)
 
 
-def fetch_all_regions() -> list[StatusOrder]:
-    return order_repository.fetch_all_statuses()
-
-
 def create_or_update_statuses(statuses_list: list[StatusSchemaIncoming]) -> None:
     ids = [
         str(_.id)

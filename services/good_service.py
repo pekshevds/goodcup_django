@@ -15,7 +15,7 @@ from repositories import price_repository
 PER_PAGE: int = 25
 
 
-def __fetch_goods(
+def _fetch_goods(
     all_goods: list[Good], region: Region | None = None
 ) -> list[GoodSchemaOutgoing]:
     if not region:
@@ -53,7 +53,7 @@ def __fetch_goods(
 def search_goods(
     search: str, region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing:
-    queryset = __fetch_goods(good_repository.search_goods(search), region)
+    queryset = _fetch_goods(good_repository.search_goods(search), region)
     if page_number == 0:
         return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
     paginator = Paginator(queryset, PER_PAGE)
@@ -73,7 +73,7 @@ def fetch_all_categories() -> CategoryListSchemaOutgoing:
 def fetch_all_goods(
     region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing:
-    queryset = __fetch_goods(good_repository.fetch_all_goods(), region)
+    queryset = _fetch_goods(good_repository.fetch_all_goods(), region)
     if page_number == 0:
         return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
     paginator = Paginator(queryset, PER_PAGE)
@@ -91,7 +91,7 @@ def fetch_good_by_category(
     category_slug: str, region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing:
     category = good_repository.fetch_category_by_slug(category_slug)
-    queryset = __fetch_goods(good_repository.fetch_goods_by_category(category), region)
+    queryset = _fetch_goods(good_repository.fetch_goods_by_category(category), region)
     if page_number == 0:
         return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
     paginator = Paginator(queryset, PER_PAGE)
