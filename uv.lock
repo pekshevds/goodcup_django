@@ -115,6 +115,19 @@ wheels = [
 ]
 
 [[package]]
+name = "django-cors-headers"
+version = "4.5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/81/6f/587a21407d6bf752e28fcd9694340e4e5e488e71714d577c7dfc72727ae5/django_cors_headers-4.5.0.tar.gz", hash = "sha256:6c01a85cf1ec779a7bde621db853aa3ce5c065a5ba8e27df7a9f9e8dac310f4f", size = 21023, upload-time = "2024-10-12T07:37:33.156Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/60/3e/76449025605d5cb04ce855f6cf8eb3f9064419956a32316bf8b01f0f77da/django_cors_headers-4.5.0-py3-none-any.whl", hash = "sha256:28c1ded847aa70208798de3e42422a782f427b8b720e8d7319d34b654b5978e6", size = 12800, upload-time = "2024-10-12T07:37:31.44Z" },
+]
+
+[[package]]
 name = "dotenv"
 version = "0.9.9"
 source = { registry = "https://pypi.org/simple" }
@@ -131,6 +144,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "django" },
+    { name = "django-cors-headers" },
     { name = "dotenv" },
     { name = "mysql-connector-python" },
     { name = "mysqlclient" },
@@ -143,6 +157,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "django", specifier = "==4.1.10" },
+    { name = "django-cors-headers", specifier = ">=4.5.0" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "mysql-connector-python", specifier = ">=9.4.0" },
     { name = "mysqlclient", specifier = ">=2.2.7" },
