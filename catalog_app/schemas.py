@@ -70,7 +70,9 @@ class GoodListSchemaIncoming(BaseModel):
 
 class GoodListSchemaOutgoing(BaseModel):
     goods: list[GoodSchemaOutgoing] = Field()
+    count: int = Field(default=0)
 
 
 class CategoryListSchemaOutgoing(BaseModel):
     categories: list[CategorySchemaOutgoing] = Field()
+    count: int = Field(default=0)

@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from catalog_app.models import Good
 from client_app.models import Region
 from catalog_app.schemas import (
@@ -10,6 +11,8 @@ from catalog_app.schemas import (
 from catalog_app import converters
 from repositories import good_repository
 from repositories import price_repository
+
+PER_PAGE: int = 25
 
 
 def __fetch_goods(
@@ -45,28 +48,35 @@ def __fetch_goods(
             balance=balance,
         )
         goods.append(good_schema)
-    return GoodListSchemaOutgoing(goods=goods)
+    return GoodListSchemaOutgoing(goods=goods, count=len(goods))
 
 
 def search_goods(
     search: str, region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing:
-    return __fetch_goods(good_repository.search_goods(search, page_number), region)
+    queryset = __fetch_goods(good_repository.search_goods(search), region)
+    if page_number == 0:
+        return queryset
+    paginator = Paginator(queryset.goods, PER_PAGE)
+    return paginator.get_page(page_number)
 
 
 def fetch_all_categories() -> CategoryListSchemaOutgoing:
+    categories = good_repository.fetch_all_categories()
     return CategoryListSchemaOutgoing(
-        categories=[
-            converters.category_to_outgoing_schema(cat)
-            for cat in good_repository.fetch_all_categories()
-        ]
+        categories=[converters.category_to_outgoing_schema(cat) for cat in categories],
+        count=len(categories),
     )
 
 
 def fetch_all_goods(
     region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing:
-    return __fetch_goods(good_repository.fetch_all_goods(page_number), region)
+    queryset = __fetch_goods(good_repository.fetch_all_goods(), region)
+    if page_number == 0:
+        return queryset
+    paginator = Paginator(queryset.goods, PER_PAGE)
+    return paginator.get_page(page_number)
 
 
 def fetch_category_by_slug(slug: str) -> CategorySchemaOutgoing:
@@ -78,9 +88,11 @@ def fetch_good_by_category(
     category_slug: str, region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing:
     category = good_repository.fetch_category_by_slug(category_slug)
-    return __fetch_goods(
-        good_repository.fetch_goods_by_category(category, page_number), region
-    )
+    queryset = __fetch_goods(good_repository.fetch_goods_by_category(category), region)
+    if page_number == 0:
+        return queryset
+    paginator = Paginator(queryset.goods, PER_PAGE)
+    return paginator.get_page(page_number)
 
 
 def fetch_good_by_slug(slug: str, region: Region | None = None) -> GoodSchemaOutgoing:
