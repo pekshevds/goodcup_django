@@ -17,11 +17,10 @@ PER_PAGE: int = 25
 
 def __fetch_goods(
     all_goods: list[Good], region: Region | None = None
-) -> GoodListSchemaOutgoing:
+) -> list[GoodSchemaOutgoing]:
     if not region:
-        return GoodListSchemaOutgoing(
-            goods=[converters.good_to_outgoing_schema(good) for good in all_goods]
-        )
+        goods = [converters.good_to_outgoing_schema(good) for good in all_goods]
+        return goods
     region_price = {
         f"{str(item.good.id)}": item
         for item in price_repository.fetch_price(all_goods, [region])
@@ -48,7 +47,7 @@ def __fetch_goods(
             balance=balance,
         )
         goods.append(good_schema)
-    return GoodListSchemaOutgoing(goods=goods, count=len(goods))
+    return goods
 
 
 def search_goods(
@@ -56,9 +55,11 @@ def search_goods(
 ) -> GoodListSchemaOutgoing:
     queryset = __fetch_goods(good_repository.search_goods(search), region)
     if page_number == 0:
-        return queryset
-    paginator = Paginator(queryset.goods, PER_PAGE)
-    return paginator.get_page(page_number)
+        return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
+    paginator = Paginator(queryset, PER_PAGE)
+    return GoodListSchemaOutgoing(
+        goods=paginator.get_page(page_number), count=len(queryset)
+    )
 
 
 def fetch_all_categories() -> CategoryListSchemaOutgoing:
@@ -74,9 +75,11 @@ def fetch_all_goods(
 ) -> GoodListSchemaOutgoing:
     queryset = __fetch_goods(good_repository.fetch_all_goods(), region)
     if page_number == 0:
-        return queryset
-    paginator = Paginator(queryset.goods, PER_PAGE)
-    return paginator.get_page(page_number)
+        return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
+    paginator = Paginator(queryset, PER_PAGE)
+    return GoodListSchemaOutgoing(
+        goods=paginator.get_page(page_number), count=len(queryset)
+    )
 
 
 def fetch_category_by_slug(slug: str) -> CategorySchemaOutgoing:
@@ -90,9 +93,11 @@ def fetch_good_by_category(
     category = good_repository.fetch_category_by_slug(category_slug)
     queryset = __fetch_goods(good_repository.fetch_goods_by_category(category), region)
     if page_number == 0:
-        return queryset
-    paginator = Paginator(queryset.goods, PER_PAGE)
-    return paginator.get_page(page_number)
+        return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
+    paginator = Paginator(queryset, PER_PAGE)
+    return GoodListSchemaOutgoing(
+        goods=paginator.get_page(page_number), count=len(queryset)
+    )
 
 
 def fetch_good_by_slug(slug: str, region: Region | None = None) -> GoodSchemaOutgoing:
