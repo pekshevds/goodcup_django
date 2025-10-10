@@ -100,8 +100,12 @@ def fetch_good_by_category(
     )
 
 
-def fetch_good_by_slug(slug: str, region: Region | None = None) -> GoodSchemaOutgoing:
+def fetch_good_by_slug(
+    slug: str, region: Region | None = None
+) -> GoodSchemaOutgoing | None:
     good = good_repository.fetch_good_by_slug(slug)
+    if not good:
+        return None
     if not region:
         return converters.good_to_outgoing_schema(good)
     record = price_repository.fetch_price([good], [region]).first()

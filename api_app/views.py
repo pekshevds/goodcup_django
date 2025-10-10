@@ -92,7 +92,9 @@ class GoodView(View):
         page_number = request.GET.get("page", 0)
         if slug:
             good = good_service.fetch_good_by_slug(slug, region)
-            return JsonResponse(good.model_dump(), status=200)
+            if good:
+                return JsonResponse(good.model_dump(), status=200)
+            return JsonResponse({}, status=400)
         search = request.GET.get("search")
         if search:
             goods = good_service.search_goods(search, region, page_number)
