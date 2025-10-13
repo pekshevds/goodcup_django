@@ -8,6 +8,7 @@ dependencies = [
     "django==4.1.10",
     "django-cors-headers>=4.5.0",
     "dotenv>=0.9.9",
+    "httpx>=0.28.1",
     "mysql-connector-python>=9.4.0",
     "mysqlclient>=2.2.7",
     "pillow>=11.3.0",

@@ -7,7 +7,6 @@ from django.http import HttpRequest, JsonResponse
 from django.views.generic import View
 from client_app.schemas import (
     ClientSchemaIncoming,
-    PinSchema,
     ClientCredentialSchema,
     TokenSchema,
     RequestSchemaIncoming,
@@ -24,6 +23,7 @@ from services import (
     price_service,
     order_service,
     property_service,
+    sms_service,
 )
 
 logger = logging.getLogger(__name__)
@@ -52,7 +52,11 @@ class PinView(View):
             request.body.decode("utf-8")
         )
         pin = client_service.fetch_pin_by_client(client_schema)
-        return JsonResponse(PinSchema(pin=pin).model_dump(), status=200)
+        if pin:
+            message = f"Добро пожаловать на goodcup.ru! Ваш код доступа {pin}"
+            sms_service.send_pin_by_sms("goodcup.ru", message, client_schema.name)
+            return JsonResponse({}, status=200)
+        return JsonResponse({}, status=400)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
