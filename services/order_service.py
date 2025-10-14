@@ -1,12 +1,19 @@
+from typing import Any
 from order_app.schemas import (
     StatusSchemaIncoming,
     OrderSchemaOutgoing,
     OrderListSchemaOutgoing,
     OrderItemSchemaOutgoing,
     OrderStatusListUpdateSchemaIncoming,
+    CartItemSchemaOutgoing,
+    CartItemListSchemaOutgoing,
+    AddCartItemSchemaIncoming,
 )
 from order_app.models import StatusOrder, Order
-from repositories import order_repository
+from client_app.models import Client, Region
+from repositories import order_repository, price_repository, good_repository
+from catalog_app import converters
+from catalog_app.models import Good
 
 
 def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
@@ -63,3 +70,51 @@ def create_or_update_statuses(statuses_list: list[StatusSchemaIncoming]) -> None
         else:
             to_create.append(item)
     order_repository.create_or_update_statuses(to_create, to_update)
+
+
+def _fetch_region_prices(goods: list[Good], region: Region) -> dict[str, Any]:
+    return {
+        f"{str(item.good.id)}": item
+        for item in price_repository.fetch_price(goods, [region])
+    }
+
+
+def fetch_cart_items(client: Client) -> CartItemListSchemaOutgoing:
+    cart_items = order_repository.fetch_cart_items(client)
+    goods = [cart_item.good for cart_item in cart_items]
+    region_prices = _fetch_region_prices(goods, client.region)
+    items = []
+    for cart_item in cart_items:
+        good = cart_item.good
+        record = region_prices.get(str(good.id))
+        price = record.price if record else good.price
+        cart_item_schema = CartItemSchemaOutgoing(
+            good=converters.good_to_outgoing_schema(good),
+            quantity=cart_item.quantity,
+            price=price,
+            amount=price * cart_item.quantity,
+        )
+        items.append(cart_item_schema)
+    return CartItemListSchemaOutgoing(items=items)
+
+
+def clear_cart(client: Client) -> None:
+    order_repository.clear_cart(client)
+
+
+def set_item_to_cart(data: AddCartItemSchemaIncoming, client: Client) -> None:
+    good = good_repository.fetch_good_by_slug(data.good_slug)
+    if good:
+        order_repository.set_item_to_cart(client, good, data.quantity)
+
+
+def add_item_to_cart(data: AddCartItemSchemaIncoming, client: Client) -> None:
+    good = good_repository.fetch_good_by_slug(data.good_slug)
+    if good:
+        order_repository.add_item_to_cart(client, good, data.quantity)
+
+
+def drop_item_from_cart(data: AddCartItemSchemaIncoming, client: Client) -> None:
+    good = good_repository.fetch_good_by_slug(data.good_slug)
+    if good:
+        order_repository.drop_item_from_cart(client, good)

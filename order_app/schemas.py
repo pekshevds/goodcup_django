@@ -35,6 +35,22 @@ class OrderListSchemaOutgoing(BaseModel):
     orders: list[OrderSchemaOutgoing] = Field()
 
 
+class CartItemSchemaOutgoing(BaseModel):
+    good: GoodSchemaOutgoing = Field()
+    quantity: float = Field(default=0.0)
+    price: float = Field(default=0.0)
+    amount: float = Field(default=0.0)
+
+
+class CartItemListSchemaOutgoing(BaseModel):
+    items: list[CartItemSchemaOutgoing] = Field()
+
+
+class AddCartItemSchemaIncoming(BaseModel):
+    good_slug: str = Field()
+    quantity: float = Field(default=0.0)
+
+
 class OrderStatusUpdateSchemaIncoming(BaseModel):
     order_id: str = Field()
     status_id: str = Field()

@@ -1,5 +1,7 @@
 from django.db.models import QuerySet
-from order_app.models import StatusOrder, Order
+from order_app.models import StatusOrder, Order, CartItem
+from client_app.models import Client
+from catalog_app.models import Good
 
 
 def fetch_new_orders() -> QuerySet[Order]:
@@ -37,3 +39,37 @@ def create_or_update_statuses(
         StatusOrder.objects.bulk_create(statuses_to_create)
     if statuses_to_update:
         StatusOrder.objects.bulk_update(statuses_to_update, ["name"])
+
+
+def fetch_cart_items(cart_owner: Client) -> QuerySet[CartItem]:
+    return CartItem.objects.filter(client=cart_owner).all()
+
+
+def clear_cart(cart_owner: Client) -> None:
+    return CartItem.objects.filter(client=cart_owner).delete()
+
+
+def set_item_to_cart(cart_owner: Client, good: Good, quantity: float) -> None:
+    item = fetch_cart_items(cart_owner).filter(good=good).first()
+    if not item:
+        item = CartItem.objects.create()
+        item.client = cart_owner
+        item.good = good
+    item.quantity = quantity
+    item.save()
+
+
+def add_item_to_cart(cart_owner: Client, good: Good, quantity: float) -> None:
+    item = fetch_cart_items(cart_owner).filter(good=good).first()
+    if not item:
+        item = CartItem.objects.create()
+        item.client = cart_owner
+        item.good = good
+    item.quantity += quantity
+    item.save()
+
+
+def drop_item_from_cart(cart_owner: Client, good: Good) -> None:
+    item = fetch_cart_items(cart_owner).filter(good=good).first()
+    if item:
+        item.delete()

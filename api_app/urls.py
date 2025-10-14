@@ -7,6 +7,10 @@ from api_app.views import (
     DataView,
     NewOrderView,
     UpdateOrderStatusView,
+    CartView,
+    CartSetView,
+    CartDeleteView,
+    CartClearView,
     RequestView,
     FeedbackView,
 )
@@ -23,6 +27,10 @@ urlpatterns = [
     path("v1/data/", DataView.as_view()),
     path("v1/orders/get-new/", NewOrderView.as_view()),
     path("v1/orders/update-statuses/", UpdateOrderStatusView.as_view()),
+    path("v1/cart/", CartView.as_view()),
+    path("v1/cart/set/", CartSetView.as_view()),
+    path("v1/cart/delete/", CartDeleteView.as_view()),
+    path("v1/cart/clear/", CartClearView.as_view()),
     path("v1/request/", RequestView.as_view()),
     path("v1/feedback/", FeedbackView.as_view()),
 ]

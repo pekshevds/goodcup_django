@@ -85,7 +85,7 @@ class OrderItem(Record):
 
 class CartItem(Record):
     client = models.ForeignKey(
-        Contract,
+        Client,
         verbose_name="Клиент",
         related_name="cart",
         on_delete=models.PROTECT,
@@ -114,7 +114,7 @@ class CartItem(Record):
     class Meta:
         verbose_name = "Строка корзины"
         verbose_name_plural = "Корзина"
-        # unique_together = [("client", "good")]
+        unique_together = [("client", "good")]
 
 
 class WishItem(Record):

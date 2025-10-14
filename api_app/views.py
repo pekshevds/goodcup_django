@@ -14,7 +14,10 @@ from client_app.schemas import (
 )
 from catalog_app.schemas import GoodListSchemaIncoming
 from client_app.models import Client
-from order_app.schemas import OrderStatusListUpdateSchemaIncoming
+from order_app.schemas import (
+    OrderStatusListUpdateSchemaIncoming,
+    AddCartItemSchemaIncoming,
+)
 from api_app.schemas import DataSchema
 from services import (
     good_service,
@@ -142,6 +145,44 @@ class UpdateOrderStatusView(View):
             request.body.decode("utf-8")
         )
         order_service.update_order_statuses(data)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class CartView(View):
+    @auth()
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        items = order_service.fetch_cart_items(client)
+        return JsonResponse(items.model_dump(), status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class CartSetView(View):
+    @auth()
+    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
+        data = AddCartItemSchemaIncoming.model_validate_json(
+            request.body.decode("utf-8")
+        )
+        order_service.set_item_to_cart(data, client)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class CartDeleteView(View):
+    @auth()
+    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
+        data = AddCartItemSchemaIncoming.model_validate_json(
+            request.body.decode("utf-8")
+        )
+        order_service.drop_item_from_cart(data, client)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class CartClearView(View):
+    @auth()
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        order_service.clear_cart(client)
         return JsonResponse({}, status=200)
 
 

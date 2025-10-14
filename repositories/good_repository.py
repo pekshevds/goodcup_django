@@ -25,7 +25,7 @@ def fetch_categories_by_ids(ids: list[str]) -> QuerySet[Category]:
     return Category.objects.filter(id__in=ids).all()
 
 
-def fetch_good_by_slug(slug: str) -> Good:
+def fetch_good_by_slug(slug: str) -> Good | None:
     return Good.objects.filter(slug=slug).first()
 
 
