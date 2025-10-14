@@ -95,7 +95,7 @@ def fetch_goods_by_category_slug(
     category = good_repository.fetch_category_by_slug(category_slug)
     if not category:
         return None
-    categories = [category.childs.all()]
+    categories = [_ for _ in category.childs.all()]
     categories.append(category)
     goods = good_repository.fetch_goods_by_categories(categories)
     queryset = _fetch_goods(goods, region)
