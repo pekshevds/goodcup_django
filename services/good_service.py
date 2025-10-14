@@ -82,16 +82,23 @@ def fetch_all_goods(
     )
 
 
-def fetch_category_by_slug(slug: str) -> CategorySchemaOutgoing:
+def fetch_category_by_slug(slug: str) -> CategorySchemaOutgoing | None:
     category = good_repository.fetch_category_by_slug(slug)
-    return converters.category_to_outgoing_schema(category)
+    if category:
+        return converters.category_to_outgoing_schema(category)
+    return None
 
 
-def fetch_good_by_category(
+def fetch_goods_by_category_slug(
     category_slug: str, region: Region | None = None, page_number: int = 0
-) -> GoodListSchemaOutgoing:
+) -> GoodListSchemaOutgoing | None:
     category = good_repository.fetch_category_by_slug(category_slug)
-    queryset = _fetch_goods(good_repository.fetch_goods_by_category(category), region)
+    if not category:
+        return None
+    categories = [category.childs.all()]
+    categories.append(category)
+    goods = good_repository.fetch_goods_by_categories(categories)
+    queryset = _fetch_goods(goods, region)
     if page_number == 0:
         return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
     paginator = Paginator(queryset, PER_PAGE)

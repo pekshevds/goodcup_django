@@ -81,7 +81,9 @@ class CategoryView(View):
     def get(self, request: HttpRequest, slug: str = "") -> JsonResponse:
         if slug:
             category = good_service.fetch_category_by_slug(slug)
-            return JsonResponse(category.model_dump(), status=200)
+            if category:
+                return JsonResponse(category.model_dump(), status=200)
+            return JsonResponse({}, status=200)
         categories = good_service.fetch_all_categories()
         return JsonResponse(categories.model_dump(), status=200)
 
@@ -95,6 +97,7 @@ class GoodView(View):
 
     @auth(False)
     def get(self, request: HttpRequest, client: Client, slug: str = "") -> JsonResponse:
+        goods = None
         region = client.region if client else None
         page_number = request.GET.get("page", 0)
         if slug:
@@ -108,10 +111,12 @@ class GoodView(View):
             return JsonResponse(goods.model_dump(), status=200)
         category_slug = request.GET.get("category")
         if category_slug:
-            goods = good_service.fetch_good_by_category(
+            goods = good_service.fetch_goods_by_category_slug(
                 category_slug, region, page_number
             )
-            return JsonResponse(goods.model_dump(), status=200)
+            if goods:
+                return JsonResponse(goods.model_dump(), status=200)
+            return JsonResponse({}, status=200)
         goods = good_service.fetch_all_goods(region, page_number)
         return JsonResponse(goods.model_dump(), status=200)
 
