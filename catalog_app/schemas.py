@@ -47,6 +47,7 @@ class GoodSchemaIncoming(BaseModel):
     price: float = Field(default=0)
     description: str = Field(max_length=2048, default="")
     balance: int = Field(default=0)
+    k: int = Field(default=1)
     is_active: bool = Field(default=False)
 
 
@@ -60,6 +61,7 @@ class GoodSchemaOutgoing(BaseModel):
     price: float = Field(default=0)
     description: str = Field(max_length=2048, default="")
     balance: int = Field(default=0)
+    k: int = Field(default=1)
     is_active: bool = Field(default=False)
     preview_image: ImageSchemaOutgoing | None = Field(default=None)
     properties: list[PropertySchemaOutgoing] | None = Field(default=None)

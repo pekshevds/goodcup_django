@@ -88,6 +88,14 @@ class Good(Directory):
         null=True,
         default=0,
     )
+    k = models.DecimalField(
+        verbose_name="К.",
+        max_digits=15,
+        decimal_places=3,
+        blank=True,
+        null=True,
+        default=1,
+    )
     preview_image = models.ForeignKey(
         Image, verbose_name="Превью", on_delete=models.PROTECT, null=True, blank=True
     )

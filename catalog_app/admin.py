@@ -114,6 +114,7 @@ class GoodAdmin(admin.ModelAdmin):
         "art",
         "code",
         "okei",
+        "k",
         "is_active",
         "category",
         "balance",

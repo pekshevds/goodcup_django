@@ -59,6 +59,7 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
         okei=good.okei,
         price=good.price,
         description=good.description,
+        k=good.k,
         balance=good.balance,
         is_active=good.is_active,
         properties=properties_to_outgoing_schema(good.properties.all()),
