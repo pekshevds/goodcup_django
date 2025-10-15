@@ -50,5 +50,6 @@ def create_or_update_goods(
         Good.objects.bulk_create(goods_to_create)
     if goods_to_update:
         Good.objects.bulk_update(
-            goods_to_update, ["name", "art", "code", "okei", "price", "description"]
+            goods_to_update,
+            ["name", "art", "code", "okei", "price", "balance", "k", "description"],
         )
