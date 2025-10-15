@@ -13,7 +13,7 @@ def search_goods(search: str) -> QuerySet[Good]:
 
 
 def fetch_all_categories() -> QuerySet[Category]:
-    queryset = Category.objects.all()
+    queryset = Category.objects.filter(parent=None).all()
     return queryset
 
 

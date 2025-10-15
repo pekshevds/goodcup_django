@@ -21,6 +21,7 @@ class CategorySchemaOutgoing(BaseModel):
     name: str = Field(max_length=150)
     slug: str = Field(max_length=300, default="")
     preview_image: ImageSchemaOutgoing | None = Field(default=None)
+    childs: list["CategorySchemaOutgoing"] | None = Field(default=None)
 
 
 class GoodSchema(BaseModel):
