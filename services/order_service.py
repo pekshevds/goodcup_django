@@ -8,6 +8,8 @@ from order_app.schemas import (
     CartItemSchemaOutgoing,
     CartItemListSchemaOutgoing,
     AddCartItemSchemaIncoming,
+    WishItemSchemaOutgoing,
+    WishItemListSchemaOutgoing,
 )
 from order_app.models import StatusOrder, Order
 from client_app.models import Client, Region
@@ -118,3 +120,38 @@ def drop_item_from_cart(data: AddCartItemSchemaIncoming, client: Client) -> None
     good = good_repository.fetch_good_by_slug(data.good_slug)
     if good:
         order_repository.drop_item_from_cart(client, good)
+
+
+def fetch_wish_items(client: Client) -> WishItemListSchemaOutgoing:
+    cart_items = order_repository.fetch_cart_items(client)
+    goods = [cart_item.good for cart_item in cart_items]
+    region_prices = _fetch_region_prices(goods, client.region)
+    items = []
+    for cart_item in cart_items:
+        good = cart_item.good
+        record = region_prices.get(str(good.id))
+        price = record.price if record else good.price
+        cart_item_schema = WishItemSchemaOutgoing(
+            good=converters.good_to_outgoing_schema(good),
+            quantity=0,
+            price=price,
+            amount=0,
+        )
+        items.append(cart_item_schema)
+    return WishItemListSchemaOutgoing(items=items)
+
+
+def clear_wish(client: Client) -> None:
+    order_repository.clear_wish(client)
+
+
+def set_item_to_wish(data: AddCartItemSchemaIncoming, client: Client) -> None:
+    good = good_repository.fetch_good_by_slug(data.good_slug)
+    if good:
+        order_repository.set_item_to_wish(client, good)
+
+
+def drop_item_from_wish(data: AddCartItemSchemaIncoming, client: Client) -> None:
+    good = good_repository.fetch_good_by_slug(data.good_slug)
+    if good:
+        order_repository.drop_item_from_wish(client, good)

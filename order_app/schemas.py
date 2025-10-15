@@ -51,6 +51,22 @@ class AddCartItemSchemaIncoming(BaseModel):
     quantity: float = Field(default=0.0)
 
 
+class WishItemSchemaOutgoing(BaseModel):
+    good: GoodSchemaOutgoing = Field()
+    quantity: float = Field(default=0.0)
+    price: float = Field(default=0.0)
+    amount: float = Field(default=0.0)
+
+
+class WishItemListSchemaOutgoing(BaseModel):
+    items: list[WishItemSchemaOutgoing] = Field()
+
+
+class AddWishItemSchemaIncoming(BaseModel):
+    good_slug: str = Field()
+    quantity: float = Field(default=0.0)
+
+
 class OrderStatusUpdateSchemaIncoming(BaseModel):
     order_id: str = Field()
     status_id: str = Field()

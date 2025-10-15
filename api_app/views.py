@@ -192,6 +192,44 @@ class CartClearView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+class WishView(View):
+    @auth()
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        items = order_service.fetch_wish_items(client)
+        return JsonResponse(items.model_dump(), status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class WishSetView(View):
+    @auth()
+    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
+        data = AddCartItemSchemaIncoming.model_validate_json(
+            request.body.decode("utf-8")
+        )
+        order_service.set_item_to_wish(data, client)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class WishDeleteView(View):
+    @auth()
+    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
+        data = AddCartItemSchemaIncoming.model_validate_json(
+            request.body.decode("utf-8")
+        )
+        order_service.drop_item_from_wish(data, client)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class WishClearView(View):
+    @auth()
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        order_service.clear_wish(client)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
 class RequestView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
         data = RequestSchemaIncoming.model_validate_json(request.body.decode("utf-8"))

@@ -1,5 +1,5 @@
 from django.db.models import QuerySet
-from order_app.models import StatusOrder, Order, CartItem
+from order_app.models import StatusOrder, Order, CartItem, WishItem
 from client_app.models import Client
 from catalog_app.models import Good
 
@@ -71,5 +71,29 @@ def add_item_to_cart(cart_owner: Client, good: Good, quantity: float) -> None:
 
 def drop_item_from_cart(cart_owner: Client, good: Good) -> None:
     item = fetch_cart_items(cart_owner).filter(good=good).first()
+    if item:
+        item.delete()
+
+
+def fetch_wish_items(wish_owner: Client) -> QuerySet[WishItem]:
+    return WishItem.objects.filter(client=wish_owner).all()
+
+
+def clear_wish(wish_owner: Client) -> None:
+    return WishItem.objects.filter(client=wish_owner).delete()
+
+
+def set_item_to_wish(wish_owner: Client, good: Good) -> None:
+    item = fetch_cart_items(wish_owner).filter(good=good).first()
+    if item:
+        return
+    item = WishItem.objects.create()
+    item.client = wish_owner
+    item.good = good
+    item.save()
+
+
+def drop_item_from_wish(wish_owner: Client, good: Good) -> None:
+    item = fetch_wish_items(wish_owner).filter(good=good).first()
     if item:
         item.delete()

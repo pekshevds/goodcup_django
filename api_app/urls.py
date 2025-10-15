@@ -11,6 +11,10 @@ from api_app.views import (
     CartSetView,
     CartDeleteView,
     CartClearView,
+    WishView,
+    WishSetView,
+    WishDeleteView,
+    WishClearView,
     RequestView,
     FeedbackView,
 )
@@ -31,6 +35,10 @@ urlpatterns = [
     path("v1/cart/set/", CartSetView.as_view()),
     path("v1/cart/delete/", CartDeleteView.as_view()),
     path("v1/cart/clear/", CartClearView.as_view()),
+    path("v1/wish/", WishView.as_view()),
+    path("v1/wish/set/", WishSetView.as_view()),
+    path("v1/wish/delete/", WishDeleteView.as_view()),
+    path("v1/wish/clear/", WishClearView.as_view()),
     path("v1/request/", RequestView.as_view()),
     path("v1/feedback/", FeedbackView.as_view()),
 ]

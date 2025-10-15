@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.conf import settings
 from catalog_app.models import Good
 from client_app.models import Region
 from catalog_app.schemas import (
@@ -11,8 +12,6 @@ from catalog_app.schemas import (
 from catalog_app import converters
 from repositories import good_repository
 from repositories import price_repository
-
-PER_PAGE: int = 25
 
 
 def _fetch_goods(
@@ -56,7 +55,7 @@ def search_goods(
     queryset = _fetch_goods(good_repository.search_goods(search), region)
     if page_number == 0:
         return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
-    paginator = Paginator(queryset, PER_PAGE)
+    paginator = Paginator(queryset, settings.ITEMS_PER_PAGE)
     return GoodListSchemaOutgoing(
         goods=paginator.get_page(page_number), count=len(queryset)
     )
@@ -76,7 +75,7 @@ def fetch_all_goods(
     queryset = _fetch_goods(good_repository.fetch_all_goods(), region)
     if page_number == 0:
         return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
-    paginator = Paginator(queryset, PER_PAGE)
+    paginator = Paginator(queryset, settings.ITEMS_PER_PAGE)
     return GoodListSchemaOutgoing(
         goods=paginator.get_page(page_number), count=len(queryset)
     )
@@ -101,7 +100,7 @@ def fetch_goods_by_category_slug(
     queryset = _fetch_goods(goods, region)
     if page_number == 0:
         return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
-    paginator = Paginator(queryset, PER_PAGE)
+    paginator = Paginator(queryset, settings.ITEMS_PER_PAGE)
     return GoodListSchemaOutgoing(
         goods=paginator.get_page(page_number), count=len(queryset)
     )
