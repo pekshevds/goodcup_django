@@ -32,6 +32,13 @@ class Category(Directory):
         null=True,
         blank=True,
     )
+    pic_name = models.CharField(
+        verbose_name="Имя пиктограммы",
+        max_length=150,
+        blank=True,
+        null=False,
+        default="",
+    )
 
     def save(self) -> None:
         self.slug = slugify(translit(f"{self.name}", reversed=True))

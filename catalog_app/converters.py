@@ -42,6 +42,7 @@ def category_to_outgoing_schema(category: Category) -> CategorySchemaOutgoing:
         id=str(category.id),
         name=category.name,
         slug=category.slug,
+        pic_name=category.pic_name,
         preview_image=image_to_outgoing_schema(category.preview_image),
         childs=[category_to_outgoing_schema(c) for c in category.childs.all()],
     )

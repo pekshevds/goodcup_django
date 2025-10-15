@@ -20,6 +20,7 @@ class CategorySchemaOutgoing(BaseModel):
     id: str = Field()
     name: str = Field(max_length=150)
     slug: str = Field(max_length=300, default="")
+    pic_name: str = Field(max_length=150, default="")
     preview_image: ImageSchemaOutgoing | None = Field(default=None)
     childs: list["CategorySchemaOutgoing"] | None = Field(default=None)
 

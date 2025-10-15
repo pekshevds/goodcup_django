@@ -52,6 +52,7 @@ class CategoryAdmin(admin.ModelAdmin):
                         "preview_image",
                         "preview",
                     ),
+                    "pic_name",
                     "is_active",
                     "comment",
                 )
