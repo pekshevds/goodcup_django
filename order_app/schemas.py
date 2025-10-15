@@ -11,6 +11,7 @@ class StatusSchemaIncoming(BaseModel):
 
 class StatusSchemaOutgoing(BaseModel):
     id: str = Field()
+    name: str = Field()
 
 
 class OrderItemSchemaOutgoing(BaseModel):
@@ -25,7 +26,7 @@ class OrderSchemaOutgoing(BaseModel):
     id: str = Field()
     number: int = Field()
     date: datetime = Field()
-    comment: str = Field()
+    comment: str = Field(default="")
     contract: ContractSchemaOutgoing = Field()
     status: StatusSchemaOutgoing = Field()
     items: list[OrderItemSchemaOutgoing] = Field(default=[])

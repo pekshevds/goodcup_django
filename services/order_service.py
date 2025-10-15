@@ -1,9 +1,8 @@
-from typing import Any
+from datetime import datetime
+from typing import Any, Optional
 from order_app.schemas import (
     StatusSchemaIncoming,
-    OrderSchemaOutgoing,
     OrderListSchemaOutgoing,
-    OrderItemSchemaOutgoing,
     OrderStatusListUpdateSchemaIncoming,
     CartItemSchemaOutgoing,
     CartItemListSchemaOutgoing,
@@ -16,6 +15,7 @@ from client_app.models import Client, Region
 from repositories import order_repository, price_repository, good_repository
 from catalog_app import converters
 from catalog_app.models import Good
+from order_app.converters import order_to_outgoing_schema, order_item_to_outgoing_schema
 
 
 def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
@@ -47,10 +47,22 @@ def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
 def fetch_new_orders() -> OrderListSchemaOutgoing:
     orders = []
     for order in order_repository.fetch_new_orders():
-        order_schema = OrderSchemaOutgoing.model_validate(order.as_dict())
+        order_schema = order_to_outgoing_schema(order)
         order_schema.items = [
-            OrderItemSchemaOutgoing.model_validate(item.as_dict())
-            for item in order.items.all()
+            order_item_to_outgoing_schema(item) for item in order.items.all()
+        ]
+        orders.append(order_schema)
+    return OrderListSchemaOutgoing(orders=orders)
+
+
+def fetch_orders(
+    client: Client, date_from: Optional[datetime], date_to: Optional[datetime]
+) -> OrderListSchemaOutgoing:
+    orders = []
+    for order in order_repository.fetch_orders(client, date_from, date_to):
+        order_schema = order_to_outgoing_schema(order)
+        order_schema.items = [
+            order_item_to_outgoing_schema(item) for item in order.items.all()
         ]
         orders.append(order_schema)
     return OrderListSchemaOutgoing(orders=orders)

@@ -1,4 +1,6 @@
-from django.db.models import QuerySet
+from datetime import datetime
+from typing import Optional
+from django.db.models import QuerySet, Q
 from order_app.models import StatusOrder, Order, CartItem, WishItem
 from client_app.models import Client
 from catalog_app.models import Good
@@ -6,6 +8,24 @@ from catalog_app.models import Good
 
 def fetch_new_orders() -> QuerySet[Order]:
     return Order.objects.all()
+
+
+def fetch_orders(
+    client: Client, date_from: Optional[datetime], date_to: Optional[datetime]
+) -> QuerySet[Order]:
+    contracts = [c for c in client.contracts.all()]
+    filter_contracts = Q(contract__in=contracts)
+    if date_from is None and date_to is None:
+        return Order.objects.filter(filter_contracts).all()
+    if date_from and date_to:
+        filter_date = Q(date__range=(date_from, date_to))
+        return Order.objects.filter(filter_contracts & filter_date).all()
+    if date_from is not None:
+        filter_date = Q(date__gte=date_from)
+        return Order.objects.filter(filter_contracts & filter_date).all()
+    if date_to is not None:
+        filter_date = Q(date__lte=date_to)
+        return Order.objects.filter(filter_contracts & filter_date).all()
 
 
 def fetch_all_statuses() -> QuerySet[StatusOrder]:
