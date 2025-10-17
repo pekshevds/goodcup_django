@@ -57,7 +57,7 @@ def __extract_token_from(token_storage: dict[str, Any]) -> str:
 
 
 def extract_token_from_headers(request: HttpRequest) -> str:
-    return __extract_token_from(request.META)
+    return __extract_token_from(request.headers)
 
 
 def extract_token_from_cookies(request: HttpRequest) -> str:
