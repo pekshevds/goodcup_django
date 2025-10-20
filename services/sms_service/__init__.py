@@ -1,6 +1,5 @@
 import httpx
-from django.conf import settings
-from .dto import SMSProvider, SMSData, Beeline
+from .dto import SMSProvider, SMSData, Beeline, BeelineSMS
 
 
 class SMSTransport:
@@ -11,20 +10,15 @@ class SMSTransport:
     def send(self) -> None:
         client = httpx.Client()
         client.headers.update(self._provider.headers)
-        client.post(
+        response = client.post(
             url=self._provider.url,
             json=self._data.to_dict(),
         )
+        print(response.json())
 
 
-def send_pin_by_sms(sender: str, message: str, target: str) -> None:
-    provider = Beeline(settings.SMS_ACCESS_TOKEN)
-    data = SMSData()
-    data.add_target(target)
-    data.set_sender(sender)
-    data.set_message(message)
-    transport = SMSTransport(provider, data)
+def send_pin_by_sms(transport: SMSTransport) -> None:
     transport.send()
 
 
-__all__ = ["send_pin_by_sms"]
+__all__ = ["send_pin_by_sms", "SMSTransport", "Beeline", "BeelineSMS"]

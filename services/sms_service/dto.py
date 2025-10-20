@@ -1,6 +1,35 @@
 from typing import Any
 
 
+class SMSData:
+    def __init__(self, target: str, message: str, sender: str) -> None:
+        self._target: list[str] = [target]
+        self._message: str = message
+        self._sender: str = sender
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "sender": self.sender,
+            "message": self.message,
+            "target": self.target,
+        }
+
+    @property
+    def target(self) -> str:
+        return ",".join(self._target)
+
+    @property
+    def message(self) -> str:
+        return self._message
+
+    @property
+    def sender(self) -> str:
+        return self._sender
+
+    class Meta:
+        abstract = True
+
+
 class SMSProvider:
     _url: str = ""
     _headers: dict[str, Any] = {}
@@ -17,28 +46,12 @@ class SMSProvider:
         abstract = True
 
 
-class Beeline(SMSProvider):
-    def __init__(self, api_key: str) -> None:
-        self._url = "https://a2p-sms-https.beeline.ru/proto/http/rest"
-        self._headers["Content-Type"] = "application/json;charset=utf-8"
-        self._headers["X-ApiKey"] = f"ApiKey {api_key}"
-
-
-class SMSData:
-    def __init__(self) -> None:
-        self._target: list[str] = []
-        self._message: str = ""
-        self._sender: str = ""
+class BeelineSMS(SMSData):
+    def __init__(self, target: str, message: str, sender: str) -> None:
+        self._target: list[str] = [target]
+        self._message: str = message
+        self._sender: str = sender
         self._action = "post_sms"
-
-    def add_target(self, target: str) -> None:
-        self._target.append(target.strip())
-
-    def set_message(self, message: str = "") -> None:
-        self._message = message.strip()
-
-    def set_sender(self, sender: str = "") -> None:
-        self._sender = sender.strip()
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -49,17 +62,12 @@ class SMSData:
         }
 
     @property
-    def target(self) -> str:
-        return ",".join(self._target)
-
-    @property
-    def message(self) -> str:
-        return self._message
-
-    @property
-    def sender(self) -> str:
-        return self._sender
-
-    @property
     def action(self) -> str:
         return self._action
+
+
+class Beeline(SMSProvider):
+    def __init__(self, api_key: str) -> None:
+        self._url = "https://a2p-sms-https.beeline.ru/proto/http/rest"
+        self._headers["Content-Type"] = "application/json;charset=utf-8"
+        self._headers["X-ApiKey"] = f"ApiKey {api_key}"

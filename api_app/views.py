@@ -1,5 +1,6 @@
 from typing import Callable, Any
 import logging
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -56,8 +57,11 @@ class PinView(View):
         )
         pin = client_service.fetch_pin_by_client(client_schema)
         if pin:
-            message = f"Добро пожаловать на goodcup.ru! Ваш код доступа {pin}"
-            sms_service.send_pin_by_sms("goodcup.ru", message, client_schema.name)
+            message = f"Ваш код доступа {pin}.\n Добро пожаловать на goodcup.ru!"
+            provider = sms_service.Beeline(settings.SMS_ACCESS_TOKEN)
+            sms = sms_service.BeelineSMS(client_schema.name, message, "goodcup.ru")
+            transport = sms_service.SMSTransport(provider, sms)
+            sms_service.send_pin_by_sms(transport)
             return JsonResponse({}, status=200)
         return JsonResponse({}, status=400)
 
