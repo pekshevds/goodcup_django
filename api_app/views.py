@@ -187,6 +187,17 @@ class CartSetView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+class CartAddView(View):
+    @auth()
+    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
+        data = AddCartItemSchemaIncoming.model_validate_json(
+            request.body.decode("utf-8")
+        )
+        order_service.add_item_to_cart(data, client)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
 class CartDeleteView(View):
     @auth()
     def post(self, request: HttpRequest, client: Client) -> JsonResponse:
