@@ -1,3 +1,4 @@
+import decimal
 from datetime import datetime
 from typing import Optional
 from django.db.models import QuerySet, Q
@@ -85,7 +86,7 @@ def add_item_to_cart(cart_owner: Client, good: Good, quantity: float) -> None:
         item = CartItem.objects.create()
         item.client = cart_owner
         item.good = good
-    item.quantity += quantity
+    item.quantity += decimal.Decimal(float(quantity))
     item.save()
 
 

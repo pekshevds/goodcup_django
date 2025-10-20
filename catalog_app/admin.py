@@ -123,6 +123,7 @@ class GoodAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
         "id",
+        "slug",
     )
     readonly_fields = ("preview",)
     search_fields = ("name", "art")
