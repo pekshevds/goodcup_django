@@ -135,7 +135,7 @@ def drop_item_from_cart(data: AddCartItemSchemaIncoming, client: Client) -> None
 
 
 def fetch_wish_items(client: Client) -> WishItemListSchemaOutgoing:
-    cart_items = order_repository.fetch_cart_items(client)
+    cart_items = order_repository.fetch_wish_items(client)
     goods = [cart_item.good for cart_item in cart_items]
     region_prices = _fetch_region_prices(goods, client.region)
     items = []
