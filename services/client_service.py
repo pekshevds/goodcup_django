@@ -49,7 +49,7 @@ def client_by_token(token: str) -> Client | None:
     return client_repository.fetch_client_by_name(name=payload.name)
 
 
-def __extract_token_from(token_storage: dict[str, Any]) -> str:
+def _extract_token_from(token_storage: dict[str, Any]) -> str:
     raw_token = token_storage.get("Authorization")
     if raw_token:
         return raw_token.replace("Bearer", "").strip()
@@ -57,11 +57,11 @@ def __extract_token_from(token_storage: dict[str, Any]) -> str:
 
 
 def extract_token_from_headers(request: HttpRequest) -> str:
-    return __extract_token_from(request.headers)
+    return _extract_token_from(request.headers)
 
 
 def extract_token_from_cookies(request: HttpRequest) -> str:
-    return __extract_token_from(request.COOKIES)
+    return _extract_token_from(request.COOKIES)
 
 
 def extract_token(request: HttpRequest) -> str:
