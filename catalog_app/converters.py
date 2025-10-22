@@ -10,7 +10,9 @@ from catalog_app.schemas import (
 
 def image_to_outgoing_schema(image: Image) -> ImageSchemaOutgoing | None:
     if image:
-        return ImageSchemaOutgoing(path=f"{settings.BACKEND_NAME}/{image.image.url}")
+        return ImageSchemaOutgoing(
+            path=f"https://{settings.BACKEND_NAME}/{image.image.url}"
+        )
     return None
 
 
