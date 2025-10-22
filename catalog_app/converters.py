@@ -1,3 +1,4 @@
+from django.conf import settings
 from catalog_app.models import Category, Good, Image, PropertyRecord
 from catalog_app.schemas import (
     CategorySchemaOutgoing,
@@ -9,7 +10,7 @@ from catalog_app.schemas import (
 
 def image_to_outgoing_schema(image: Image) -> ImageSchemaOutgoing | None:
     if image:
-        return ImageSchemaOutgoing(path=image.image.url)
+        return ImageSchemaOutgoing(path=f"{settings.BACKEND_NAME}/{image.image.url}")
     return None
 
 

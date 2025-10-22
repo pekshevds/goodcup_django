@@ -26,6 +26,7 @@ SECRET_KEY = environ.get("SECRET_KEY", "")
 TOKEN_EXP_MIN = int(environ.get("TOKEN_EXP_MIN", "1440"))
 ITEMS_PER_PAGE = int(environ.get("ITEMS_PER_PAGE", "24"))
 SMS_ACCESS_TOKEN = environ.get("SMS_ACCESS_TOKEN", "")
+BACKEND_NAME = "backend.goodcup.ru"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -33,8 +34,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    "backend.goodcup.ru",
-    "www.backend.goodcup.ru",
+    BACKEND_NAME,
+    f"www.{BACKEND_NAME}",
 ]
 
 
