@@ -33,8 +33,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    "backend.goodcup.annasoft.site",
-    "www.backend.goodcup.annasoft.site",
+    "backend.goodcup.ru",
+    "www.backend.goodcup.ru",
 ]
 
 
