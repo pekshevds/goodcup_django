@@ -46,7 +46,7 @@ class GoodSchemaIncoming(BaseModel):
     okei: str = Field(max_length=50, default="")
     price: float = Field(default=0)
     description: str = Field(max_length=2048, default="")
-    balance: int = Field(default=0)
+    balance: float = Field(default=0)
     k: int = Field(default=1)
     is_active: bool = Field(default=False)
 
@@ -60,7 +60,7 @@ class GoodSchemaOutgoing(BaseModel):
     okei: str = Field(max_length=50, default="")
     price: float = Field(default=0)
     description: str = Field(max_length=2048, default="")
-    balance: int = Field(default=0)
+    balance: float = Field(default=0)
     k: int = Field(default=1)
     is_active: bool = Field(default=False)
     preview_image: ImageSchemaOutgoing | None = Field(default=None)
