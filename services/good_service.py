@@ -28,8 +28,8 @@ def _fetch_goods(
     for good in all_goods:
         record = region_price.get(str(good.id))
 
-        price = record.price if record else good.price
-        balance = record.balance if record else good.balance
+        price = (record.price if record else good.price) * good.k
+        balance = (record.balance if record else good.balance) / good.k
         good_schema = GoodSchemaOutgoing(
             id=str(good.id),
             name=good.name,
@@ -116,8 +116,8 @@ def fetch_good_by_slug(
     if not region:
         return converters.good_to_outgoing_schema(good)
     record = price_repository.fetch_price([good], [region]).first()
-    price = record.price if record else good.price
-    balance = record.balance if record else good.balance
+    price = (record.price if record else good.price) * good.k
+    balance = (record.balance if record else good.balance) * good.k
     return GoodSchemaOutgoing(
         id=str(good.id),
         name=good.name,

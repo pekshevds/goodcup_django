@@ -101,12 +101,13 @@ def fetch_cart_items(client: Client) -> CartItemListSchemaOutgoing:
     for cart_item in cart_items:
         good = cart_item.good
         record = region_prices.get(str(good.id))
-        price = record.price if record else good.price
+        price = (record.price if record else good.price) * good.k
+        quantity = cart_item.quantity / good.k
         cart_item_schema = CartItemSchemaOutgoing(
             good=converters.good_to_outgoing_schema(good),
-            quantity=cart_item.quantity,
+            quantity=quantity,
             price=price,
-            amount=price * cart_item.quantity,
+            amount=price * quantity,
         )
         items.append(cart_item_schema)
     return CartItemListSchemaOutgoing(items=items)
@@ -142,7 +143,7 @@ def fetch_wish_items(client: Client) -> WishItemListSchemaOutgoing:
     for cart_item in cart_items:
         good = cart_item.good
         record = region_prices.get(str(good.id))
-        price = record.price if record else good.price
+        price = (record.price if record else good.price) * good.k
         cart_item_schema = WishItemSchemaOutgoing(
             good=converters.good_to_outgoing_schema(good),
             quantity=0,
