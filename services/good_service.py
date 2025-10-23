@@ -27,25 +27,11 @@ def _fetch_goods(
     goods = []
     for good in all_goods:
         record = region_price.get(str(good.id))
-
         price = (record.price if record else good.price) * good.k
         balance = (record.balance if record else good.balance) / good.k
-        good_schema = GoodSchemaOutgoing(
-            id=str(good.id),
-            name=good.name,
-            art=good.art,
-            slug=good.slug,
-            code=good.code,
-            okei=good.okei,
-            description=good.description,
-            k=good.k,
-            is_active=good.is_active,
-            properties=converters.properties_to_outgoing_schema(good.properties.all()),
-            preview_image=converters.image_to_outgoing_schema(good.preview_image),
-            images=converters.images_to_outgoing_schema(good.images.all()),
-            price=price,
-            balance=balance,
-        )
+        good_schema = converters.good_to_outgoing_schema(good)
+        good_schema.price = price
+        good_schema.balance = balance
         goods.append(good_schema)
     return goods
 
@@ -113,27 +99,17 @@ def fetch_good_by_slug(
     good = good_repository.fetch_good_by_slug(slug)
     if not good:
         return None
+    result = converters.good_to_outgoing_schema(good)
     if not region:
-        return converters.good_to_outgoing_schema(good)
+        return result
+
     record = price_repository.fetch_price([good], [region]).first()
     price = (record.price if record else good.price) * good.k
     balance = (record.balance if record else good.balance) * good.k
-    return GoodSchemaOutgoing(
-        id=str(good.id),
-        name=good.name,
-        art=good.art,
-        slug=good.slug,
-        code=good.code,
-        okei=good.okei,
-        description=good.description,
-        k=good.k,
-        is_active=good.is_active,
-        properties=converters.properties_to_outgoing_schema(good.properties.all()),
-        preview_image=converters.image_to_outgoing_schema(good.preview_image),
-        images=converters.images_to_outgoing_schema(good.images.all()),
-        price=price,
-        balance=balance,
-    )
+
+    result.price = price
+    result.balance = balance
+    return result
 
 
 def create_or_update_goods(goods_list: list[GoodSchemaIncoming]) -> None:

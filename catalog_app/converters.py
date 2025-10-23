@@ -53,6 +53,8 @@ def category_to_outgoing_schema(category: Category) -> CategorySchemaOutgoing:
 
 
 def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
+    price = good.price * good.k
+    balance = good.balance / good.k
     model = GoodSchemaOutgoing(
         id=str(good.id),
         name=good.name,
@@ -60,10 +62,10 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
         slug=good.slug,
         code=good.code,
         okei=good.okei,
-        price=good.price,
+        price=price,
         description=good.description,
         k=good.k,
-        balance=good.balance,
+        balance=balance,
         is_active=good.is_active,
         properties=properties_to_outgoing_schema(good.properties.all()),
         preview_image=image_to_outgoing_schema(good.preview_image),
