@@ -29,6 +29,10 @@ def fetch_good_by_slug(slug: str) -> Good | None:
     return Good.objects.filter(slug=slug).first()
 
 
+def fetch_goods_by_slugs(slugs: list[str]) -> Good | None:
+    return Good.objects.filter(slug__in=slugs).all()
+
+
 def fetch_goods_by_category(category: Category) -> QuerySet[Good]:
     queryset = Good.objects.filter(category=category).all()
     return queryset

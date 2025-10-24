@@ -1,9 +1,10 @@
 import decimal
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Any
+from django.db import transaction
 from django.db.models import QuerySet, Q
-from order_app.models import StatusOrder, Order, CartItem, WishItem
-from client_app.models import Client
+from order_app.models import StatusOrder, Order, OrderItem, CartItem, WishItem
+from client_app.models import Client, Contract
 from catalog_app.models import Good
 
 
@@ -39,6 +40,22 @@ def fetch_status_by_ids(ids: list[str]) -> QuerySet[StatusOrder]:
 
 def fetch_orders_by_ids(ids: list[str]) -> QuerySet[Order]:
     return Order.objects.filter(id__in=ids).all()
+
+
+@transaction.atomic
+def create_order(data: list[dict[str, Any]], contract: Contract | None) -> Order:
+    new_order = Order.objects.create()
+    new_order.contract = contract
+    new_order.status = StatusOrder.objects.get(name="Новый")
+    new_order.save()
+    for item in data:
+        new_item = OrderItem.objects.create(order=new_order)
+        new_item.good = item.get("good")
+        new_item.quantity = item.get("quantity")
+        new_item.price = item.get("price")
+        new_item.amount = item.get("amount")
+        new_item.save()
+    return new_order
 
 
 def fetch_status_by_id(id: str) -> StatusOrder | None:

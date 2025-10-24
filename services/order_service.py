@@ -3,16 +3,24 @@ from typing import Any, Optional
 from order_app.schemas import (
     StatusSchemaIncoming,
     OrderListSchemaOutgoing,
+    OrderSchemaOutgoing,
     OrderStatusListUpdateSchemaIncoming,
+    NewOrderIncoming,
     CartItemSchemaOutgoing,
     CartItemListSchemaOutgoing,
     AddCartItemSchemaIncoming,
     WishItemSchemaOutgoing,
     WishItemListSchemaOutgoing,
 )
+
 from order_app.models import StatusOrder, Order
 from client_app.models import Client, Region
-from repositories import order_repository, price_repository, good_repository
+from repositories import (
+    order_repository,
+    price_repository,
+    good_repository,
+    client_repository,
+)
 from catalog_app import converters
 from catalog_app.models import Good
 from order_app.converters import order_to_outgoing_schema, order_item_to_outgoing_schema
@@ -42,6 +50,27 @@ def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
         order.status = status
         orders_to_update.append(order)
     order_repository.update_orders_stutuses(orders_to_update)
+
+
+def create_order(incoming_data: NewOrderIncoming) -> OrderSchemaOutgoing:
+    data = []
+    goods = good_repository.fetch_goods_by_slugs(
+        slugs=[item.good_slug for item in incoming_data.items]
+    )
+    for item in incoming_data.items:
+        result = [good for good in goods if good.slug == item.good_slug]
+        if result:
+            data.append(
+                {
+                    "good": result[0],
+                    "quantity": item.quantity,
+                    "price": item.price,
+                    "amount": item.amount,
+                }
+            )
+    contract = client_repository.fetch_contract_by_name(incoming_data.contract_name)
+    order = order_repository.create_order(data, contract)
+    return order_to_outgoing_schema(order)
 
 
 def fetch_new_orders() -> OrderListSchemaOutgoing:

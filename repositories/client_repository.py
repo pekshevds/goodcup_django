@@ -2,11 +2,15 @@ import datetime
 from random import randrange
 from django.utils import timezone
 from django.db.models import Q
-from client_app.models import Client, Pin
+from client_app.models import Client, Pin, Contract
 
 
 def fetch_client_by_name(name: str) -> Client | None:
     return Client.objects.filter(name=name).first()
+
+
+def fetch_contract_by_name(name: str) -> Contract | None:
+    return Contract.objects.filter(name=name).first()
 
 
 def create_new_pin(client: Client) -> str:

@@ -21,12 +21,21 @@ class ClientSchemaIncoming(BaseModel):
     name: str = Field()
 
 
+class ContractSchemaIncoming(BaseModel):
+    name: str = Field()
+
+
 class ClientSchemaOutgoing(BaseModel):
     name: str = Field()
 
 
 class ContractSchemaOutgoing(BaseModel):
+    id: str = Field()
     name: str = Field()
+
+
+class ContractListSchemaOutgoing(BaseModel):
+    items: list[ContractSchemaOutgoing] = Field()
 
 
 class PinSchema(BaseModel):

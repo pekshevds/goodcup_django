@@ -64,10 +64,10 @@ class Document(Record):
     def __str__(self, name: str = "Документ") -> str:
         return f"{name} №{self.number} от {format(self.date, 'd F Y')}"
 
-    def save(self) -> None:
+    def save(self, *args: [Any], **kwargs: dict[str, Any]) -> None:
         if not self.number:
             self.number = ganerate_new_number(model=self.__class__)
-        return super().save()
+        return super().save(*args, **kwargs)
 
     class Meta:
         abstract = True

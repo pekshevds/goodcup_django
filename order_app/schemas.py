@@ -36,6 +36,18 @@ class OrderListSchemaOutgoing(BaseModel):
     orders: list[OrderSchemaOutgoing] = Field()
 
 
+class NewOrderItemIncoming(BaseModel):
+    good_slug: str = Field()
+    quantity: float = Field(default=0.0)
+    price: float = Field(default=0.0)
+    amount: float = Field(default=0.0)
+
+
+class NewOrderIncoming(BaseModel):
+    contract_name: str = Field()
+    items: list[NewOrderItemIncoming] = Field()
+
+
 class CartItemSchemaOutgoing(BaseModel):
     good: GoodSchemaOutgoing = Field()
     quantity: float = Field(default=0.0)

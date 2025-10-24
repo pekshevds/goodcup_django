@@ -23,5 +23,5 @@ def client_to_outgoing_schema(client: Client) -> ClientSchemaOutgoing:
 
 
 def contract_to_outgoing_schema(contract: Contract) -> ContractSchemaOutgoing:
-    model = ContractSchemaOutgoing(name=contract.name)
+    model = ContractSchemaOutgoing(id=str(contract.id), name=contract.name)
     return model

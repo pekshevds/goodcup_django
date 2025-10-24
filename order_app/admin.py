@@ -65,8 +65,10 @@ class OrderAdmin(admin.ModelAdmin):
     )
     search_fields = ("contract__name",)
 
-    def client(self, obj: Order) -> Client:
-        return obj.contract.client
+    def client(self, obj: Order) -> Client | None:
+        if obj.contract:
+            return obj.contract.client
+        return None
 
     setattr(client, "short_description", "Клиент")
 

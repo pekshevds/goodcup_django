@@ -7,6 +7,8 @@ from client_app.schemas import (
     ClientSchemaIncoming,
     RequestSchemaIncoming,
     FeedbackSchemaIncoming,
+    ContractListSchemaOutgoing,
+    ContractSchemaOutgoing,
 )
 from repositories import client_repository
 from services.jwt_tokens import HS256
@@ -16,6 +18,15 @@ def check_clients_pin(client: Client, code: str) -> bool:
     return code in [
         pin.code for pin in client_repository.fetch_active_clients_pins(client)
     ]
+
+
+def fetch_contarcts(client: Client) -> ContractListSchemaOutgoing:
+    return ContractListSchemaOutgoing(
+        items=[
+            ContractSchemaOutgoing(id=str(contract.id), name=contract.name)
+            for contract in client.contracts.all()
+        ]
+    )
 
 
 def check_credentials(client_schema: ClientCredentialSchema) -> bool:

@@ -9,6 +9,8 @@ from django.views.generic import View
 from client_app.schemas import (
     ClientSchemaIncoming,
     ClientCredentialSchema,
+    ContractListSchemaOutgoing,
+    ContractSchemaOutgoing,
     TokenSchema,
     RequestSchemaIncoming,
     FeedbackSchemaIncoming,
@@ -18,6 +20,7 @@ from client_app.models import Client
 from order_app.schemas import (
     OrderStatusListUpdateSchemaIncoming,
     AddCartItemSchemaIncoming,
+    NewOrderIncoming,
 )
 from api_app.schemas import DataSchema
 from services import (
@@ -147,6 +150,14 @@ class NewOrderView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+class ContractView(View):
+    @auth()
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        contracts = client_service.fetch_contarcts(client)
+        return JsonResponse(contracts.model_dump(), status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
 class OrderView(View):
     @auth()
     def get(self, request: HttpRequest, client: Client) -> JsonResponse:
@@ -154,6 +165,12 @@ class OrderView(View):
         date_to = request.GET.get("date_to", None)
         new_orders = order_service.fetch_orders(client, date_from, date_to)
         return JsonResponse(new_orders.model_dump(), status=200)
+
+    @auth()
+    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
+        data = NewOrderIncoming.model_validate_json(request.body.decode("utf-8"))
+        order = order_service.create_order(data)
+        return JsonResponse(order.model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
