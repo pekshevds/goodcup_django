@@ -13,6 +13,10 @@ def fetch_contract_by_name(name: str) -> Contract | None:
     return Contract.objects.filter(name=name).first()
 
 
+def fetch_contract_by_id(id: str) -> Contract | None:
+    return Contract.objects.filter(id=id).first()
+
+
 def create_new_pin(client: Client) -> str:
     code = str(randrange(100000, 999999))
     Pin.objects.create(client=client, code=code)

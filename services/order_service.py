@@ -52,11 +52,18 @@ def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
     order_repository.update_orders_stutuses(orders_to_update)
 
 
-def create_order(incoming_data: NewOrderIncoming) -> OrderSchemaOutgoing:
-    data = []
-    goods = good_repository.fetch_goods_by_slugs(
+def _extract_goods_from_incoming_data(
+    incoming_data: NewOrderIncoming,
+) -> list[Good] | None:
+    return good_repository.fetch_goods_by_slugs(
         slugs=[item.good_slug for item in incoming_data.items]
     )
+
+
+def _fill_order_items_by_incoming_data(
+    incoming_data: NewOrderIncoming, goods: list[Good]
+) -> list[dict[str, Any]]:
+    data = []
     for item in incoming_data.items:
         result = [good for good in goods if good.slug == item.good_slug]
         if result:
@@ -68,8 +75,20 @@ def create_order(incoming_data: NewOrderIncoming) -> OrderSchemaOutgoing:
                     "amount": item.amount,
                 }
             )
-    contract = client_repository.fetch_contract_by_name(incoming_data.contract_name)
-    order = order_repository.create_order(data, contract)
+    return data
+
+
+def create_order(incoming_data: NewOrderIncoming) -> OrderSchemaOutgoing | None:
+    goods = _extract_goods_from_incoming_data(incoming_data)
+    if not goods:
+        return None
+    order_items = _fill_order_items_by_incoming_data(incoming_data, goods)
+    if not order_items:
+        return None
+    contract = client_repository.fetch_contract_by_id(incoming_data.contract_id)
+    if not contract:
+        return None
+    order = order_repository.create_order(order_items, contract)
     return order_to_outgoing_schema(order)
 
 

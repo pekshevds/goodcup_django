@@ -44,7 +44,7 @@ class NewOrderItemIncoming(BaseModel):
 
 
 class NewOrderIncoming(BaseModel):
-    contract_name: str = Field()
+    contract_id: str = Field()
     items: list[NewOrderItemIncoming] = Field()
 
 
