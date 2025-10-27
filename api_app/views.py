@@ -170,7 +170,9 @@ class OrderView(View):
     def post(self, request: HttpRequest, client: Client) -> JsonResponse:
         data = NewOrderIncoming.model_validate_json(request.body.decode("utf-8"))
         order = order_service.create_order(data)
-        return JsonResponse(order.model_dump(), status=200)
+        if order:
+            return JsonResponse(order.model_dump(), status=200)
+        return JsonResponse({}, status=400)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
