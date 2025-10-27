@@ -153,7 +153,7 @@ class NewOrderView(View):
 class ContractView(View):
     @auth()
     def get(self, request: HttpRequest, client: Client) -> JsonResponse:
-        contracts = client_service.fetch_contarcts(client)
+        contracts = client_service.fetch_contracts(client)
         return JsonResponse(contracts.model_dump(), status=200)
 
 

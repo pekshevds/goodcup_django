@@ -1,7 +1,7 @@
 from typing import Any
 from django.http import HttpRequest
 from django.conf import settings
-from client_app.models import Client
+from client_app.models import Client, Contract
 from client_app.schemas import (
     ClientCredentialSchema,
     ClientSchemaIncoming,
@@ -20,10 +20,18 @@ def check_clients_pin(client: Client, code: str) -> bool:
     ]
 
 
-def fetch_contarcts(client: Client) -> ContractListSchemaOutgoing:
+def _prepare_contract_name(contract: Contract) -> str:
+    address = contract.address
+    organization_name = contract.organization.name if contract.organization else ""
+    return f"{address} {organization_name} {contract.name}".lstrip().rstrip()
+
+
+def fetch_contracts(client: Client) -> ContractListSchemaOutgoing:
     return ContractListSchemaOutgoing(
         items=[
-            ContractSchemaOutgoing(id=str(contract.id), name=contract.name)
+            ContractSchemaOutgoing(
+                id=str(contract.id), name=_prepare_contract_name(contract)
+            )
             for contract in client.contracts.all()
         ]
     )

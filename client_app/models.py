@@ -12,6 +12,12 @@ class Region(Directory):
         verbose_name_plural = "Регионы"
 
 
+class Organization(Directory):
+    class Meta:
+        verbose_name = "Организация"
+        verbose_name_plural = "Наши организации"
+
+
 class Client(Directory):
     region = models.ForeignKey(
         Region,
@@ -34,11 +40,24 @@ class Contract(Directory):
         related_name="contracts",
         on_delete=models.CASCADE,
     )
+    organization = models.ForeignKey(
+        Organization,
+        verbose_name="Организация",
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
     name = models.CharField(
         verbose_name="Наименование",
         max_length=25,
         blank=False,
         db_index=True,
+        default="",
+    )
+    address = models.CharField(
+        verbose_name="Адрес доставки",
+        max_length=255,
+        blank=True,
         default="",
     )
 

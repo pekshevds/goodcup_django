@@ -2,7 +2,7 @@ from typing import Any
 from django.http import HttpRequest
 from django.contrib import admin
 from server.admin import make_active
-from client_app.models import Region, Client, Pin, Contract
+from client_app.models import Region, Client, Pin, Contract, Organization
 
 
 class ContractsReadonlyInline(admin.TabularInline):
@@ -23,6 +23,23 @@ class ContractsReadonlyInline(admin.TabularInline):
 
     def has_delete_permission(self, request: HttpRequest, obj: Any = None) -> bool:
         return False
+
+
+@admin.register(Organization)
+class OrganizationAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    "is_active",
+                    "comment",
+                )
+            },
+        ),
+    )
+    list_display = ("name", "is_active", "created_at", "updated_at", "id")
 
 
 @admin.register(Region)
@@ -77,11 +94,14 @@ class ContractAdmin(admin.ModelAdmin):
     fieldsets = (
         (
             None,
-            {"fields": ("client", "name")},
+            {"fields": ("client", "name", "organization", "address")},
         ),
     )
-    list_display = ("name", "client", "created_at", "updated_at", "id")
-    list_filter = ("client",)
+    list_display = ("name", "client", "organization", "created_at", "updated_at", "id")
+    list_filter = (
+        "client",
+        "organization",
+    )
 
 
 @admin.register(Pin)
