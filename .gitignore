@@ -1,3 +1,7 @@
+# load data
+data.json
+load_images.py
+
 # media and static
 public/
 tmp/
