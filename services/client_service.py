@@ -1,6 +1,7 @@
 from typing import Any
 from django.http import HttpRequest
 from django.conf import settings
+from django.core.mail import send_mail
 from client_app.models import Client, Contract
 from client_app.schemas import (
     ClientCredentialSchema,
@@ -88,8 +89,30 @@ def extract_token(request: HttpRequest) -> str:
 
 
 def process_incoming_request(request: RequestSchemaIncoming) -> None:
-    pass
+    message = (
+        "Пожалуйста, перезвоните мне",
+        f"Покупатель: {request.name}",
+        f"Номер телефона: {request.phone}",
+        f"Эл. почта: {request.email}",
+    )
+    send_mail(
+        subject="Запрос на обратный звонок",
+        message="\n".join(message),
+        recipient_list=[settings.EMAIL_TO_INCOMING_REQUEST],
+        from_email=None,
+    )
 
 
 def process_feedback(feedback: FeedbackSchemaIncoming) -> None:
-    pass
+    message = (
+        f"Покупатель: {feedback.name}",
+        f"Номер телефона: {feedback.phone}",
+        f"Эл. почта: {feedback.email}",
+        f"Сообщение:\n{feedback.message}",
+    )
+    send_mail(
+        subject="Обратная связь",
+        message=message,
+        recipient_list=[settings.EMAIL_TO_FEEDBACK],
+        from_email=None,
+    )

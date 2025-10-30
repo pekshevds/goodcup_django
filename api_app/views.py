@@ -9,8 +9,6 @@ from django.views.generic import View
 from client_app.schemas import (
     ClientSchemaIncoming,
     ClientCredentialSchema,
-    ContractListSchemaOutgoing,
-    ContractSchemaOutgoing,
     TokenSchema,
     RequestSchemaIncoming,
     FeedbackSchemaIncoming,
