@@ -112,7 +112,7 @@ def process_feedback(feedback: FeedbackSchemaIncoming) -> None:
     )
     send_mail(
         subject="Обратная связь",
-        message=message,
+        message="\n".join(message),
         recipient_list=[settings.EMAIL_TO_FEEDBACK],
         from_email=None,
     )
