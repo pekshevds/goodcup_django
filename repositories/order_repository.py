@@ -122,7 +122,7 @@ def clear_wish(wish_owner: Client) -> None:
 
 
 def set_item_to_wish(wish_owner: Client, good: Good) -> None:
-    item = fetch_cart_items(wish_owner).filter(good=good).first()
+    item = fetch_wish_items(wish_owner).filter(good=good).first()
     if item:
         return
     item = WishItem.objects.create()
