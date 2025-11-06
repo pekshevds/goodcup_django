@@ -25,6 +25,12 @@ class CategorySchemaOutgoing(BaseModel):
     childs: list["CategorySchemaOutgoing"] | None = Field(default=None)
 
 
+class CompilationSchemaOutgoing(BaseModel):
+    id: str = Field()
+    name: str = Field(max_length=150)
+    slug: str = Field(max_length=300, default="")
+
+
 class GoodSchema(BaseModel):
     id: str = Field()
     name: str = Field(max_length=150)
@@ -79,4 +85,9 @@ class GoodListSchemaOutgoing(BaseModel):
 
 class CategoryListSchemaOutgoing(BaseModel):
     categories: list[CategorySchemaOutgoing] = Field()
+    count: int = Field(default=0)
+
+
+class CompilationListSchemaOutgoing(BaseModel):
+    compilations: list[CompilationSchemaOutgoing] = Field()
     count: int = Field(default=0)

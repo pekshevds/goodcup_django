@@ -8,6 +8,8 @@ from catalog_app.schemas import (
     GoodSchemaIncoming,
     GoodSchemaOutgoing,
     GoodListSchemaOutgoing,
+    CompilationSchemaOutgoing,
+    CompilationListSchemaOutgoing,
 )
 from catalog_app import converters
 from repositories import good_repository
@@ -75,6 +77,23 @@ def fetch_category_by_slug(slug: str) -> CategorySchemaOutgoing | None:
     return None
 
 
+def fetch_goods_by_compilation_slug(
+    compilation_slug: str, region: Region | None = None, page_number: int = 0
+) -> GoodListSchemaOutgoing | None:
+    compilation = good_repository.fetch_compilation_by_slug(compilation_slug)
+    if not compilation:
+        return None
+    queryset = _fetch_goods(
+        good_repository.fetch_goods_by_compilation(compilation), region
+    )
+    if page_number == 0:
+        return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
+    paginator = Paginator(queryset, settings.ITEMS_PER_PAGE)
+    return GoodListSchemaOutgoing(
+        goods=paginator.get_page(page_number), count=len(queryset)
+    )
+
+
 def fetch_goods_by_category_slug(
     category_slug: str, region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing | None:
@@ -90,6 +109,22 @@ def fetch_goods_by_category_slug(
     paginator = Paginator(queryset, settings.ITEMS_PER_PAGE)
     return GoodListSchemaOutgoing(
         goods=paginator.get_page(page_number), count=len(queryset)
+    )
+
+
+def fetch_compilations_by_category_slug(
+    category_slug: str,
+) -> CompilationListSchemaOutgoing | None:
+    category = good_repository.fetch_category_by_slug(category_slug)
+    if not category:
+        return None
+    queryset = good_repository.fetch_compilations_by_category(category=category)
+    return CompilationListSchemaOutgoing(
+        compilations=[
+            CompilationSchemaOutgoing(id=str(item.id), name=item.name, slug=item.slug)
+            for item in queryset
+        ],
+        count=len(queryset),
     )
 
 

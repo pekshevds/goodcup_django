@@ -149,3 +149,46 @@ class PropertyRecord(Record):
     class Meta:
         verbose_name = "Запись свойство/значение"
         verbose_name_plural = "Свойства товара"
+
+
+class Compilation(Directory):
+    category = models.ForeignKey(
+        Category,
+        verbose_name="Категория",
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+    )
+    slug = models.CharField(
+        verbose_name="Ссылка",
+        max_length=300,
+        blank=True,
+        null=False,
+        default="",
+        db_index=True,
+    )
+    preview_image = models.ForeignKey(
+        Image, verbose_name="Превью", on_delete=models.PROTECT, null=True, blank=True
+    )
+    description = models.CharField(
+        verbose_name="Описание", max_length=2048, blank=True, null=False, default=""
+    )
+
+    def save(self) -> None:
+        self.slug = slugify(translit(f"{self.name}", reversed=True))
+        super().save()
+
+    class Meta:
+        verbose_name = "Подборка"
+        verbose_name_plural = "Подборки"
+
+
+class CompilationItem(Record):
+    compilation = models.ForeignKey(
+        Compilation, verbose_name="Подборка", on_delete=models.CASCADE
+    )
+    good = models.ForeignKey(Good, verbose_name="Товар", on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = "Элемент подборки"
+        verbose_name_plural = "Элементы подборок"

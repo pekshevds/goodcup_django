@@ -122,8 +122,30 @@ class GoodView(View):
             if goods:
                 return JsonResponse(goods.model_dump(), status=200)
             return JsonResponse({}, status=200)
+        compilation_slug = request.GET.get("compilation")
+        if compilation_slug:
+            goods = good_service.fetch_goods_by_compilation_slug(
+                compilation_slug, region, page_number
+            )
+            if goods:
+                return JsonResponse(goods.model_dump(), status=200)
+            return JsonResponse({}, status=200)
         goods = good_service.fetch_all_goods(region, page_number)
         return JsonResponse(goods.model_dump(), status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class CompilationView(View):
+    @auth(False)
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        category_slug = request.GET.get("category")
+        if category_slug:
+            compipations = good_service.fetch_compilations_by_category_slug(
+                category_slug
+            )
+            if compipations:
+                return JsonResponse(compipations.model_dump(), status=200)
+        return JsonResponse({}, status=400)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
