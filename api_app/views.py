@@ -85,9 +85,9 @@ class TokenView(View):
 class CategoryView(View):
     def get(self, request: HttpRequest, slug: str = "") -> JsonResponse:
         if slug:
-            categories = good_service.fetch_subcategories_by_slug(slug)
-            if categories:
-                return JsonResponse(categories.model_dump(), status=200)
+            category = good_service.fetch_category_by_slug(slug)
+            if category:
+                return JsonResponse(category.model_dump(), status=200)
             return JsonResponse({}, status=200)
         categories = good_service.fetch_all_categories()
         return JsonResponse(categories.model_dump(), status=200)
