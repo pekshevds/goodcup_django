@@ -85,9 +85,9 @@ class TokenView(View):
 class CategoryView(View):
     def get(self, request: HttpRequest, slug: str = "") -> JsonResponse:
         if slug:
-            category = good_service.fetch_category_by_slug(slug)
-            if category:
-                return JsonResponse(category.model_dump(), status=200)
+            categories = good_service.fetch_subcategories_by_slug(slug)
+            if categories:
+                return JsonResponse(categories.model_dump(), status=200)
             return JsonResponse({}, status=200)
         categories = good_service.fetch_all_categories()
         return JsonResponse(categories.model_dump(), status=200)
@@ -138,14 +138,21 @@ class GoodView(View):
 class CompilationView(View):
     @auth(False)
     def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        result = good_service.fetch_universal_compilations()
+        sub_result = None
         category_slug = request.GET.get("category")
         if category_slug:
-            compipations = good_service.fetch_compilations_by_category_slug(
-                category_slug
-            )
-            if compipations:
-                return JsonResponse(compipations.model_dump(), status=200)
-        return JsonResponse({}, status=400)
+            sub_result = good_service.fetch_compilations_by_category_slug(category_slug)
+        if result and sub_result:
+            for item in sub_result.compilations:
+                result.compilations.append(item)
+            return JsonResponse(result.model_dump(), status=200)
+        if result and not sub_result:
+            return JsonResponse(result.model_dump(), status=200)
+        result = sub_result
+        if result:
+            return JsonResponse(result.model_dump(), status=200)
+        return JsonResponse({}, status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

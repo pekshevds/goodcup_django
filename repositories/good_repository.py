@@ -17,6 +17,11 @@ def fetch_all_categories() -> QuerySet[Category]:
     return queryset
 
 
+def fetch_subcategories(parent: Category) -> QuerySet[Category]:
+    queryset = Category.objects.filter(parent=parent).all()
+    return queryset
+
+
 def fetch_category_by_slug(slug: str) -> Category | None:
     return Category.objects.filter(slug=slug).first()
 
@@ -27,6 +32,10 @@ def fetch_compilation_by_slug(slug: str) -> Compilation | None:
 
 def fetch_compilations_by_category(category: Category) -> QuerySet[Compilation]:
     return Compilation.objects.filter(category=category).all()
+
+
+def fetch_universal_compilations() -> QuerySet[Compilation]:
+    return Compilation.objects.filter(category=None).all()
 
 
 def fetch_categories_by_ids(ids: list[str]) -> QuerySet[Category]:

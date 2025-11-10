@@ -58,6 +58,19 @@ def fetch_all_categories() -> CategoryListSchemaOutgoing:
     )
 
 
+def fetch_subcategories_by_slug(
+    category_slug: str,
+) -> CategoryListSchemaOutgoing | None:
+    category = good_repository.fetch_category_by_slug(category_slug)
+    if not category:
+        return None
+    categories = good_repository.fetch_subcategories(category)
+    return CategoryListSchemaOutgoing(
+        categories=[converters.category_to_outgoing_schema(cat) for cat in categories],
+        count=len(categories),
+    )
+
+
 def fetch_all_goods(
     region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing:
@@ -119,6 +132,19 @@ def fetch_compilations_by_category_slug(
     if not category:
         return None
     queryset = good_repository.fetch_compilations_by_category(category=category)
+    return CompilationListSchemaOutgoing(
+        compilations=[
+            CompilationSchemaOutgoing(id=str(item.id), name=item.name, slug=item.slug)
+            for item in queryset
+        ],
+        count=len(queryset),
+    )
+
+
+def fetch_universal_compilations() -> CompilationListSchemaOutgoing | None:
+    queryset = good_repository.fetch_universal_compilations()
+    if not queryset:
+        return None
     return CompilationListSchemaOutgoing(
         compilations=[
             CompilationSchemaOutgoing(id=str(item.id), name=item.name, slug=item.slug)
