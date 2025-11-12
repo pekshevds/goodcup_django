@@ -29,6 +29,7 @@ from services import (
     order_service,
     property_service,
     sms_service,
+    doc_service,
 )
 
 logger = logging.getLogger(__name__)
@@ -153,6 +154,13 @@ class CompilationView(View):
         if result:
             return JsonResponse(result.model_dump(), status=200)
         return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class DocView(View):
+    @auth(False)
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        return JsonResponse(doc_service.fetch_all_docs().model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")
