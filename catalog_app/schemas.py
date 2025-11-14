@@ -73,6 +73,9 @@ class GoodSchemaOutgoing(BaseModel):
     preview_image: ImageSchemaOutgoing | None = Field(default=None)
     properties: list[PropertySchemaOutgoing] | None = Field(default=None)
     images: list[ImageSchemaOutgoing] | None = Field(default=None)
+    seo_title: str = Field(default="")
+    seo_description: str = Field(default="")
+    seo_keywords: str = Field(default="")
 
 
 class GoodListSchemaIncoming(BaseModel):

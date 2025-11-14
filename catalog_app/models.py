@@ -109,6 +109,21 @@ class Good(Directory):
     description = models.CharField(
         verbose_name="Описание", max_length=2048, blank=True, null=False, default=""
     )
+    seo_title = models.TextField(
+        verbose_name="<title>", null=True, blank=True, default=""
+    )
+    seo_description = models.TextField(
+        verbose_name="<description>",
+        null=True,
+        blank=True,
+        default="",
+    )
+    seo_keywords = models.TextField(
+        verbose_name="<keywords>",
+        null=True,
+        blank=True,
+        default="",
+    )
 
     def save(self) -> None:
         self.slug = slugify(translit(f"{self.name}-{self.art}", reversed=True))
