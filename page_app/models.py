@@ -3,12 +3,6 @@ from server.models import Directory
 
 
 class Page(Directory):
-    url = models.CharField(
-        verbose_name="Путь",
-        max_length=150,
-        blank=False,
-        default="",
-    )
     seo_title = models.TextField(
         verbose_name="<title>", null=True, blank=True, default=""
     )

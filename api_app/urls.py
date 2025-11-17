@@ -53,5 +53,4 @@ urlpatterns = [
     path("v1/request/", RequestView.as_view()),
     path("v1/feedback/", FeedbackView.as_view()),
     path("v1/page/", PageView.as_view()),
-    path("v1/page/<str:name>/", PageView.as_view()),
 ]

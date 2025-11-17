@@ -167,7 +167,8 @@ class DocView(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class PageView(View):
     @auth(False)
-    def get(self, request: HttpRequest, client: Client, name: str = "") -> JsonResponse:
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        name = request.GET.get("url")
         if name:
             page = page_service.fetch_page_by_name(name)
             if page:

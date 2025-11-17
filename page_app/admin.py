@@ -10,7 +10,6 @@ class PageAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "name",
-                    "url",
                     "is_active",
                     "comment",
                 )
@@ -27,4 +26,4 @@ class PageAdmin(admin.ModelAdmin):
             },
         ),
     )
-    list_display = ("name", "url", "is_active", "created_at", "updated_at", "id")
+    list_display = ("name", "is_active", "created_at", "updated_at", "id")
