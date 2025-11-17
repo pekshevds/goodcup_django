@@ -30,6 +30,7 @@ from services import (
     property_service,
     sms_service,
     doc_service,
+    page_service,
 )
 
 logger = logging.getLogger(__name__)
@@ -161,6 +162,19 @@ class DocView(View):
     @auth(False)
     def get(self, request: HttpRequest, client: Client) -> JsonResponse:
         return JsonResponse(doc_service.fetch_all_docs().model_dump(), status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class PageView(View):
+    @auth(False)
+    def get(self, request: HttpRequest, client: Client, name: str = "") -> JsonResponse:
+        if name:
+            page = page_service.fetch_page_by_name(name)
+            if page:
+                return JsonResponse(page.model_dump(), status=200)
+            else:
+                return JsonResponse({}, status=400)
+        return JsonResponse(page_service.fetch_all_pages().model_dump(), status=200)
 
 
 @method_decorator(csrf_exempt, name="dispatch")

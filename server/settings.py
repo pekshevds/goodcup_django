@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "client_app.apps.ClientAppConfig",
     "price_app.apps.PriceAppConfig",
     "doc_app.apps.DocAppConfig",
+    "page_app.apps.PageAppConfig",
 ]
 
 MIDDLEWARE = [

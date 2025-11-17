@@ -71,5 +71,8 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
         properties=properties_to_outgoing_schema(good.properties.all()),
         preview_image=image_to_outgoing_schema(good.preview_image),
         images=images_to_outgoing_schema(good.images.all()),
+        seo_title=good.seo_title,
+        seo_description=good.seo_description,
+        seo_keywords=good.seo_keywords,
     )
     return model

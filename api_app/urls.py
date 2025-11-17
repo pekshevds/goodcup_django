@@ -22,6 +22,7 @@ from api_app.views import (
     WishClearView,
     RequestView,
     FeedbackView,
+    PageView,
 )
 
 app_name = "api_app"
@@ -51,4 +52,6 @@ urlpatterns = [
     path("v1/wish/clear/", WishClearView.as_view()),
     path("v1/request/", RequestView.as_view()),
     path("v1/feedback/", FeedbackView.as_view()),
+    path("v1/page/", PageView.as_view()),
+    path("v1/page/<str:name>/", PageView.as_view()),
 ]
