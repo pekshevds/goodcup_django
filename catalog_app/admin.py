@@ -3,6 +3,7 @@ from django.contrib import admin
 from catalog_app.models import (
     Good,
     Category,
+    Offer,
     Image,
     PropertyRecord,
     GoodImage,
@@ -92,6 +93,34 @@ class CategoryAdmin(admin.ModelAdmin):
     setattr(preview, "short_description", "Изображение (превью)")
 
 
+@admin.register(Offer)
+class OfferAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    (
+                        "is_active",
+                        "sort_ordering",
+                    ),
+                    "comment",
+                )
+            },
+        ),
+    )
+    list_display = (
+        "name",
+        "is_active",
+        "created_at",
+        "updated_at",
+        "slug",
+        "id",
+    )
+    actions = [make_active]
+
+
 class PropertyRecordInLine(admin.TabularInline):
     model = PropertyRecord
 
@@ -108,13 +137,24 @@ class GoodAdmin(admin.ModelAdmin):
             None,
             {
                 "fields": (
-                    ("name", "art", "code"),
-                    "category",
+                    (
+                        "name",
+                        "art",
+                        "code",
+                        "short_name",
+                    ),
+                    (
+                        "category",
+                        "offer",
+                    ),
                     (
                         "preview_image",
                         "preview",
                     ),
-                    ("balance", "price"),
+                    (
+                        "balance",
+                        "price",
+                    ),
                     (
                         "is_active",
                         "sort_ordering",
@@ -145,6 +185,7 @@ class GoodAdmin(admin.ModelAdmin):
         "balance",
         "price",
         "preview",
+        "offer",
         "created_at",
         "updated_at",
         "id",

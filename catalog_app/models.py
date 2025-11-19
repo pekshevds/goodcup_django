@@ -12,6 +12,25 @@ class Image(Directory):
         verbose_name_plural = "Изображения"
 
 
+class Offer(Directory):
+    slug = models.CharField(
+        verbose_name="Ссылка",
+        max_length=300,
+        blank=True,
+        null=False,
+        default="",
+        db_index=True,
+    )
+
+    def save(self) -> None:
+        self.slug = slugify(translit(f"{self.name}", reversed=True))
+        super().save()
+
+    class Meta:
+        verbose_name = "Предложение"
+        verbose_name_plural = "Предложения"
+
+
 class Category(Directory):
     slug = models.CharField(
         verbose_name="Ссылка",
@@ -50,6 +69,13 @@ class Category(Directory):
 
 
 class Good(Directory):
+    short_name = models.CharField(
+        verbose_name="Короткое имя",
+        max_length=50,
+        blank=True,
+        null=False,
+        default="",
+    )
     art = models.CharField(
         verbose_name="Артикул",
         max_length=50,
@@ -108,6 +134,13 @@ class Good(Directory):
     )
     description = models.CharField(
         verbose_name="Описание", max_length=2048, blank=True, null=False, default=""
+    )
+    offer = models.ForeignKey(
+        Offer,
+        verbose_name="Предложение",
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
     )
     seo_title = models.TextField(
         verbose_name="<title>", null=True, blank=True, default=""
