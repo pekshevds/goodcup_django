@@ -31,7 +31,7 @@ def fetch_orders(
 
 
 def fetch_all_statuses() -> QuerySet[StatusOrder]:
-    return StatusOrder.objects.all()
+    return StatusOrder.active_objects.all()
 
 
 def fetch_status_by_ids(ids: list[str]) -> QuerySet[StatusOrder]:

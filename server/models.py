@@ -5,6 +5,11 @@ from django.db import models
 from server.services import ganerate_new_number
 
 
+class ActiveObjectsManager(models.Manager):
+    def get_queryset(self) -> models.QuerySet:
+        return super().get_queryset().filter(is_active=True)
+
+
 class Record(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(
@@ -40,6 +45,9 @@ class Directory(Record):
     updated_at = models.DateTimeField(
         verbose_name="Изменен", blank=False, null=True, auto_now=True
     )
+
+    objects = models.Manager()
+    active_objects = ActiveObjectsManager()
 
     def __str__(self) -> str:
         return f"{self.name}"

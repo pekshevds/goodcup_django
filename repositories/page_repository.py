@@ -11,4 +11,4 @@ def fetch_all_pages() -> QuerySet[Page]:
 
 
 def fetch_all_active_pages() -> QuerySet[Page]:
-    return Page.active_documents.all()
+    return Page.active_objects.all()

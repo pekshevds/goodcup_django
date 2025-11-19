@@ -7,6 +7,11 @@ def fetch_all_goods() -> QuerySet[Good]:
     return queryset
 
 
+def fetch_all_active_goods() -> QuerySet[Good]:
+    queryset = Good.active_objects.all()
+    return queryset
+
+
 def search_goods(search: str) -> QuerySet[Good]:
     queryset = Good.objects.filter(Q(name__icontains=search) | Q(art__icontains=search))
     return queryset
@@ -17,8 +22,18 @@ def fetch_all_categories() -> QuerySet[Category]:
     return queryset
 
 
+def fetch_all_active_categories() -> QuerySet[Category]:
+    queryset = Category.active_objects.filter(parent=None).all()
+    return queryset
+
+
 def fetch_subcategories(parent: Category) -> QuerySet[Category]:
     queryset = Category.objects.filter(parent=parent).all()
+    return queryset
+
+
+def fetch_active_subcategories(parent: Category) -> QuerySet[Category]:
+    queryset = Category.active_objects.filter(parent=parent).all()
     return queryset
 
 
@@ -31,11 +46,15 @@ def fetch_compilation_by_slug(slug: str) -> Compilation | None:
 
 
 def fetch_compilations_by_category(category: Category) -> QuerySet[Compilation]:
-    return Compilation.objects.filter(category=category).all()
+    return Compilation.active_objects.filter(category=category).all()
 
 
 def fetch_universal_compilations() -> QuerySet[Compilation]:
     return Compilation.objects.filter(category=None).all()
+
+
+def fetch_active_universal_compilations() -> QuerySet[Compilation]:
+    return Compilation.active_objects.filter(category=None).all()
 
 
 def fetch_categories_by_ids(ids: list[str]) -> QuerySet[Category]:
@@ -51,7 +70,7 @@ def fetch_goods_by_slugs(slugs: list[str]) -> list[Good] | None:
 
 
 def fetch_goods_by_category(category: Category) -> QuerySet[Good]:
-    queryset = Good.objects.filter(category=category).all()
+    queryset = Good.active_objects.filter(category=category).all()
     return queryset
 
 
@@ -64,7 +83,7 @@ def fetch_goods_by_compilation(compilation: Compilation) -> QuerySet[Good]:
 
 
 def fetch_goods_by_categories(categories: list[Category]) -> QuerySet[Good]:
-    queryset = Good.objects.filter(category__in=categories).all()
+    queryset = Good.active_objects.filter(category__in=categories).all()
     return queryset
 
 

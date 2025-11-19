@@ -7,4 +7,4 @@ def fetch_all_docs() -> QuerySet[Doc]:
 
 
 def fetch_all_active_docs() -> QuerySet[Doc]:
-    return Doc.active_documents.all()
+    return Doc.active_objects.all()

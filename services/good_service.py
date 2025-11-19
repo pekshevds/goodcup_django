@@ -51,7 +51,7 @@ def search_goods(
 
 
 def fetch_all_categories() -> CategoryListSchemaOutgoing:
-    categories = good_repository.fetch_all_categories()
+    categories = good_repository.fetch_all_active_categories()
     return CategoryListSchemaOutgoing(
         categories=[converters.category_to_outgoing_schema(cat) for cat in categories],
         count=len(categories),
@@ -64,7 +64,7 @@ def fetch_subcategories_by_slug(
     category = good_repository.fetch_category_by_slug(category_slug)
     if not category:
         return None
-    categories = good_repository.fetch_subcategories(category)
+    categories = good_repository.fetch_active_subcategories(category)
     return CategoryListSchemaOutgoing(
         categories=[converters.category_to_outgoing_schema(cat) for cat in categories],
         count=len(categories),
@@ -74,7 +74,7 @@ def fetch_subcategories_by_slug(
 def fetch_all_goods(
     region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing:
-    queryset = _fetch_goods(good_repository.fetch_all_goods(), region)
+    queryset = _fetch_goods(good_repository.fetch_all_active_goods(), region)
     if page_number == 0:
         return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
     paginator = Paginator(queryset, settings.ITEMS_PER_PAGE)
@@ -142,7 +142,7 @@ def fetch_compilations_by_category_slug(
 
 
 def fetch_universal_compilations() -> CompilationListSchemaOutgoing | None:
-    queryset = good_repository.fetch_universal_compilations()
+    queryset = good_repository.fetch_active_universal_compilations()
     if not queryset:
         return None
     return CompilationListSchemaOutgoing(

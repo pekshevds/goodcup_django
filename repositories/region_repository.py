@@ -6,6 +6,10 @@ def fetch_all_regions() -> QuerySet[Region]:
     return Region.objects.all()
 
 
+def fetch_all_active_regions() -> QuerySet[Region]:
+    return Region.active_objects.all()
+
+
 def fetch_regions_by_ids(ids: list[str]) -> QuerySet[Region]:
     return Region.objects.filter(id__in=ids).all()
 

@@ -10,9 +10,6 @@ class ActiveDocumentManager(models.Manager):
 class Doc(Directory):
     file = models.FileField(verbose_name="Файл", upload_to="uploads/")
 
-    objects = models.Manager()
-    active_documents = ActiveDocumentManager()
-
     class Meta:
         verbose_name = "Файл для скачивания"
         verbose_name_plural = "Файлы для скачивания"
