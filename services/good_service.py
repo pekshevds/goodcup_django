@@ -107,6 +107,21 @@ def fetch_goods_by_compilation_slug(
     )
 
 
+def fetch_goods_by_offer_slug(
+    offer_slug: str, region: Region | None = None, page_number: int = 0
+) -> GoodListSchemaOutgoing | None:
+    offer = good_repository.fetch_offer_by_slug(offer_slug)
+    if not offer:
+        return None
+    queryset = _fetch_goods(good_repository.fetch_goods_by_offer(offer), region)
+    if page_number == 0:
+        return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
+    paginator = Paginator(queryset, settings.ITEMS_PER_PAGE)
+    return GoodListSchemaOutgoing(
+        goods=paginator.get_page(page_number), count=len(queryset)
+    )
+
+
 def fetch_goods_by_category_slug(
     category_slug: str, region: Region | None = None, page_number: int = 0
 ) -> GoodListSchemaOutgoing | None:

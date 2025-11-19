@@ -1,6 +1,7 @@
 from transliterate import translit
 from django.utils.text import slugify
 from django.db import models
+from django.urls import reverse
 from server.models import Directory, Record
 
 
@@ -25,6 +26,9 @@ class Offer(Directory):
     def save(self) -> None:
         self.slug = slugify(translit(f"{self.name}", reversed=True))
         super().save()
+
+    def get_absolute_url(self) -> str:
+        return reverse("api_app:offer", args=[self.slug])
 
     class Meta:
         verbose_name = "Предложение"

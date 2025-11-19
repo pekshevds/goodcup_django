@@ -158,6 +158,16 @@ class CompilationView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+class OfferView(View):
+    @auth(False)
+    def get(self, request: HttpRequest, client: Client, slug: str) -> JsonResponse:
+        result = good_service.fetch_goods_by_offer_slug(offer_slug=slug)
+        if result:
+            return JsonResponse(result.model_dump(), status=200)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
 class DocView(View):
     @auth(False)
     def get(self, request: HttpRequest, client: Client) -> JsonResponse:

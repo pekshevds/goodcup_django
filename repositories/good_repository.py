@@ -1,5 +1,5 @@
 from django.db.models import Q, QuerySet
-from catalog_app.models import Good, Category, Compilation, CompilationItem
+from catalog_app.models import Good, Category, Compilation, CompilationItem, Offer
 
 
 def fetch_all_goods() -> QuerySet[Good]:
@@ -41,6 +41,10 @@ def fetch_category_by_slug(slug: str) -> Category | None:
     return Category.objects.filter(slug=slug).first()
 
 
+def fetch_offer_by_slug(offer_slug: str) -> Offer | None:
+    return Offer.objects.filter(slug=offer_slug).first()
+
+
 def fetch_compilation_by_slug(slug: str) -> Compilation | None:
     return Compilation.objects.filter(slug=slug).first()
 
@@ -71,6 +75,11 @@ def fetch_goods_by_slugs(slugs: list[str]) -> list[Good] | None:
 
 def fetch_goods_by_category(category: Category) -> QuerySet[Good]:
     queryset = Good.active_objects.filter(category=category).all()
+    return queryset
+
+
+def fetch_goods_by_offer(offer: Offer) -> QuerySet[Good]:
+    queryset = Good.active_objects.filter(offer=offer).all()
     return queryset
 
 
