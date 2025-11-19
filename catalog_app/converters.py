@@ -59,6 +59,7 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
     model = GoodSchemaOutgoing(
         id=str(good.id),
         name=good.name,
+        short_name=good.short_name,
         art=good.art,
         slug=good.slug,
         code=good.code,
