@@ -7,7 +7,7 @@ from server.services import ganerate_new_number
 
 class ActiveObjectsManager(models.Manager):
     def get_queryset(self) -> models.QuerySet:
-        return super().get_queryset().filter(is_active=True)
+        return super().get_queryset().filter(is_active=True).order_by("sort_ordering")
 
 
 class Record(models.Model):
@@ -45,6 +45,9 @@ class Directory(Record):
     updated_at = models.DateTimeField(
         verbose_name="Изменен", blank=False, null=True, auto_now=True
     )
+    sort_ordering = models.IntegerField(
+        verbose_name="Порядок сортировки", blank=True, null=True, default=0
+    )
 
     objects = models.Manager()
     active_objects = ActiveObjectsManager()
@@ -53,6 +56,7 @@ class Directory(Record):
         return f"{self.name}"
 
     class Meta:
+        ordering = ("sort_ordering",)
         abstract = True
 
 
@@ -72,7 +76,7 @@ class Document(Record):
     def __str__(self, name: str = "Документ") -> str:
         return f"{name} №{self.number} от {format(self.date, 'd F Y')}"
 
-    def save(self, *args: [Any], **kwargs: dict[str, Any]) -> None:
+    def save(self, *args: list[Any], **kwargs: dict[str, Any]) -> None:
         if not self.number:
             self.number = ganerate_new_number(model=self.__class__)
         return super().save(*args, **kwargs)

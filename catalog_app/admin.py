@@ -61,7 +61,10 @@ class CategoryAdmin(admin.ModelAdmin):
                         "preview",
                     ),
                     "pic_name",
-                    "is_active",
+                    (
+                        "is_active",
+                        "sort_ordering",
+                    ),
                     "comment",
                 )
             },
@@ -112,7 +115,10 @@ class GoodAdmin(admin.ModelAdmin):
                         "preview",
                     ),
                     ("balance", "price"),
-                    "is_active",
+                    (
+                        "is_active",
+                        "sort_ordering",
+                    ),
                     "comment",
                 )
             },
