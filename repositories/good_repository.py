@@ -79,7 +79,7 @@ def fetch_goods_by_category(category: Category) -> QuerySet[Good]:
 
 
 def fetch_goods_by_offer(offer: Offer) -> QuerySet[Good]:
-    queryset = Good.active_objects.filter(offer=offer).all()
+    queryset = Good.active_objects.filter(offer=offer).all().order_by("short_name")
     return queryset
 
 
