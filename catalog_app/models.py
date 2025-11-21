@@ -1,3 +1,4 @@
+from typing import Any
 from transliterate import translit
 from django.utils.text import slugify
 from django.db import models
@@ -23,9 +24,9 @@ class Offer(Directory):
         db_index=True,
     )
 
-    def save(self) -> None:
+    def save(self, *args: Any, **kwargs: Any) -> None:
         self.slug = slugify(translit(f"{self.name}", reversed=True))
-        super().save()
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self) -> str:
         return reverse("api_app:offer", args=[self.slug])
