@@ -48,7 +48,10 @@ def category_to_outgoing_schema(category: Category) -> CategorySchemaOutgoing:
         parent_slug=category.parent.slug if category.parent else "",
         pic_name=category.pic_name,
         preview_image=image_to_outgoing_schema(category.preview_image),
-        childs=[category_to_outgoing_schema(c) for c in category.childs.all()],
+        childs=[
+            category_to_outgoing_schema(c)
+            for c in category.childs.filter(is_active=True).all()
+        ],
     )
     return model
 
