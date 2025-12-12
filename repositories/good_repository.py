@@ -49,11 +49,13 @@ def fetch_compilation_by_slug(slug: str) -> Compilation | None:
     return Compilation.objects.filter(slug=slug).first()
 
 
-def _fetch_subcategories(category: Category) -> list[Category] | None:
+def _fetch_subcategories(category: Category) -> list[Category]:
+    category_list = []
+    category_list.append(category)
     queryset = Category.active_objects.filter(parent=category).all()
-    if len(queryset) > 0:
-        return [queryset]
-    return None
+    for item in queryset:
+        category_list.append(item)
+    return category_list
 
 
 def fetch_compilations_by_category(category: Category) -> QuerySet[Compilation]:
