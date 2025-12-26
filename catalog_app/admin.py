@@ -222,7 +222,10 @@ class СompilationAdmin(admin.ModelAdmin):
                         "category",
                     ),
                     "preview_image",
-                    "is_active",
+                    (
+                        "is_active",
+                        "sort_ordering",
+                    ),
                     "comment",
                 )
             },
