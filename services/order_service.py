@@ -6,6 +6,7 @@ from order_app.schemas import (
     OrderSchemaOutgoing,
     OrderStatusListUpdateSchemaIncoming,
     NewOrderIncoming,
+    NewOrderIncomingNoAuth,
     CartItemSchemaOutgoing,
     CartItemListSchemaOutgoing,
     AddCartItemSchemaIncoming,
@@ -53,7 +54,7 @@ def update_order_statuses(data: OrderStatusListUpdateSchemaIncoming) -> None:
 
 
 def _extract_goods_from_incoming_data(
-    incoming_data: NewOrderIncoming,
+    incoming_data: NewOrderIncoming | NewOrderIncomingNoAuth,
 ) -> list[Good] | None:
     return good_repository.fetch_goods_by_slugs(
         slugs=[item.good_slug for item in incoming_data.items]
@@ -61,7 +62,7 @@ def _extract_goods_from_incoming_data(
 
 
 def _fill_order_items_by_incoming_data(
-    incoming_data: NewOrderIncoming, goods: list[Good]
+    incoming_data: NewOrderIncoming | NewOrderIncomingNoAuth, goods: list[Good]
 ) -> list[dict[str, Any]]:
     data = []
     for item in incoming_data.items:
@@ -89,6 +90,27 @@ def create_order(incoming_data: NewOrderIncoming) -> OrderSchemaOutgoing | None:
     if not contract:
         return None
     order = order_repository.create_order(order_items, contract)
+    return order_to_outgoing_schema(order)
+
+
+def create_no_auth_order(
+    incoming_data: NewOrderIncomingNoAuth,
+) -> OrderSchemaOutgoing | None:
+    goods = _extract_goods_from_incoming_data(incoming_data)
+    if not goods:
+        return None
+    order_items = _fill_order_items_by_incoming_data(incoming_data, goods)
+    if not order_items:
+        return None
+    contract = None
+    order = order_repository.create_order(
+        order_items,
+        contract,
+        incoming_data.contact_form.full_name,
+        incoming_data.contact_form.email,
+        incoming_data.contact_form.phone,
+        incoming_data.contact_form.delivery_type,
+    )
     return order_to_outgoing_schema(order)
 
 

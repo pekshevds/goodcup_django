@@ -25,7 +25,9 @@ def order_to_outgoing_schema(order: Order) -> OrderSchemaOutgoing:
         number=order.number,
         date=order.date,
         comment=order.comment,
-        contract=contract_to_outgoing_schema(order.contract),
+        contract=None
+        if order.contract is None
+        else contract_to_outgoing_schema(order.contract),
         status=StatusSchemaOutgoing(id=str(order.status.id), name=order.status.name),
         items=[
             order_item_to_outgoing_schema(order_item)

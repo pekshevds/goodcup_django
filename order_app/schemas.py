@@ -27,7 +27,7 @@ class OrderSchemaOutgoing(BaseModel):
     number: int = Field()
     date: datetime = Field()
     comment: str = Field(default="")
-    contract: ContractSchemaOutgoing = Field()
+    contract: ContractSchemaOutgoing | None = Field()
     status: StatusSchemaOutgoing = Field()
     items: list[OrderItemSchemaOutgoing] = Field(default=[])
 
@@ -45,6 +45,18 @@ class NewOrderItemIncoming(BaseModel):
 
 class NewOrderIncoming(BaseModel):
     contract_id: str = Field()
+    items: list[NewOrderItemIncoming] = Field()
+
+
+class ConactFormIncoming(BaseModel):
+    full_name: str = Field()
+    email: str = Field()
+    phone: str = Field()
+    delivery_type: int = Field()
+
+
+class NewOrderIncomingNoAuth(BaseModel):
+    contact_form: ConactFormIncoming = Field()
     items: list[NewOrderItemIncoming] = Field()
 
 

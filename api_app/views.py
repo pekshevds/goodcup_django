@@ -19,6 +19,7 @@ from order_app.schemas import (
     OrderStatusListUpdateSchemaIncoming,
     AddCartItemSchemaIncoming,
     NewOrderIncoming,
+    NewOrderIncomingNoAuth,
 )
 from api_app.schemas import DataSchema
 from services import (
@@ -230,6 +231,16 @@ class OrderView(View):
     def post(self, request: HttpRequest, client: Client) -> JsonResponse:
         data = NewOrderIncoming.model_validate_json(request.body.decode("utf-8"))
         order = order_service.create_order(data)
+        if order:
+            return JsonResponse(order.model_dump(), status=200)
+        return JsonResponse({}, status=400)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class OrderNoAuthView(View):
+    def post(self, request: HttpRequest) -> JsonResponse:
+        data = NewOrderIncomingNoAuth.model_validate_json(request.body.decode("utf-8"))
+        order = order_service.create_no_auth_order(data)
         if order:
             return JsonResponse(order.model_dump(), status=200)
         return JsonResponse({}, status=400)

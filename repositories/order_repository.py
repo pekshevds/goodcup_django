@@ -43,9 +43,21 @@ def fetch_orders_by_ids(ids: list[str]) -> QuerySet[Order]:
 
 
 @transaction.atomic
-def create_order(order_items: list[dict[str, Any]], contract: Contract | None) -> Order:
+def create_order(
+    order_items: list[dict[str, Any]],
+    contract: Contract | None,
+    full_name: str = "",
+    email: str = "",
+    phone: str = "",
+    delivery: int = 1,
+) -> Order:
     new_order = Order.objects.create()
+    new_order.is_active = True
     new_order.contract = contract
+    new_order.full_name = full_name
+    new_order.email = email
+    new_order.phone = phone
+    new_order.delivery = delivery
     new_order.status = StatusOrder.objects.get(name="Новый")
     new_order.save()
     for item in order_items:

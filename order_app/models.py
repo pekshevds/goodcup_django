@@ -4,6 +4,11 @@ from catalog_app.models import Good
 from client_app.models import Client, Contract
 
 
+class DeliveryChoice(models.IntegerChoices):
+    PICKUP = 1, "Самовывоз"
+    DELIVERY = 2, "Транспортная компания"
+
+
 class StatusOrder(Directory):
     class Meta:
         verbose_name = "Статус заказа"
@@ -28,6 +33,33 @@ class Order(Document):
         on_delete=models.PROTECT,
         blank=True,
         null=True,
+    )
+    full_name = models.CharField(
+        verbose_name="Наименование (ФИО)",
+        max_length=150,
+        blank=True,
+        null=True,
+        default="",
+    )
+    email = models.CharField(
+        verbose_name="Почта",
+        max_length=150,
+        blank=True,
+        null=True,
+        default="",
+    )
+    phone = models.CharField(
+        verbose_name="Телефон",
+        max_length=150,
+        blank=True,
+        null=True,
+        default="",
+    )
+    delivery = models.SmallIntegerField(
+        choices=DeliveryChoice.choices,
+        default=DeliveryChoice.PICKUP,
+        null=True,
+        blank=True,
     )
 
     class Meta:

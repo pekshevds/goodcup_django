@@ -42,6 +42,12 @@ class OrderAdmin(admin.ModelAdmin):
                         "status",
                         "comment",
                     ),
+                    (
+                        "full_name",
+                        "email",
+                        "phone",
+                    ),
+                    "delivery",
                 )
             },
         ),
