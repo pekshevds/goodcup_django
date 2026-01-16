@@ -9,7 +9,8 @@ from catalog_app.models import Good
 
 
 def fetch_new_orders() -> QuerySet[Order]:
-    return Order.objects.all()
+    status_new, _ = StatusOrder.objects.get_or_create(name="Новый", is_active=True)
+    return Order.objects.filter(status=status_new).all()
 
 
 def fetch_orders(
@@ -51,6 +52,7 @@ def create_order(
     phone: str = "",
     delivery: int = 1,
 ) -> Order:
+    status_new, _ = StatusOrder.objects.get_or_create(name="Новый", is_active=True)
     new_order = Order.objects.create()
     new_order.is_active = True
     new_order.contract = contract
@@ -58,7 +60,7 @@ def create_order(
     new_order.email = email
     new_order.phone = phone
     new_order.delivery = delivery
-    new_order.status = StatusOrder.objects.get(name="Новый")
+    new_order.status = status_new
     new_order.save()
     for item in order_items:
         new_item = OrderItem.objects.create(order=new_order)
