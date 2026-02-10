@@ -125,6 +125,14 @@ def fetch_new_orders() -> OrderListSchemaOutgoing:
     return OrderListSchemaOutgoing(orders=orders)
 
 
+def fetch_orders_count_by_client(client: Client) -> int:
+    return order_repository.fetch_orders_count_by_client(client)
+
+
+def fetch_orders_count_by_clients_email(clients_email: str) -> int:
+    return order_repository.fetch_orders_count_by_clients_email(clients_email)
+
+
 def fetch_orders(
     client: Client, date_from: Optional[datetime], date_to: Optional[datetime]
 ) -> OrderListSchemaOutgoing:

@@ -13,6 +13,16 @@ def fetch_new_orders() -> QuerySet[Order]:
     return Order.objects.filter(status=status_new).all()
 
 
+def fetch_orders_count_by_client(client: Client) -> int:
+    contracts = [c for c in client.contracts.all()]
+    filter_contracts = Q(contract__in=contracts)
+    return len(Order.objects.filter(filter_contracts).all())
+
+
+def fetch_orders_count_by_clients_email(clients_email: str) -> int:
+    return len(Order.objects.filter(email=clients_email).all())
+
+
 def fetch_orders(
     client: Client, date_from: Optional[datetime], date_to: Optional[datetime]
 ) -> QuerySet[Order]:

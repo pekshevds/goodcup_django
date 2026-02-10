@@ -211,6 +211,23 @@ class NewOrderView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+class OrderExistView(View):
+    @auth(only=False)
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        order_count = 0
+        if client:
+            order_count = order_service.fetch_orders_count_by_client(client)
+            return JsonResponse({"order_count": order_count}, status=200)
+        clients_email = request.GET.get("email", "")
+        if clients_email:
+            order_count = order_service.fetch_orders_count_by_clients_email(
+                clients_email
+            )
+            return JsonResponse({"order_count": order_count}, status=200)
+        return JsonResponse({}, status=400)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
 class ContractView(View):
     @auth()
     def get(self, request: HttpRequest, client: Client) -> JsonResponse:
