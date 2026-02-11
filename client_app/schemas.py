@@ -47,6 +47,11 @@ class ClientCredentialSchema(BaseModel):
     pin: str = Field()
 
 
+class BasicCredentialSchema(BaseModel):
+    username: str = Field()
+    password: str = Field()
+
+
 class TokenSchema(BaseModel):
     token: str = Field()
 

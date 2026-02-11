@@ -1,12 +1,14 @@
 from typing import Callable, Any
 import logging
 from django.conf import settings
+from django.contrib.auth import authenticate
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpRequest, JsonResponse
 from django.views.generic import View
 from client_app.schemas import (
+    BasicCredentialSchema,
     ClientSchemaIncoming,
     ClientCredentialSchema,
     TokenSchema,
@@ -73,6 +75,8 @@ class PinView(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class TokenView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
+        """
+        Token auth"""
         credential = ClientCredentialSchema.model_validate_json(
             request.body.decode("utf-8")
         )
@@ -81,6 +85,21 @@ class TokenView(View):
             raise PermissionDenied("bad name or pin")
         response = JsonResponse(TokenSchema(token=token).model_dump(), status=200)
         response.set_cookie("Authorization", token)
+        return response
+
+    def get(self, request: HttpRequest) -> JsonResponse:
+        """
+        Basic auth"""
+        credential = client_service.extract_credentials_from_headers(request.headers)
+        if not credential:
+            raise PermissionDenied("bad Authorization header or missing")
+        user = authenticate(
+            request, username=credential.username, password=credential.password
+        )
+        if not user:
+            raise PermissionDenied("bad username or password")
+        token = client_service.fetch_token_by_user(user)
+        response = JsonResponse(TokenSchema(token=token).model_dump(), status=200)
         return response
 
 

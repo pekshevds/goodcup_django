@@ -1,9 +1,13 @@
+import base64
 from typing import Any
 from django.http import HttpRequest
+from django.http.request import HttpHeaders
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.core.mail import send_mail
 from client_app.models import Client, Contract
 from client_app.schemas import (
+    BasicCredentialSchema,
     ClientCredentialSchema,
     ClientSchemaIncoming,
     RequestSchemaIncoming,
@@ -52,6 +56,31 @@ def fetch_token_by_credentials(client_schema: ClientCredentialSchema) -> str:
         return ""
     return HS256.get_token(
         client_schema.name, settings.SECRET_KEY, settings.TOKEN_EXP_MIN
+    )
+
+
+def extract_credentials_from_headers(
+    headers: HttpHeaders,
+) -> BasicCredentialSchema | None:
+    authorization = headers.get("Authorization")
+    if authorization is None:
+        return None
+    if not authorization.startswith("Basic"):
+        return None
+    encoded_credentials = authorization.split(" ")[1]
+    decoded_credentials = base64.b64decode(encoded_credentials).decode("utf-8")
+    username, password = decoded_credentials.split(":", 1)
+    return BasicCredentialSchema(
+        username=username,
+        password=password,
+    )
+
+
+def fetch_token_by_user(user: AbstractUser) -> str:
+    return HS256.get_token(
+        user.username,
+        settings.SECRET_KEY,
+        settings.TOKEN_EXP_ADMIN if user.is_superuser else settings.TOKEN_EXP_MIN,
     )
 
 
