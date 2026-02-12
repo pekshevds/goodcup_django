@@ -1,3 +1,9 @@
+from typing import Any
+from django.shortcuts import render
+from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.urls import path
+
+
 from django.utils.html import format_html
 from django.contrib import admin
 from catalog_app.models import (
@@ -195,6 +201,24 @@ class GoodAdmin(admin.ModelAdmin):
     search_fields = ("name", "art")
     list_filter = ("is_active",)
     actions = [make_active]
+
+    def get_urls(self) -> list[Any]:
+        urls = super().get_urls()
+        custom_urls = [
+            path("upload-excel/", self.upload_excel, name="upload-from-excel"),
+        ]
+        return custom_urls + urls
+
+    def upload_excel(self, request: HttpRequest) -> HttpResponse:
+        if request.method == "GET":
+            return render(request, "admin/catalog_app/good/upload_form.html", {})
+        self.upload_data(request.FILES["file"])
+        return HttpResponseRedirect("../")
+
+    def upload_data(self, data: Any) -> None:
+        with open("data.xlsx", "wb+") as destination:
+            for chunk in data.chunks():
+                destination.write(chunk)
 
     def preview(self, obj: Good) -> str:
         if obj.preview_image:

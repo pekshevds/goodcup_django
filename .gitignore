@@ -1,6 +1,7 @@
 # load data
 data.json
 load_images.py
+*.xlsx
 
 # media and static
 public/
