@@ -189,6 +189,9 @@ class PropertyRecord(Record):
     good = models.ForeignKey(
         Good, verbose_name="Товар", on_delete=models.CASCADE, related_name="properties"
     )
+    sort_ordering = models.IntegerField(
+        verbose_name="Порядок сортировки", blank=True, null=True, default=0
+    )
     name = models.CharField(
         verbose_name="Свойство", max_length=150, blank=True, null=False, default=""
     )
@@ -200,6 +203,7 @@ class PropertyRecord(Record):
         return self.name
 
     class Meta:
+        ordering = ("sort_ordering",)
         verbose_name = "Запись свойство/значение"
         verbose_name_plural = "Свойства товара"
 

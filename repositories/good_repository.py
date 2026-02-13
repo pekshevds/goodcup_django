@@ -80,6 +80,14 @@ def fetch_good_by_slug(slug: str) -> Good | None:
     return Good.objects.filter(slug=slug).first()
 
 
+def fetch_good_by_code(code: str) -> Good | None:
+    return Good.objects.filter(code=code).first()
+
+
+def fetch_good_by_art(art: str) -> Good | None:
+    return Good.objects.filter(art=art).first()
+
+
 def fetch_goods_by_slugs(slugs: list[str]) -> list[Good] | None:
     return Good.objects.filter(slug__in=slugs).all()
 

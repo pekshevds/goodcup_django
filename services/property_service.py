@@ -16,6 +16,7 @@ def create_properties(properties_list: list[PropertySchemaIncoming]) -> None:
         if good:
             item = PropertyRecord()
             item.good = good
+            item.sort_ordering = record.sort_ordering
             item.name = record.name
             item.value = record.value
             to_create.append(item)

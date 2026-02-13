@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 from server.models import Directory, Document, Record
 from catalog_app.models import Good
@@ -69,6 +70,9 @@ class Order(Document):
 
     def __str__(self, name: str = "Заказ") -> str:
         return super().__str__(name)
+
+    def save(self, *args: list[Any], **kwargs: dict[str, Any]) -> None:
+        super().save(*args, **kwargs)
 
 
 class OrderItem(Record):

@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 
 class PropertySchemaIncoming(BaseModel):
     good_id: str = Field()
+    sort_ordering: int = Field(default=0)
     name: str = Field(max_length=150)
     value: str = Field(max_length=150, default="")
 

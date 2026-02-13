@@ -16,6 +16,7 @@ from catalog_app.models import (
     Compilation,
     CompilationItem,
 )
+from services import upload_properties_file
 from server.admin import make_active
 
 admin.site.site_header = "Панель администрирования goodcup"
@@ -212,13 +213,9 @@ class GoodAdmin(admin.ModelAdmin):
     def upload_excel(self, request: HttpRequest) -> HttpResponse:
         if request.method == "GET":
             return render(request, "admin/catalog_app/good/upload_form.html", {})
-        self.upload_data(request.FILES["file"])
+        filename = "data.xlsx"
+        upload_properties_file.upload_data(filename, request.FILES["file"])
         return redirect("../")
-
-    def upload_data(self, data: Any) -> None:
-        with open("data.xlsx", "wb+") as destination:
-            for chunk in data.chunks():
-                destination.write(chunk)
 
     def preview(self, obj: Good) -> str:
         if obj.preview_image:
