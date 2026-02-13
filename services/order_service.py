@@ -1,5 +1,7 @@
 from datetime import datetime
 from typing import Any, Optional
+from django.conf import settings
+from django.core.mail import send_mail
 from order_app.schemas import (
     StatusSchemaIncoming,
     OrderListSchemaOutgoing,
@@ -21,6 +23,7 @@ from repositories import (
     price_repository,
     good_repository,
     client_repository,
+    settings_repository,
 )
 from catalog_app import converters
 from catalog_app.models import Good
@@ -91,6 +94,24 @@ def create_order(incoming_data: NewOrderIncoming) -> OrderSchemaOutgoing | None:
         return None
     order = order_repository.create_order(order_items, contract)
     return order_to_outgoing_schema(order)
+
+
+def notify_new_order_recipients(order: OrderSchemaOutgoing) -> None:
+    recipients = settings_repository.fetch_all_active_new_order_recipients()
+    if len(recipients) == 0:
+        return
+
+    subject = "Получен новый заказ"
+    message = f"{order}"
+    from_email = settings.EMAIL_HOST_USER
+    recipient_list = [recipient.email for recipient in recipients]
+    send_mail(
+        subject,
+        message,
+        from_email,
+        recipient_list,
+        fail_silently=False,
+    )
 
 
 def create_no_auth_order(
