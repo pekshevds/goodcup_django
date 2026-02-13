@@ -1,6 +1,6 @@
 from typing import Any
-from django.shortcuts import render
-from django.http import HttpResponse, HttpRequest, HttpResponseRedirect
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, HttpRequest
 from django.urls import path
 
 
@@ -213,7 +213,7 @@ class GoodAdmin(admin.ModelAdmin):
         if request.method == "GET":
             return render(request, "admin/catalog_app/good/upload_form.html", {})
         self.upload_data(request.FILES["file"])
-        return HttpResponseRedirect("../")
+        return redirect("../")
 
     def upload_data(self, data: Any) -> None:
         with open("data.xlsx", "wb+") as destination:

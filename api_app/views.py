@@ -2,13 +2,13 @@ from typing import Callable, Any
 import logging
 from django.conf import settings
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpRequest, JsonResponse
 from django.views.generic import View
 from client_app.schemas import (
-    BasicCredentialSchema,
     ClientSchemaIncoming,
     ClientCredentialSchema,
     TokenSchema,
@@ -27,6 +27,7 @@ from api_app.schemas import DataSchema
 from services import (
     good_service,
     client_service,
+    user_service,
     region_service,
     price_service,
     order_service,
@@ -49,6 +50,22 @@ def auth(only: bool = True) -> Callable:
             if only and client is None:
                 raise PermissionDenied("bad Auth token")
             return view_function(obj, request, client, **kwargs)
+
+        return in_wrapper
+
+    return out_wrapper
+
+
+def admin_auth() -> Callable:
+    def out_wrapper(view_function: Callable) -> Callable:
+        def in_wrapper(
+            obj: Any, request: HttpRequest, **kwargs: dict[str, Any]
+        ) -> JsonResponse:
+            token = client_service.extract_token(request)
+            user = user_service.user_by_token(token)
+            if user is None:
+                raise PermissionDenied("bad Auth token")
+            return view_function(obj, request, user, **kwargs)
 
         return in_wrapper
 
@@ -210,8 +227,8 @@ class PageView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class DataView(View):
-    @auth()
-    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
+    @admin_auth()
+    def post(self, request: HttpRequest, user: User) -> JsonResponse:
         data = DataSchema.model_validate_json(request.body.decode("utf-8"))
         good_service.create_or_update_goods(data.goods)
         property_service.create_properties(data.properties)
@@ -223,8 +240,8 @@ class DataView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class NewOrderView(View):
-    @auth()
-    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+    @admin_auth()
+    def get(self, request: HttpRequest, user: User) -> JsonResponse:
         new_orders = order_service.fetch_new_orders()
         return JsonResponse(new_orders.model_dump(), status=200)
 
@@ -284,8 +301,8 @@ class OrderNoAuthView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class UpdateOrderStatusView(View):
-    @auth()
-    def post(self, request: HttpRequest, client: Client) -> JsonResponse:
+    @admin_auth()
+    def post(self, request: HttpRequest, user: User) -> JsonResponse:
         data = OrderStatusListUpdateSchemaIncoming.model_validate_json(
             request.body.decode("utf-8")
         )
