@@ -106,6 +106,7 @@ def fetch_goods_by_compilation(compilation: Compilation) -> QuerySet[Good]:
     ids = [
         str(item.good.id)
         for item in CompilationItem.objects.filter(compilation=compilation).all()
+        if item.good.is_active
     ]
     return fetch_goods_by_ids(ids=ids)
 
