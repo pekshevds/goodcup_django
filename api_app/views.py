@@ -295,8 +295,10 @@ class OrderView(View):
 class OrderNoAuthView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
         data = NewOrderIncomingNoAuth.model_validate_json(request.body.decode("utf-8"))
+        logger.info({"order_data": data})
         order = order_service.create_no_auth_order(data)
         if order:
+            order_service.notify_new_order_recipients(order=order)
             return JsonResponse(order.model_dump(), status=200)
         return JsonResponse({}, status=400)
 
