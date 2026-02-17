@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Any, Optional
 from django.conf import settings
 from django.core.mail import send_mail
+from django.utils.dateformat import format
 from order_app.schemas import (
     StatusSchemaIncoming,
     OrderListSchemaOutgoing,
@@ -102,7 +103,7 @@ def notify_new_order_recipients(order: OrderSchemaOutgoing) -> None:
         return
 
     subject = "Получен новый заказ"
-    message = f"{order}"
+    message = f"Заказ клиента №{order.number} от {format(order.date, 'd F Y')}"
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [recipient.email for recipient in recipients]
     send_mail(
