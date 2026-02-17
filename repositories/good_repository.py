@@ -128,5 +128,15 @@ def create_or_update_goods(
     if goods_to_update:
         Good.objects.bulk_update(
             goods_to_update,
-            ["name", "art", "code", "okei", "price", "balance", "k", "description"],
+            [
+                "name",
+                "art",
+                "code",
+                "okei",
+                "price",
+                "balance",
+                "k",
+                "description",
+                "is_active",
+            ],
         )
