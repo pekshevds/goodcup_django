@@ -285,6 +285,7 @@ class OrderView(View):
         data = NewOrderIncoming.model_validate_json(request.body.decode("utf-8"))
         order = order_service.create_order(data)
         if order:
+            logger.info({"order_data": data})
             order_service.notify_new_order_recipients(order=order)
             return JsonResponse(order.model_dump(), status=200)
         return JsonResponse({}, status=400)
