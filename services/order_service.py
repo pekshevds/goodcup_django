@@ -155,6 +155,14 @@ def fetch_orders_count_by_clients_email(clients_email: str) -> int:
     return order_repository.fetch_orders_count_by_clients_email(clients_email)
 
 
+def fetch_orders_count_by_clients_email_and_phone(
+    clients_email: str, clients_phone: str
+) -> int:
+    return order_repository.fetch_orders_count_by_clients_email_and_phone(
+        clients_email, clients_phone
+    )
+
+
 def fetch_orders(
     client: Client, date_from: Optional[datetime], date_to: Optional[datetime]
 ) -> OrderListSchemaOutgoing:
