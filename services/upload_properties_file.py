@@ -8,7 +8,7 @@ from repositories import good_repository, property_repository
 @dataclass
 class Record:
     name: str
-    art: str
+    code: str
     design_id: str
     prop1: str
     prop2: str
@@ -30,7 +30,7 @@ def upload_data(filename: str, data: Any) -> None:
     for _, record in enumerate(data):
         if _ == 0:
             continue
-        good = good_repository.fetch_good_by_art(record.art)
+        good = good_repository.fetch_good_by_code(record.code)
         if not good:
             continue
         for i in range(1, 11):
