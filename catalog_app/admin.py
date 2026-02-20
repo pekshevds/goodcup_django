@@ -199,7 +199,7 @@ class GoodAdmin(admin.ModelAdmin):
         "slug",
     )
     readonly_fields = ("preview",)
-    search_fields = ("name", "art")
+    search_fields = ("name", "art", "code")
     list_filter = ("is_active",)
     actions = [make_active]
 
