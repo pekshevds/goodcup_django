@@ -11,6 +11,7 @@ class NewOrderRecipientAdmin(admin.ModelAdmin):
                 "fields": (
                     "name",
                     "email",
+                    "region",
                     (
                         "is_active",
                         "sort_ordering",
@@ -23,8 +24,13 @@ class NewOrderRecipientAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "email",
+        "region",
         "is_active",
         "created_at",
         "updated_at",
         "id",
+    )
+    list_filter = (
+        "region",
+        "is_active",
     )

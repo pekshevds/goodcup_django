@@ -97,8 +97,20 @@ def create_order(incoming_data: NewOrderIncoming) -> OrderSchemaOutgoing | None:
     return order_to_outgoing_schema(order)
 
 
+def _fetch_region_from_order(order: OrderSchemaOutgoing) -> Any | None:
+    region = None
+    if not order.contract:
+        return region
+    contract = client_repository.fetch_contract_by_id(order.contract.id)
+    if not contract:
+        return region
+    region = contract.client.region
+    return region
+
+
 def notify_new_order_recipients(order: OrderSchemaOutgoing) -> None:
-    recipients = settings_repository.fetch_all_active_new_order_recipients()
+    region = _fetch_region_from_order(order)
+    recipients = settings_repository.fetch_all_active_new_order_recipients(region)
     if len(recipients) == 0:
         return
 
