@@ -50,6 +50,18 @@ def search_goods(
     )
 
 
+def search_first_five_goods(
+    search: str, region: Region | None = None, page_number: int = 0
+) -> GoodListSchemaOutgoing:
+    queryset = _fetch_goods(good_repository.search_goods(search), region)[:5]
+    if page_number == 0:
+        return GoodListSchemaOutgoing(goods=queryset, count=len(queryset))
+    paginator = Paginator(queryset, settings.ITEMS_PER_PAGE)
+    return GoodListSchemaOutgoing(
+        goods=paginator.get_page(page_number), count=len(queryset)
+    )
+
+
 def fetch_all_categories() -> CategoryListSchemaOutgoing:
     categories = good_repository.fetch_all_active_categories()
     return CategoryListSchemaOutgoing(

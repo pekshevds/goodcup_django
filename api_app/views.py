@@ -174,6 +174,19 @@ class GoodView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+class GoodFirstFiveView(View):
+    @auth(False)
+    def get(self, request: HttpRequest, client: Client, slug: str = "") -> JsonResponse:
+        region = client.region if client else None
+        page_number = request.GET.get("page", 0)
+        search = request.GET.get("search")
+        if search:
+            goods = good_service.search_first_five_goods(search, region, page_number)
+            return JsonResponse(goods.model_dump(), status=200)
+        return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
 class CompilationView(View):
     @auth(False)
     def get(self, request: HttpRequest, client: Client) -> JsonResponse:
