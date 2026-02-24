@@ -254,11 +254,10 @@ class OrderExistView(View):
         if client:
             order_count = order_service.fetch_orders_count_by_client(client)
             return JsonResponse({"order_count": order_count}, status=200)
-        clients_email = request.GET.get("email", "")
         clients_phone = request.GET.get("phone", "")
-        if clients_email and clients_phone:
-            order_count = order_service.fetch_orders_count_by_clients_email_and_phone(
-                clients_email, clients_phone
+        if clients_phone:
+            order_count = order_service.fetch_orders_count_by_clients_phone(
+                clients_phone
             )
             return JsonResponse({"order_count": order_count}, status=200)
         return JsonResponse({}, status=400)

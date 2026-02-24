@@ -23,6 +23,10 @@ def fetch_orders_count_by_clients_email(clients_email: str) -> int:
     return len(Order.objects.filter(email=clients_email).all())
 
 
+def fetch_orders_count_by_clients_phone(clients_phone: str) -> int:
+    return len(Order.objects.filter(phone=clients_phone).all())
+
+
 def fetch_orders_count_by_clients_email_and_phone(
     clients_email: str, clients_phone: str
 ) -> int:
