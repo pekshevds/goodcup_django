@@ -220,7 +220,7 @@ class OfferView(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class DocView(View):
     @auth(False)
-    def get(self, request: HttpRequest, client: Client, slug: str) -> JsonResponse:
+    def get(self, request: HttpRequest, client: Client, slug: str = "") -> JsonResponse:
         if slug:
             doc = doc_service.fetch_doc_by_slug(slug)
             if not doc:
