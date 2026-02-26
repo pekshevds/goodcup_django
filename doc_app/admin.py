@@ -14,9 +14,18 @@ class DocAdmin(admin.ModelAdmin):
                         "file",
                     ),
                     "is_active",
+                    "show_in_docs",
                     "comment",
                 )
             },
         ),
     )
-    list_display = ("name", "is_active", "created_at", "updated_at", "id")
+    list_display = (
+        "name",
+        "is_active",
+        "show_in_docs",
+        "slug",
+        "created_at",
+        "updated_at",
+        "id",
+    )
