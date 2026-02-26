@@ -42,6 +42,7 @@ urlpatterns = [
     path("v1/good/<str:slug>/", GoodView.as_view()),
     path("v1/compilation/", CompilationView.as_view()),
     path("v1/offer/<str:slug>/", OfferView.as_view(), name="offer"),
+    path("v1/doc/", DocView.as_view()),
     path("v1/doc/<str:slug>/", DocView.as_view()),
     path("v1/data/", DataView.as_view()),
     path("v1/orders/", OrderView.as_view()),
