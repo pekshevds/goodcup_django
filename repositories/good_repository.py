@@ -13,7 +13,9 @@ def fetch_all_active_goods() -> QuerySet[Good]:
 
 
 def search_goods(search: str) -> QuerySet[Good]:
-    queryset = Good.objects.filter(Q(name__icontains=search) | Q(art__icontains=search))
+    queryset = Good.active_objects.filter(
+        Q(name__icontains=search) | Q(art__icontains=search)
+    )
     return queryset
 
 
