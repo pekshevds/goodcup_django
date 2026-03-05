@@ -219,7 +219,7 @@ class GoodAdmin(admin.ModelAdmin):
         return redirect("../")
 
     def download_excel(self, request: HttpRequest) -> HttpResponse:
-        response_content = download_goods_to_file.fetch_goods_to_data()
+        response_content = download_goods_to_file.fetch_goods_to_xlsx_data()
         response = HttpResponse(
             response_content, content_type="application/octet-stream"
         )

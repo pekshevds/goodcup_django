@@ -4,7 +4,7 @@ from repositories import good_repository
 import io
 
 
-def fetch_goods_to_data() -> Any:
+def fetch_goods_to_xlsx_data() -> Any:
     wb = Workbook()
     ws = wb.active
     ws.title = "goods"
