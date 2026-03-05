@@ -16,7 +16,7 @@ from catalog_app.models import (
     Compilation,
     CompilationItem,
 )
-from services import upload_properties_file
+from services import upload_properties_file, download_goods_to_file
 from server.admin import make_active
 
 admin.site.site_header = "Панель администрирования goodcup"
@@ -207,6 +207,7 @@ class GoodAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path("upload-excel/", self.upload_excel, name="upload-from-excel"),
+            path("download-excel/", self.download_excel, name="download-to-excel"),
         ]
         return custom_urls + urls
 
@@ -216,6 +217,14 @@ class GoodAdmin(admin.ModelAdmin):
         filename = "data.xlsx"
         upload_properties_file.upload_data(filename, request.FILES["file"])
         return redirect("../")
+
+    def download_excel(self, request: HttpRequest) -> HttpResponse:
+        response_content = download_goods_to_file.fetch_goods_to_data()
+        response = HttpResponse(
+            response_content, content_type="application/octet-stream"
+        )
+        response["Content-Disposition"] = 'attachment; filename="goods.xlsx"'
+        return response
 
     def preview(self, obj: Good) -> str:
         if obj.preview_image:
