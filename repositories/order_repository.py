@@ -9,7 +9,7 @@ from catalog_app.models import Good
 
 
 def fetch_new_orders() -> QuerySet[Order]:
-    status_new, _ = StatusOrder.objects.get_or_create(name="Новый", is_active=True)
+    status_new, _ = StatusOrder.objects.get_or_create(name="Новый")
     return Order.objects.filter(status=status_new).all()
 
 
