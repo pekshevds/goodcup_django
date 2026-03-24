@@ -12,6 +12,7 @@ class StatusOrderAdmin(admin.ModelAdmin):
                 "fields": (
                     "name",
                     "comment",
+                    "is_active",
                 )
             },
         ),
