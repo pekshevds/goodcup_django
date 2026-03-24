@@ -108,6 +108,39 @@ def _fetch_region_from_order(order: OrderSchemaOutgoing) -> Any | None:
     return region
 
 
+def _collect_message(order: OrderSchemaOutgoing) -> str:
+
+    items = []
+    items.append("\t".join(["№п/п", "Наименование", "Количество", "Цена", "Сумма"]))
+    for index, line in enumerate(order.items):
+        items.append(
+            "\t".join(
+                [
+                    str(index),
+                    line.good.name,
+                    str(line.quantity),
+                    str(line.price),
+                    str(line.amount),
+                ]
+            )
+        )
+
+    title = (
+        f"Заказ клиента №{order.number} от {datetime.strftime(order.date, '%Y-%m-%d')}"
+    )
+    result = "\n".join(
+        [
+            title,
+            f"ФИО {order.full_name}",
+            f"Email {order.email}",
+            f"Тел. {order.phone}",
+            "\n".join(items),
+            f"Комментарий: {order.comment}",
+        ]
+    )
+    return result
+
+
 def notify_new_order_recipients(order: OrderSchemaOutgoing) -> None:
     region = _fetch_region_from_order(order)
     recipients = settings_repository.fetch_all_active_new_order_recipients(region)
@@ -115,7 +148,8 @@ def notify_new_order_recipients(order: OrderSchemaOutgoing) -> None:
         return
 
     subject = "Получен новый заказ"
-    message = f"Заказ клиента №{order.number} от {format(order.date, 'd F Y')}"
+    # message = f"Заказ клиента №{order.number} от {format(order.date, 'd F Y')}"
+    message = _collect_message(order)
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [recipient.email for recipient in recipients]
     send_mail(
