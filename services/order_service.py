@@ -108,34 +108,6 @@ def _fetch_region_from_order(order: OrderSchemaOutgoing) -> Any | None:
     return region
 
 
-def _collect_message(order: OrderSchemaOutgoing) -> str:
-
-    items = []
-    items.append("\t".join(["№п/п", "Наименование", "Количество", "Цена", "Сумма"]))
-    for index, line in enumerate(order.items):
-        items.append(
-            "\t".join(
-                [
-                    str(index),
-                    line.good.name,
-                    str(line.quantity),
-                    str(line.price),
-                    str(line.amount),
-                ]
-            )
-        )
-
-    title = f"Заказ клиента №{order.number} от {format(order.date, 'd F Y')}"
-    result = f"""
-    {title}
-    ФИО {order.full_name}
-    Email {order.email}
-    Тел. {order.phone}
-    {"\n".join(items)}
-    Комментарий: {order.comment}"""
-    return result
-
-
 def notify_new_order_recipients(order: OrderSchemaOutgoing) -> None:
     region = _fetch_region_from_order(order)
     recipients = settings_repository.fetch_all_active_new_order_recipients(region)
@@ -143,7 +115,7 @@ def notify_new_order_recipients(order: OrderSchemaOutgoing) -> None:
         return
 
     subject = "Получен новый заказ"
-    message = _collect_message(order)
+    message = f"Заказ клиента №{order.number} от {format(order.date, 'd F Y')}"
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [recipient.email for recipient in recipients]
     send_mail(
