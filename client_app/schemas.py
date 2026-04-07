@@ -29,9 +29,15 @@ class ClientSchemaOutgoing(BaseModel):
     name: str = Field()
 
 
+class DeliveryAddressSchemaOutgoing(BaseModel):
+    id: str = Field()
+    name: str = Field()
+
+
 class ContractSchemaOutgoing(BaseModel):
     id: str = Field()
     name: str = Field()
+    addresses: list[DeliveryAddressSchemaOutgoing] = Field()
 
 
 class ContractListSchemaOutgoing(BaseModel):
