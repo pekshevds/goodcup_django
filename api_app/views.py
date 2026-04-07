@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views.generic import View
 from client_app.schemas import (
     ClientSchemaIncoming,
@@ -35,6 +35,7 @@ from services import (
     sms_service,
     doc_service,
     page_service,
+    sitemap_service,
 )
 
 logger = logging.getLogger(__name__)
@@ -241,6 +242,24 @@ class PageView(View):
             else:
                 return JsonResponse({}, status=400)
         return JsonResponse(page_service.fetch_all_pages().model_dump(), status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class SitemapView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        static_paths = request.GET.getlist("static")
+        static_paths_csv = request.GET.get("static_paths", "")
+        if static_paths_csv:
+            static_paths.extend(
+                item.strip() for item in static_paths_csv.split(",") if item.strip()
+            )
+
+        xml_content = sitemap_service.build_sitemap_xml(static_paths=static_paths)
+        should_save = request.GET.get("save", "").lower() in {"1", "true", "yes"}
+        if should_save:
+            sitemap_service.save_sitemap_file(xml_content)
+
+        return HttpResponse(xml_content, content_type="application/xml; charset=utf-8")
 
 
 @method_decorator(csrf_exempt, name="dispatch")
