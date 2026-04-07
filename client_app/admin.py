@@ -1,5 +1,7 @@
 from typing import Any
-from django.http import HttpRequest
+from django.shortcuts import render, redirect
+from django.http import HttpRequest, HttpResponse
+from django.urls import path
 from django.contrib import admin
 from server.admin import make_active
 from client_app.models import (
@@ -99,6 +101,20 @@ class ClientAdmin(admin.ModelAdmin):
     search_fields = ("name",)
     list_filter = ("region",)
     actions = [make_active]
+
+    def get_urls(self) -> list[Any]:
+        urls = super().get_urls()
+        custom_urls = [
+            path("upload-excel/", self.upload_excel, name="upload-client-from-excel"),
+        ]
+        return custom_urls + urls
+
+    def upload_excel(self, request: HttpRequest) -> HttpResponse:
+        if request.method == "GET":
+            return render(request, "admin/client_app/client/upload_form.html", {})
+        filename = "data.xlsx"
+        # upload_properties_file.upload_data(filename, request.FILES["file"])
+        return redirect("../")
 
 
 @admin.register(Contract)

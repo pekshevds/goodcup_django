@@ -32,7 +32,7 @@ def client_to_outgoing_schema(client: Client) -> ClientSchemaOutgoing:
 def contract_to_outgoing_schema(contract: Contract) -> ContractSchemaOutgoing:
     addresses = [
         DeliveryAddressSchemaOutgoing(id=str(address.id), name=address.name)
-        for address in contract.addresses
+        for address in contract.addresses.all()
     ]
     model = ContractSchemaOutgoing(
         id=str(contract.id), name=_prepare_contract_name(contract), addresses=addresses
