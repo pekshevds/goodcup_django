@@ -69,6 +69,26 @@ class Contract(Directory):
         verbose_name_plural = "Договора"
 
 
+class DeliveryAddress(Directory):
+    name = models.CharField(
+        verbose_name="Адрес доставки",
+        max_length=255,
+        blank=False,
+        db_index=True,
+        default="",
+    )
+    contract = models.ForeignKey(
+        Contract,
+        verbose_name="Договор",
+        related_name="addresses",
+        on_delete=models.PROTECT,
+    )
+
+    class Meta:
+        verbose_name = "Адрес доставки"
+        verbose_name_plural = "Адреса доставки"
+
+
 class Pin(Record):
     client = models.ForeignKey(Client, verbose_name="Клиент", on_delete=models.CASCADE)
     code = models.CharField("Код", max_length=6)

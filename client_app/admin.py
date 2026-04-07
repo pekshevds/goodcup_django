@@ -2,7 +2,19 @@ from typing import Any
 from django.http import HttpRequest
 from django.contrib import admin
 from server.admin import make_active
-from client_app.models import Region, Client, Pin, Contract, Organization
+from client_app.models import (
+    Region,
+    Client,
+    Pin,
+    Contract,
+    Organization,
+    DeliveryAddress,
+)
+
+
+class DeliveryAddressInLine(admin.TabularInline):
+    model = DeliveryAddress
+    fields = ("name",)
 
 
 class ContractsReadonlyInline(admin.TabularInline):
@@ -91,6 +103,7 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Contract)
 class ContractAdmin(admin.ModelAdmin):
+    inlines = [DeliveryAddressInLine]
     fieldsets = (
         (
             None,
