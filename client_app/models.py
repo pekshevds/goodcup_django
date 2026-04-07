@@ -47,13 +47,6 @@ class Contract(Directory):
         blank=True,
         null=True,
     )
-    name = models.CharField(
-        verbose_name="Наименование",
-        max_length=25,
-        blank=False,
-        db_index=True,
-        default="",
-    )
     address = models.CharField(
         verbose_name="Адрес доставки",
         max_length=255,
@@ -81,7 +74,7 @@ class DeliveryAddress(Directory):
         Contract,
         verbose_name="Договор",
         related_name="addresses",
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
     )
 
     class Meta:

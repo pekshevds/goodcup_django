@@ -12,6 +12,7 @@ from client_app.models import (
     Organization,
     DeliveryAddress,
 )
+from services import upload_client_file
 
 
 class DeliveryAddressInLine(admin.TabularInline):
@@ -113,7 +114,7 @@ class ClientAdmin(admin.ModelAdmin):
         if request.method == "GET":
             return render(request, "admin/client_app/client/upload_form.html", {})
         filename = "data.xlsx"
-        # upload_properties_file.upload_data(filename, request.FILES["file"])
+        upload_client_file.upload_data(filename, request.FILES["file"])
         return redirect("../")
 
 
