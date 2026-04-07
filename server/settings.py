@@ -28,6 +28,13 @@ TOKEN_EXP_ADMIN = int(environ.get("TOKEN_EXP_ADMIN", "1440"))
 ITEMS_PER_PAGE = int(environ.get("ITEMS_PER_PAGE", "24"))
 SMS_ACCESS_TOKEN = environ.get("SMS_ACCESS_TOKEN", "")
 BACKEND_NAME = "backend.goodcup.ru"
+SITE_URL = environ.get("SITE_URL", "https://goodcup.ru")
+SITEMAP_FILE_PATH = BASE_DIR / environ.get("SITEMAP_FILE_PATH", "public/sitemap.xml")
+SITEMAP_STATIC_PATHS = [
+    item.strip()
+    for item in environ.get("SITEMAP_STATIC_PATHS", "").split(",")
+    if item.strip()
+]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

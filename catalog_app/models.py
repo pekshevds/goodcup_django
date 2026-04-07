@@ -68,6 +68,9 @@ class Category(Directory):
         self.slug = slugify(translit(f"{self.name}", reversed=True))
         super().save()
 
+    def get_absolute_url(self) -> str:
+        return f"/catalog/category/{self.slug}"
+
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
@@ -167,6 +170,9 @@ class Good(Directory):
         self.slug = slugify(translit(f"{self.name}-{self.art}", reversed=True))
         super().save()
 
+    def get_absolute_url(self) -> str:
+        return f"/catalog/{self.slug}"
+
     class Meta:
         verbose_name = "Номенклатура"
         verbose_name_plural = "Номенклатура"
@@ -234,6 +240,9 @@ class Compilation(Directory):
     def save(self) -> None:
         self.slug = slugify(translit(f"{self.name}", reversed=True))
         super().save()
+
+    def get_absolute_url(self) -> str:
+        return f"/catalog/compilation/{self.slug}"
 
     class Meta:
         verbose_name = "Подборка"
