@@ -9,17 +9,17 @@ from repositories import good_repository, property_repository
 class Record:
     name: str
     code: str
-    design_id: str
-    prop1: str
-    prop2: str
-    prop3: str
-    prop4: str
-    prop5: str
-    prop6: str
-    prop7: str
-    prop8: str
-    prop9: str
-    prop10: str
+    design_id: str = ""
+    prop1: str = ""
+    prop2: str = ""
+    prop3: str = ""
+    prop4: str = ""
+    prop5: str = ""
+    prop6: str = ""
+    prop7: str = ""
+    prop8: str = ""
+    prop9: str = ""
+    prop10: str = ""
 
 
 def upload_data(filename: str, data: Any) -> None:
