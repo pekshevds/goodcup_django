@@ -45,8 +45,8 @@ def extract_data_from_file(filename: str) -> Record:
     workbook = load_workbook(filename=filename, data_only=True)
     sheet = workbook.active
     contract_id = str(sheet.cell(row=2, column=2).value)
-    phone = str(sheet.cell(row=9, column=2).value)
-    if phone[1] != "+":
+    phone = str(sheet.cell(row=9, column=2).value).replace(" ", "")
+    if phone[0] != "+":
         phone = "+" + phone
     addresses = []
     for row in sheet.iter_rows(values_only=True, min_row=12):
