@@ -35,6 +35,8 @@ def contract_to_outgoing_schema(contract: Contract) -> ContractSchemaOutgoing:
         for address in contract.addresses.all()
     ]
     model = ContractSchemaOutgoing(
-        id=str(contract.id), name=_prepare_contract_name(contract), addresses=addresses
+        id=str(contract.name),
+        name=_prepare_contract_name(contract),
+        addresses=addresses,
     )
     return model
