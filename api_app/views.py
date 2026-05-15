@@ -196,6 +196,11 @@ class CompilationView(View):
         category_slug = request.GET.get("category")
         if category_slug:
             sub_result = good_service.fetch_compilations_by_category_slug(category_slug)
+        compilation_slug = request.GET.get("compilation")
+        if compilation_slug:
+            sub_result = good_service.fetch_compilations_by_compilation_slug(
+                compilation_slug
+            )
         if result and sub_result:
             for item in sub_result.compilations:
                 result.compilations.append(item)

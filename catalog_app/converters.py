@@ -1,10 +1,11 @@
 from django.conf import settings
-from catalog_app.models import Category, Good, Image, PropertyRecord
+from catalog_app.models import Category, Good, Image, PropertyRecord, Compilation
 from catalog_app.schemas import (
     CategorySchemaOutgoing,
     GoodSchemaOutgoing,
     ImageSchemaOutgoing,
     PropertySchemaOutgoing,
+    CompilationSchemaOutgoing,
 )
 
 
@@ -52,6 +53,15 @@ def category_to_outgoing_schema(category: Category) -> CategorySchemaOutgoing:
             category_to_outgoing_schema(c)
             for c in category.childs.filter(is_active=True).all()
         ],
+    )
+    return model
+
+
+def compilation_to_outgoing_schema(
+    compilation: Compilation,
+) -> CompilationSchemaOutgoing:
+    model = CompilationSchemaOutgoing(
+        id=str(compilation.id), name=compilation.name, slug=compilation.slug
     )
     return model
 
