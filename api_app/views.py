@@ -204,6 +204,7 @@ class CompilationView(View):
         if result and sub_result:
             for item in sub_result.compilations:
                 result.compilations.append(item)
+            result.count = len(result.compilations)
             return JsonResponse(result.model_dump(), status=200)
         if result and not sub_result:
             return JsonResponse(result.model_dump(), status=200)
