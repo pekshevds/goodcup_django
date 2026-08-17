@@ -89,5 +89,6 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
         seo_title=good.seo_title,
         seo_description=good.seo_description,
         seo_keywords=good.seo_keywords,
+        registry_link=good.registry_link,
     )
     return model

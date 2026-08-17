@@ -165,6 +165,13 @@ class Good(Directory):
         blank=True,
         default="",
     )
+    registry_link = models.CharField(
+        verbose_name="Ссылка на сертификат/декларацию (https://pub.fsa.gov.ru/)",
+        max_length=2048,
+        blank=True,
+        null=False,
+        default="",
+    )
 
     def save(self) -> None:
         self.slug = slugify(translit(f"{self.name}-{self.art}", reversed=True))
