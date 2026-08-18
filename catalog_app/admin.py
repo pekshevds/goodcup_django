@@ -166,6 +166,7 @@ class GoodAdmin(admin.ModelAdmin):
                         "is_active",
                         "sort_ordering",
                     ),
+                    "registry_link",
                     "comment",
                 )
             },

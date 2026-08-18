@@ -79,6 +79,7 @@ class GoodSchemaOutgoing(BaseModel):
     seo_title: str = Field(default="")
     seo_description: str = Field(default="")
     seo_keywords: str = Field(default="")
+    registry_link: str = Field(max_length=2048, default="")
 
 
 class GoodListSchemaIncoming(BaseModel):
