@@ -207,6 +207,19 @@ def fetch_universal_compilations() -> CompilationListSchemaOutgoing | None:
     )
 
 
+def fetch_all_active_compilations() -> CompilationListSchemaOutgoing | None:
+    queryset = good_repository.fetch_all_active_compilations()
+    if not queryset:
+        return None
+    return CompilationListSchemaOutgoing(
+        compilations=[
+            CompilationSchemaOutgoing(id=str(item.id), name=item.name, slug=item.slug)
+            for item in queryset
+        ],
+        count=len(queryset),
+    )
+
+
 def fetch_good_by_slug(
     slug: str, region: Region | None = None
 ) -> GoodSchemaOutgoing | None:

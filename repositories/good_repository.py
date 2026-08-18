@@ -74,6 +74,10 @@ def fetch_active_universal_compilations() -> QuerySet[Compilation]:
     return Compilation.active_objects.filter(category=None).all()
 
 
+def fetch_all_active_compilations() -> QuerySet[Compilation]:
+    return Compilation.active_objects.filter(is_active=True).all()
+
+
 def fetch_categories_by_ids(ids: list[str]) -> QuerySet[Category]:
     return Category.objects.filter(id__in=ids).all()
 
