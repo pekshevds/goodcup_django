@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "django==4.1.10",
+    "django-ckeditor>=6.7.3",
     "django-cors-headers>=4.5.0",
     "dotenv>=0.9.9",
     "httpx>=0.28.1",

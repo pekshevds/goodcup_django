@@ -4,6 +4,7 @@ from django.utils.text import slugify
 from django.db import models
 from django.urls import reverse
 from server.models import Directory, Record
+from ckeditor.fields import RichTextField
 
 
 class Image(Directory):
@@ -62,6 +63,13 @@ class Category(Directory):
         blank=True,
         null=False,
         default="",
+    )
+    seo_text = RichTextField(
+        verbose_name="SEO-текст листинга",
+        blank=True,
+        null=False,
+        default="",
+        config_name="awesome_ckeditor",
     )
 
     def save(self) -> None:

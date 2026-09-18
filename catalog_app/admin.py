@@ -74,6 +74,7 @@ class CategoryAdmin(admin.ModelAdmin):
                         "sort_ordering",
                     ),
                     "comment",
+                    "seo_text",
                 )
             },
         ),

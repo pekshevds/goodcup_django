@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "ckeditor",
     "corsheaders",
     "catalog_app.apps.CatalogAppConfig",
     "order_app.apps.OrderAppConfig",
@@ -210,6 +211,53 @@ MEDIA_ROOT = BASE_DIR / "public/media/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# ckeditor settings
+CKEDITOR_UPLOAD_PATH = ""
+
+CKEDITOR_CONFIGS = {
+    "awesome_ckeditor": {
+        "toolbar": [
+            [
+                "Undo",
+                "Redo",
+                "-",
+                "Bold",
+                "Italic",
+                "Underline",
+                "-",
+                "Format",
+                "-",
+                "Maximize",
+                "-",
+                "Source",
+                "-",
+                "NumberedList",
+                "BulletedList",
+                "-",
+                "JustifyLeft",
+                "JustifyCenter",
+                "JustifyRight",
+                "JustifyBlock",
+                "-",
+                "Font",
+                "FontSize",
+                "TextColor",
+                "-",
+                "Outdent",
+                "Indent",
+                "-",
+                "HorizontalRule",
+                "-",
+                "Blockquote",
+            ],
+        ],
+        "height": 500,
+        "width": "100%",
+        "toolbarCanCollapse": False,
+        "forcePasteAsPlainText": True,
+    }
+}
 
 # SEND EMAIL SETTINGS
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
