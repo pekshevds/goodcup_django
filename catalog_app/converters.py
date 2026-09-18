@@ -48,6 +48,7 @@ def category_to_outgoing_schema(category: Category) -> CategorySchemaOutgoing:
         slug=category.slug,
         parent_slug=category.parent.slug if category.parent else "",
         pic_name=category.pic_name,
+        seo_text=category.seo_text,
         preview_image=image_to_outgoing_schema(category.preview_image),
         childs=[
             category_to_outgoing_schema(c)
