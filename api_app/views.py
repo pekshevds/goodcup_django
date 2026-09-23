@@ -270,8 +270,8 @@ def _build_sitemap_xml(request: HttpRequest) -> str:
         )
 
     entries = sitemap_service.build_sitemap_entries(static_paths=static_paths)
-    extra_locs = {entry["loc"] for entry in EXTRA_SITEMAP_ENTRIES}
-    entries = [entry for entry in entries if entry["loc"] not in extra_locs]
+    extra_locs = {entry["loc"].rstrip("/") for entry in EXTRA_SITEMAP_ENTRIES}
+    entries = [entry for entry in entries if entry["loc"].rstrip("/") not in extra_locs]
     return sitemap_service.render_sitemap_xml(EXTRA_SITEMAP_ENTRIES + entries)
 
 

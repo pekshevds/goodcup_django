@@ -130,7 +130,8 @@ def render_sitemap_xml(entries: Iterable[dict[str, str]]) -> str:
     lines.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
     for entry in entries:
         lines.append("  <url>")
-        lines.append(f"    <loc>{escape(entry['loc'])}/</loc>")
+        loc = entry["loc"] if entry["loc"].endswith("/") else f"{entry['loc']}/"
+        lines.append(f"    <loc>{escape(loc)}</loc>")
         if entry.get("lastmod"):
             lines.append(f"    <lastmod>{entry['lastmod']}</lastmod>")
         if entry.get("changefreq"):
