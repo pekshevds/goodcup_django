@@ -261,25 +261,38 @@ class PageView(View):
         return JsonResponse(page_service.fetch_all_pages().model_dump(), status=200)
 
 
+def _build_sitemap_xml(request: HttpRequest) -> str:
+    static_paths = request.GET.getlist("static")
+    static_paths_csv = request.GET.get("static_paths", "")
+    if static_paths_csv:
+        static_paths.extend(
+            item.strip() for item in static_paths_csv.split(",") if item.strip()
+        )
+
+    entries = sitemap_service.build_sitemap_entries(static_paths=static_paths)
+    extra_locs = {entry["loc"] for entry in EXTRA_SITEMAP_ENTRIES}
+    entries = [entry for entry in entries if entry["loc"] not in extra_locs]
+    return sitemap_service.render_sitemap_xml(EXTRA_SITEMAP_ENTRIES + entries)
+
+
 @method_decorator(csrf_exempt, name="dispatch")
 class SitemapView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
-        static_paths = request.GET.getlist("static")
-        static_paths_csv = request.GET.get("static_paths", "")
-        if static_paths_csv:
-            static_paths.extend(
-                item.strip() for item in static_paths_csv.split(",") if item.strip()
-            )
-
-        entries = sitemap_service.build_sitemap_entries(static_paths=static_paths)
-        extra_locs = {entry["loc"] for entry in EXTRA_SITEMAP_ENTRIES}
-        entries = [entry for entry in entries if entry["loc"] not in extra_locs]
-        xml_content = sitemap_service.render_sitemap_xml(EXTRA_SITEMAP_ENTRIES + entries)
+        xml_content = _build_sitemap_xml(request)
         should_save = request.GET.get("save", "").lower() in {"1", "true", "yes"}
         if should_save:
             sitemap_service.save_sitemap_file(xml_content)
 
         return HttpResponse(xml_content, content_type="application/xml; charset=utf-8")
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class SitemapDownloadView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        xml_content = _build_sitemap_xml(request)
+        response = HttpResponse(xml_content, content_type="application/xml; charset=utf-8")
+        response["Content-Disposition"] = 'attachment; filename="sitemap.xml"'
+        return response
 
 
 @method_decorator(csrf_exempt, name="dispatch")

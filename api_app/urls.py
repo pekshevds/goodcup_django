@@ -29,6 +29,7 @@ from api_app.views import (
     FeedbackView,
     PageView,
     SitemapView,
+    SitemapDownloadView,
 )
 
 app_name = "api_app"
@@ -66,4 +67,5 @@ urlpatterns = [
     path("v1/feedback/", FeedbackView.as_view()),
     path("v1/page/", PageView.as_view()),
     path("v1/seo/sitemap.xml", SitemapView.as_view()),
+    path("v1/seo/sitemap.xml/download", SitemapDownloadView.as_view()),
 ]
