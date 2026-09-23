@@ -37,6 +37,7 @@ from services import (
     page_service,
     sitemap_service,
 )
+from services.sitemap_service import EXTRA_SITEMAP_ENTRIES
 
 logger = logging.getLogger(__name__)
 
@@ -270,7 +271,10 @@ class SitemapView(View):
                 item.strip() for item in static_paths_csv.split(",") if item.strip()
             )
 
-        xml_content = sitemap_service.build_sitemap_xml(static_paths=static_paths)
+        entries = sitemap_service.build_sitemap_entries(static_paths=static_paths)
+        extra_locs = {entry["loc"] for entry in EXTRA_SITEMAP_ENTRIES}
+        entries = [entry for entry in entries if entry["loc"] not in extra_locs]
+        xml_content = sitemap_service.render_sitemap_xml(EXTRA_SITEMAP_ENTRIES + entries)
         should_save = request.GET.get("save", "").lower() in {"1", "true", "yes"}
         if should_save:
             sitemap_service.save_sitemap_file(xml_content)
