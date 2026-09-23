@@ -112,6 +112,7 @@ def process_incoming_request(request: RequestSchemaIncoming) -> None:
     message = (
         "Пожалуйста, перезвоните мне",
         f"Покупатель: {request.name}",
+        f"Город: {request.city}",
         f"Номер телефона: {request.phone}",
         f"Эл. почта: {request.email}",
     )
@@ -126,6 +127,7 @@ def process_incoming_request(request: RequestSchemaIncoming) -> None:
 def process_feedback(feedback: FeedbackSchemaIncoming) -> None:
     message = (
         f"Покупатель: {feedback.name}",
+        f"Город: {feedback.city}",
         f"Номер телефона: {feedback.phone}",
         f"Эл. почта: {feedback.email}",
         f"Сообщение:\n{feedback.message}",

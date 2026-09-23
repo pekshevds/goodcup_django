@@ -66,10 +66,12 @@ class RequestSchemaIncoming(BaseModel):
     name: str = Field()
     phone: str = Field()
     email: str = Field(default="")
+    city: str = Field(default="")
 
 
 class FeedbackSchemaIncoming(BaseModel):
     name: str = Field()
     phone: str = Field()
     email: str = Field(default="")
+    city: str = Field(default="")
     message: str = Field()

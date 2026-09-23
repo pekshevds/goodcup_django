@@ -56,6 +56,13 @@ class Order(Document):
         null=True,
         default="",
     )
+    city = models.CharField(
+        verbose_name="Город",
+        max_length=150,
+        blank=True,
+        null=True,
+        default="",
+    )
     delivery = models.SmallIntegerField(
         choices=DeliveryChoice.choices,
         default=DeliveryChoice.PICKUP,

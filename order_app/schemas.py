@@ -30,6 +30,7 @@ class OrderSchemaOutgoing(BaseModel):
     full_name: str | None = Field(default="")
     email: str | None = Field(default="")
     phone: str | None = Field(default="")
+    city: str | None = Field(default="")
     contract: ContractSchemaOutgoing | None = Field()
     status: StatusSchemaOutgoing = Field()
     items: list[OrderItemSchemaOutgoing] = Field(default=[])
@@ -55,6 +56,7 @@ class ConactFormIncoming(BaseModel):
     full_name: str = Field()
     email: str = Field()
     phone: str = Field()
+    city: str = Field(default="")
     delivery_type: int = Field()
 
 

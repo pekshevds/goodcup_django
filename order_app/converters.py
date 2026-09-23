@@ -28,6 +28,7 @@ def order_to_outgoing_schema(order: Order) -> OrderSchemaOutgoing:
         full_name=order.full_name,
         email=order.email,
         phone=order.phone,
+        city=order.city,
         contract=None
         if order.contract is None
         else contract_to_outgoing_schema(order.contract),

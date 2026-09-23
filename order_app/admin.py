@@ -47,6 +47,7 @@ class OrderAdmin(admin.ModelAdmin):
                         "full_name",
                         "email",
                         "phone",
+                        "city",
                     ),
                     "delivery",
                 )

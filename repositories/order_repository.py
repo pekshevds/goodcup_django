@@ -70,6 +70,7 @@ def create_order(
     full_name: str = "",
     email: str = "",
     phone: str = "",
+    city: str = "",
     delivery: int = 1,
 ) -> Order:
     status_new, _ = StatusOrder.objects.get_or_create(name="Новый", is_active=True)
@@ -79,6 +80,7 @@ def create_order(
     new_order.full_name = full_name
     new_order.email = email
     new_order.phone = phone
+    new_order.city = city
     new_order.delivery = delivery
     new_order.status = status_new
     new_order.save()

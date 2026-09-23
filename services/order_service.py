@@ -134,6 +134,7 @@ def _collect_message(order: OrderSchemaOutgoing) -> str:
             f"ФИО {order.full_name}",
             f"Email {order.email}",
             f"Тел. {order.phone}",
+            f"Город. {order.city}",
             "\n".join(items),
             f"Комментарий: {order.comment}",
         ]
@@ -177,6 +178,7 @@ def create_no_auth_order(
         incoming_data.contact_form.full_name,
         incoming_data.contact_form.email,
         incoming_data.contact_form.phone,
+        incoming_data.contact_form.city,
         incoming_data.contact_form.delivery_type,
     )
     return order_to_outgoing_schema(order)
