@@ -10,14 +10,14 @@ from catalog_app.models import Category, Compilation, Good
 
 
 EXTRA_SITEMAP_ENTRIES = [
-    {"loc": "https://goodcup.ru/", "changefreq": "weekly", "priority": "1.0"},
-    {"loc": "https://goodcup.ru/contacts/", "changefreq": "monthly", "priority": "0.8"},
-    {"loc": "https://goodcup.ru/delivery/", "changefreq": "monthly", "priority": "0.8"},
-    {"loc": "https://goodcup.ru/branding/", "changefreq": "monthly", "priority": "0.8"},
-    {"loc": "https://goodcup.ru/about/", "changefreq": "monthly", "priority": "0.8"},
-    {"loc": "https://goodcup.ru/documents/", "changefreq": "monthly", "priority": "0.8"},
-    {"loc": "https://goodcup.ru/for-suppliers/", "changefreq": "monthly", "priority": "0.8"},
-    {"loc": "https://goodcup.ru/catalog/", "changefreq": "monthly", "priority": "0.8"},
+    {"loc": "https://goodcup.ru", "changefreq": "weekly", "priority": "1.0"},
+    {"loc": "https://goodcup.ru/contacts", "changefreq": "monthly", "priority": "0.8"},
+    {"loc": "https://goodcup.ru/delivery", "changefreq": "monthly", "priority": "0.8"},
+    {"loc": "https://goodcup.ru/branding", "changefreq": "monthly", "priority": "0.8"},
+    {"loc": "https://goodcup.ru/about", "changefreq": "monthly", "priority": "0.8"},
+    {"loc": "https://goodcup.ru/documents", "changefreq": "monthly", "priority": "0.8"},
+    {"loc": "https://goodcup.ru/for-suppliers", "changefreq": "monthly", "priority": "0.8"},
+    {"loc": "https://goodcup.ru/catalog", "changefreq": "monthly", "priority": "0.8"},
 ]
 
 DEFAULT_STATIC_PATHS = ["/"]
