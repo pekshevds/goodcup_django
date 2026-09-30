@@ -92,6 +92,15 @@ class GoodSchemaOutgoing(GoodSchemaBaseOutgoing):
     related_goods: list[GoodSchemaBaseOutgoing] | None = Field(default=None)
 
 
+class MostPopularGoodIn90DaysSchemaOutgoing(BaseModel):
+    good: GoodSchemaOutgoing = Field()
+    quantity: float = Field(default=0.0)
+
+
+class MostPopularGoodsIn90DaysSchemaOutgoing(BaseModel):
+    goods: list[MostPopularGoodIn90DaysSchemaOutgoing] | None = Field()
+
+
 class GoodListSchemaIncoming(BaseModel):
     goods: list[GoodSchemaIncoming] = Field()
 

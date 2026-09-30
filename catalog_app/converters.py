@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.conf import settings
 from catalog_app.models import Category, Good, Image, PropertyRecord, Compilation
 from catalog_app.schemas import (
@@ -7,6 +8,8 @@ from catalog_app.schemas import (
     ImageSchemaOutgoing,
     PropertySchemaOutgoing,
     CompilationSchemaOutgoing,
+    MostPopularGoodIn90DaysSchemaOutgoing,
+    MostPopularGoodsIn90DaysSchemaOutgoing,
 )
 
 
@@ -129,5 +132,19 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
         seo_description=good.seo_description,
         seo_keywords=good.seo_keywords,
         registry_link=good.registry_link,
+    )
+    return model
+
+
+def most_popular_goods_to_outgoing_schema(
+    goods: dict[Good, Decimal],
+) -> MostPopularGoodsIn90DaysSchemaOutgoing:
+    model = MostPopularGoodsIn90DaysSchemaOutgoing(
+        goods=[
+            MostPopularGoodIn90DaysSchemaOutgoing(
+                good=good_to_outgoing_schema(key), quantity=float(value)
+            )
+            for key, value in goods.items()
+        ]
     )
     return model

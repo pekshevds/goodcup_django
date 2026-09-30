@@ -135,6 +135,14 @@ class CategoryView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
+class MostPopularGoodsIn90Days(View):
+    @auth(False)
+    def get(self, request: HttpRequest, client: Client) -> JsonResponse:
+        goods = order_service.fetch_most_popular_goods_in_90_days()
+        return JsonResponse(goods.model_dump(), status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
 class GoodView(View):
     @auth()
     def post(self, request: HttpRequest, client: Client) -> JsonResponse:
@@ -290,7 +298,9 @@ class SitemapView(View):
 class SitemapDownloadView(View):
     def get(self, request: HttpRequest) -> HttpResponse:
         xml_content = _build_sitemap_xml(request)
-        response = HttpResponse(xml_content, content_type="application/xml; charset=utf-8")
+        response = HttpResponse(
+            xml_content, content_type="application/xml; charset=utf-8"
+        )
         response["Content-Disposition"] = 'attachment; filename="sitemap.xml"'
         return response
 

@@ -1,6 +1,7 @@
 import decimal
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, Any
+from django.utils import timezone
 from django.db import transaction
 from django.db.models import QuerySet, Q
 from order_app.models import StatusOrder, Order, OrderItem, CartItem, WishItem
@@ -25,6 +26,16 @@ def fetch_orders_count_by_clients_email(clients_email: str) -> int:
 
 def fetch_orders_count_by_clients_phone(clients_phone: str) -> int:
     return len(Order.objects.filter(phone=clients_phone).all())
+
+
+def fetch_items_closed_orders_in_90_days() -> QuerySet[OrderItem]:
+    status = StatusOrder.objects.filter(name="Принят в обработку").first()
+    date_90_days_ago = timezone.now().replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ) - timedelta(days=90)
+    filter_date = Q(order__date__gte=date_90_days_ago)
+    filter_status = Q(order__status=status)
+    return OrderItem.objects.filter(filter_date & filter_status).all()
 
 
 def fetch_orders_count_by_clients_email_and_phone(

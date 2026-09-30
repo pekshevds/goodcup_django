@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any, Optional
+from decimal import Decimal
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils.dateformat import format
@@ -16,6 +17,7 @@ from order_app.schemas import (
     WishItemSchemaOutgoing,
     WishItemListSchemaOutgoing,
 )
+from catalog_app.schemas import MostPopularGoodsIn90DaysSchemaOutgoing
 
 from order_app.models import StatusOrder, Order
 from client_app.models import Client, Region
@@ -328,3 +330,14 @@ def drop_item_from_wish(data: AddCartItemSchemaIncoming, client: Client) -> None
     good = good_repository.fetch_good_by_slug(data.good_slug)
     if good:
         order_repository.drop_item_from_wish(client, good)
+
+
+def fetch_most_popular_goods_in_90_days() -> MostPopularGoodsIn90DaysSchemaOutgoing:
+    data: dict[Good, Decimal] = {}
+    items = order_repository.fetch_items_closed_orders_in_90_days()[:8]
+    for item in items:
+        if item.good not in data:
+            data[item.good] = Decimal(0)
+        data[item.good] += item.quantity
+    sorted_data = dict(sorted(data.items(), key=lambda item: item[1], reverse=True))
+    return converters.most_popular_goods_to_outgoing_schema(sorted_data)

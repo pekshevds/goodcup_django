@@ -30,6 +30,7 @@ from api_app.views import (
     PageView,
     SitemapView,
     SitemapDownloadView,
+    MostPopularGoodsIn90Days,
 )
 
 app_name = "api_app"
@@ -54,6 +55,9 @@ urlpatterns = [
     path("v1/orders/get-new/", NewOrderView.as_view()),
     path("v1/orders/exist/", OrderExistView.as_view()),
     path("v1/orders/update-statuses/", UpdateOrderStatusView.as_view()),
+    path(
+        "v1/orders/most-popular-goods-in-90-days/", MostPopularGoodsIn90Days.as_view()
+    ),
     path("v1/cart/", CartView.as_view()),
     path("v1/cart/set/", CartSetView.as_view()),
     path("v1/cart/add/", CartAddView.as_view()),
