@@ -149,7 +149,11 @@ class Good(Directory):
         blank=True,
     )
     description = models.CharField(
-        verbose_name="Описание", max_length=2048, blank=True, null=False, default=""
+        verbose_name="Описание",
+        max_length=2048,
+        blank=True,
+        null=False,
+        default="",
     )
     offer = models.ForeignKey(
         Offer,
@@ -180,6 +184,9 @@ class Good(Directory):
         null=False,
         default="",
     )
+    new = models.BooleanField(verbose_name="Новинка", default=False)
+    hit = models.BooleanField(verbose_name="Хит", default=False)
+    promo = models.BooleanField(verbose_name="Акция", default=False)
 
     def save(self) -> None:
         self.slug = slugify(translit(f"{self.name}-{self.art}", reversed=True))
@@ -204,6 +211,22 @@ class GoodImage(Record):
     class Meta:
         verbose_name = "Изображение товара"
         verbose_name_plural = "Изображения товаров"
+
+
+class RelatedGood(Record):
+    good = models.ForeignKey(
+        Good,
+        verbose_name="Товар",
+        on_delete=models.CASCADE,
+        related_name="related_goods",
+    )
+    related = models.ForeignKey(
+        Good, verbose_name="Сопутствующий товар", on_delete=models.PROTECT
+    )
+
+    class Meta:
+        verbose_name = "Сопутствующий товар"
+        verbose_name_plural = "Сопутствующие товары"
 
 
 class PropertyRecord(Record):

@@ -13,6 +13,7 @@ from catalog_app.models import (
     Image,
     PropertyRecord,
     GoodImage,
+    RelatedGood,
     Compilation,
     CompilationItem,
 )
@@ -137,9 +138,14 @@ class GoodImageInLine(admin.TabularInline):
     model = GoodImage
 
 
+class RelatedGoodInLine(admin.TabularInline):
+    model = RelatedGood
+    fk_name = "good"
+
+
 @admin.register(Good)
 class GoodAdmin(admin.ModelAdmin):
-    inlines = [PropertyRecordInLine, GoodImageInLine]
+    inlines = [PropertyRecordInLine, GoodImageInLine, RelatedGoodInLine]
     fieldsets = (
         (
             None,
@@ -166,6 +172,11 @@ class GoodAdmin(admin.ModelAdmin):
                     (
                         "is_active",
                         "sort_ordering",
+                    ),
+                    (
+                        "new",
+                        "hit",
+                        "promo",
                     ),
                     "registry_link",
                     "comment",
@@ -197,12 +208,20 @@ class GoodAdmin(admin.ModelAdmin):
         "offer",
         "created_at",
         "updated_at",
+        "new",
+        "hit",
+        "promo",
         "id",
         "slug",
     )
     readonly_fields = ("preview",)
     search_fields = ("name", "art", "code")
-    list_filter = ("is_active",)
+    list_filter = (
+        "is_active",
+        "new",
+        "hit",
+        "promo",
+    )
     actions = [make_active]
 
     def get_urls(self) -> list[Any]:

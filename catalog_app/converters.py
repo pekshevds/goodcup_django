@@ -3,6 +3,7 @@ from catalog_app.models import Category, Good, Image, PropertyRecord, Compilatio
 from catalog_app.schemas import (
     CategorySchemaOutgoing,
     GoodSchemaOutgoing,
+    GoodSchemaBaseOutgoing,
     ImageSchemaOutgoing,
     PropertySchemaOutgoing,
     CompilationSchemaOutgoing,
@@ -67,6 +68,34 @@ def compilation_to_outgoing_schema(
     return model
 
 
+def good_to_base_outgoing_schema(good: Good) -> GoodSchemaBaseOutgoing:
+    price = good.price * good.k
+    balance = good.balance / good.k
+    model = GoodSchemaBaseOutgoing(
+        id=str(good.id),
+        name=good.name,
+        short_name=good.short_name,
+        art=good.art,
+        slug=good.slug,
+        code=good.code,
+        okei=good.okei,
+        price=price,
+        description=good.description,
+        k=good.k,
+        balance=balance,
+        is_active=good.is_active,
+        new=good.new,
+        hit=good.hit,
+        promo=good.promo,
+        offer=good.offer.get_absolute_url() if good.offer else "",
+        seo_title=good.seo_title,
+        seo_description=good.seo_description,
+        seo_keywords=good.seo_keywords,
+        registry_link=good.registry_link,
+    )
+    return model
+
+
 def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
     price = good.price * good.k
     balance = good.balance / good.k
@@ -83,9 +112,16 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
         k=good.k,
         balance=balance,
         is_active=good.is_active,
+        new=good.new,
+        hit=good.hit,
+        promo=good.promo,
         properties=properties_to_outgoing_schema(good.properties.all()),
         preview_image=image_to_outgoing_schema(good.preview_image),
         images=images_to_outgoing_schema(good.images.all()),
+        related_goods=[
+            good_to_base_outgoing_schema(record.related)
+            for record in good.related_goods.all()[:8]
+        ],
         offer=good.offer.get_absolute_url() if good.offer else "",
         seo_title=good.seo_title,
         seo_description=good.seo_description,

@@ -60,7 +60,7 @@ class GoodSchemaIncoming(BaseModel):
     is_active: bool = Field(default=False)
 
 
-class GoodSchemaOutgoing(BaseModel):
+class GoodSchemaBaseOutgoing(BaseModel):
     id: str = Field()
     name: str = Field(max_length=150)
     short_name: str = Field(max_length=50, default="")
@@ -73,14 +73,22 @@ class GoodSchemaOutgoing(BaseModel):
     balance: float = Field(default=0)
     k: int = Field(default=1)
     is_active: bool = Field(default=False)
-    preview_image: ImageSchemaOutgoing | None = Field(default=None)
-    properties: list[PropertySchemaOutgoing] | None = Field(default=None)
-    images: list[ImageSchemaOutgoing] | None = Field(default=None)
+    new: bool = Field(default=False)
+    hit: bool = Field(default=False)
+    promo: bool = Field(default=False)
     offer: str = Field(max_length=300, default="")
     seo_title: str = Field(default="")
     seo_description: str = Field(default="")
     seo_keywords: str = Field(default="")
     registry_link: str = Field(max_length=2048, default="")
+
+
+class GoodSchemaOutgoing(GoodSchemaBaseOutgoing):
+    id: str = Field()
+    preview_image: ImageSchemaOutgoing | None = Field(default=None)
+    properties: list[PropertySchemaOutgoing] | None = Field(default=None)
+    images: list[ImageSchemaOutgoing] | None = Field(default=None)
+    related_goods: list[GoodSchemaBaseOutgoing] | None = Field(default=None)
 
 
 class GoodListSchemaIncoming(BaseModel):
