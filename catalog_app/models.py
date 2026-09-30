@@ -155,6 +155,13 @@ class Good(Directory):
         null=False,
         default="",
     )
+    add_description = RichTextField(
+        verbose_name="Описание",
+        blank=True,
+        null=False,
+        default="",
+        config_name="awesome_ckeditor",
+    )
     offer = models.ForeignKey(
         Offer,
         verbose_name="Предложение",

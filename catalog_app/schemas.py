@@ -70,6 +70,7 @@ class GoodSchemaBaseOutgoing(BaseModel):
     okei: str = Field(max_length=50, default="")
     price: float = Field(default=0)
     description: str = Field(max_length=2048, default="")
+    add_description: str = Field(default="")
     balance: float = Field(default=0)
     k: int = Field(default=1)
     is_active: bool = Field(default=False)

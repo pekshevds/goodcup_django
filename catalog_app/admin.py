@@ -179,6 +179,7 @@ class GoodAdmin(admin.ModelAdmin):
                         "promo",
                     ),
                     "registry_link",
+                    "add_description",
                     "comment",
                 )
             },
