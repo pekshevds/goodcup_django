@@ -333,11 +333,5 @@ def drop_item_from_wish(data: AddCartItemSchemaIncoming, client: Client) -> None
 
 
 def fetch_most_popular_goods_in_90_days() -> MostPopularGoodsIn90DaysSchemaOutgoing:
-    data: dict[Good, Decimal] = {}
     items = order_repository.fetch_items_closed_orders_in_90_days()
-    for item in items:
-        if item.good not in data:
-            data[item.good] = Decimal(0)
-        data[item.good] += item.quantity
-    sorted_data = dict(sorted(data.items(), key=lambda item: item[1], reverse=True)[:8])
-    return converters.most_popular_goods_to_outgoing_schema(sorted_data)
+    return converters.most_popular_goods_to_outgoing_schema(items)

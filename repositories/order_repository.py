@@ -1,9 +1,9 @@
-import decimal
+from decimal import Decimal
 from datetime import datetime, timedelta
 from typing import Optional, Any
 from django.utils import timezone
 from django.db import transaction
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet, Q, Sum
 from order_app.models import StatusOrder, Order, OrderItem, CartItem, WishItem
 from client_app.models import Client, Contract
 from catalog_app.models import Good
@@ -28,14 +28,32 @@ def fetch_orders_count_by_clients_phone(clients_phone: str) -> int:
     return len(Order.objects.filter(phone=clients_phone).all())
 
 
-def fetch_items_closed_orders_in_90_days() -> QuerySet[OrderItem]:
+def fetch_items_closed_orders_in_90_days() -> dict[Good, Decimal]:
+    query_limit = 8
     status = StatusOrder.objects.filter(name="Принят в обработку").first()
     date_90_days_ago = timezone.now().replace(
         hour=0, minute=0, second=0, microsecond=0
     ) - timedelta(days=90)
     filter_date = Q(order__date__gte=date_90_days_ago)
     filter_status = Q(order__status=status)
-    return OrderItem.objects.filter(filter_date & filter_status).all()
+    query_result = (
+        OrderItem.objects.filter(filter_date & filter_status)
+        .values("good_id")
+        .annotate(quantity=Sum("quantity"))
+        .order_by("-quantity")
+    )[:query_limit]
+    # Получаем словарь id:good по полученным good_id из выборки
+    goods_dict = {
+        g.id: g
+        for g in Good.objects.filter(
+            id__in=[item["good_id"] for item in query_result]
+        ).all()
+    }
+    # Упаковываем данные в словарь good:quantity
+    return {
+        goods_dict.get(item.get("good_id")): item.get("quantity")
+        for item in query_result
+    }
 
 
 def fetch_orders_count_by_clients_email_and_phone(
