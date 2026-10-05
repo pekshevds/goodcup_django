@@ -96,6 +96,7 @@ def good_to_base_outgoing_schema(good: Good) -> GoodSchemaBaseOutgoing:
         seo_description=good.seo_description,
         seo_keywords=good.seo_keywords,
         registry_link=good.registry_link,
+        preview_image=image_to_outgoing_schema(good.preview_image),
     )
     return model
 

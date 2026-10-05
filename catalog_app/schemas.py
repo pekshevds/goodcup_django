@@ -82,6 +82,7 @@ class GoodSchemaBaseOutgoing(BaseModel):
     seo_description: str = Field(default="")
     seo_keywords: str = Field(default="")
     registry_link: str = Field(max_length=2048, default="")
+    preview_image: ImageSchemaOutgoing | None = Field(default=None)
 
 
 class GoodSchemaOutgoing(GoodSchemaBaseOutgoing):
