@@ -128,6 +128,10 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
             good_to_base_outgoing_schema(record.related)
             for record in good.related_goods.all()[:8]
         ],
+        similar_goods=[
+            good_to_base_outgoing_schema(record.similar)
+            for record in good.similar_goods.all()[:8]
+        ],
         offer=good.offer.get_absolute_url() if good.offer else "",
         seo_title=good.seo_title,
         seo_description=good.seo_description,

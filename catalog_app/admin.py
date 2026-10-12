@@ -14,6 +14,7 @@ from catalog_app.models import (
     PropertyRecord,
     GoodImage,
     RelatedGood,
+    SimilarGood,
     Compilation,
     CompilationItem,
 )
@@ -143,9 +144,19 @@ class RelatedGoodInLine(admin.TabularInline):
     fk_name = "good"
 
 
+class SimilarGoodInLine(admin.TabularInline):
+    model = SimilarGood
+    fk_name = "good"
+
+
 @admin.register(Good)
 class GoodAdmin(admin.ModelAdmin):
-    inlines = [PropertyRecordInLine, GoodImageInLine, RelatedGoodInLine]
+    inlines = [
+        PropertyRecordInLine,
+        GoodImageInLine,
+        RelatedGoodInLine,
+        SimilarGoodInLine,
+    ]
     fieldsets = (
         (
             None,

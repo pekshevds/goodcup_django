@@ -236,6 +236,22 @@ class RelatedGood(Record):
         verbose_name_plural = "Сопутствующие товары"
 
 
+class SimilarGood(Record):
+    good = models.ForeignKey(
+        Good,
+        verbose_name="Товар",
+        on_delete=models.CASCADE,
+        related_name="similar_goods",
+    )
+    similar = models.ForeignKey(
+        Good, verbose_name="Похожий товар", on_delete=models.PROTECT
+    )
+
+    class Meta:
+        verbose_name = "Похожий товар"
+        verbose_name_plural = "Похожие товары"
+
+
 class PropertyRecord(Record):
     good = models.ForeignKey(
         Good, verbose_name="Товар", on_delete=models.CASCADE, related_name="properties"

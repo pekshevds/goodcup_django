@@ -91,6 +91,7 @@ class GoodSchemaOutgoing(GoodSchemaBaseOutgoing):
     properties: list[PropertySchemaOutgoing] | None = Field(default=None)
     images: list[ImageSchemaOutgoing] | None = Field(default=None)
     related_goods: list[GoodSchemaBaseOutgoing] | None = Field(default=None)
+    similar_goods: list[GoodSchemaBaseOutgoing] | None = Field(default=None)
 
 
 class MostPopularGoodIn90DaysSchemaOutgoing(BaseModel):
