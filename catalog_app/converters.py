@@ -121,6 +121,7 @@ def good_to_outgoing_schema(good: Good) -> GoodSchemaOutgoing:
         new=good.new,
         hit=good.hit,
         promo=good.promo,
+        category_slug=good.category.slug if good.category else "",
         properties=properties_to_outgoing_schema(good.properties.all()),
         preview_image=image_to_outgoing_schema(good.preview_image),
         images=images_to_outgoing_schema(good.images.all()),

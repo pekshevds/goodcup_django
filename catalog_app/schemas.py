@@ -87,6 +87,7 @@ class GoodSchemaBaseOutgoing(BaseModel):
 
 class GoodSchemaOutgoing(GoodSchemaBaseOutgoing):
     id: str = Field()
+    category_slug: str = Field(max_length=300, default="")
     preview_image: ImageSchemaOutgoing | None = Field(default=None)
     properties: list[PropertySchemaOutgoing] | None = Field(default=None)
     images: list[ImageSchemaOutgoing] | None = Field(default=None)
