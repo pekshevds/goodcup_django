@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "asyncio>=4.0.0",
     "django==4.1.10",
     "django-ckeditor>=6.7.3",
     "django-cors-headers>=4.5.0",

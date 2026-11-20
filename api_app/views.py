@@ -37,6 +37,7 @@ from services import (
     page_service,
     sitemap_service,
 )
+from api_app.feedbacks import fetch_feedbacks_from_mp, FeedbackParam
 from services.sitemap_service import EXTRA_SITEMAP_ENTRIES
 
 logger = logging.getLogger(__name__)
@@ -497,3 +498,14 @@ class FeedbackView(View):
         logger.info({"feedback_data": data})
         client_service.process_feedback(feedback=data)
         return JsonResponse({}, status=200)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class FeedbackFromMPView(View):
+    def get(self, request: HttpRequest, slug: str = "") -> JsonResponse:
+        if not slug:
+            return JsonResponse({}, status=200)
+        param = FeedbackParam(wb_nmId_list=[], ya_offerId_list=[])
+        return JsonResponse(
+            data=fetch_feedbacks_from_mp(param).model_dump(), status=200, safe=False
+        )
