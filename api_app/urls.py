@@ -74,5 +74,5 @@ urlpatterns = [
     path("v1/seo/sitemap.xml", SitemapView.as_view()),
     path("v1/seo/sitemap.xml/download", SitemapDownloadView.as_view()),
     path("v1/feedbacks-from-mp/", FeedbackFromMPView.as_view()),
-    path("v1/feedbacks-from-mp/<str:slug>/", FeedbackFromMPView.as_view()),
+    path("v1/feedbacks-from-mp/<str:good_slug>/", FeedbackFromMPView.as_view()),
 ]

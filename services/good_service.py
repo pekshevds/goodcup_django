@@ -1,19 +1,21 @@
-from django.core.paginator import Paginator
 from django.conf import settings
-from catalog_app.models import Good
-from client_app.models import Region
+from django.core.paginator import Paginator
+from django.db import transaction
+
+from catalog_app import converters
+from catalog_app.models import Good, MarketplaceGood
 from catalog_app.schemas import (
-    CategorySchemaOutgoing,
     CategoryListSchemaOutgoing,
+    CategorySchemaOutgoing,
+    CompilationListSchemaOutgoing,
+    CompilationSchemaOutgoing,
+    GoodListSchemaOutgoing,
     GoodSchemaIncoming,
     GoodSchemaOutgoing,
-    GoodListSchemaOutgoing,
-    CompilationSchemaOutgoing,
-    CompilationListSchemaOutgoing,
+    MarketplaceGoodSchemaIncoming,
 )
-from catalog_app import converters
-from repositories import good_repository
-from repositories import price_repository
+from client_app.models import Region
+from repositories import good_repository, price_repository
 
 
 def _fetch_goods(
@@ -255,3 +257,22 @@ def create_or_update_goods(goods_list: list[GoodSchemaIncoming]) -> None:
         else:
             to_create.append(item)
     good_repository.create_or_update_goods(to_create, to_update)
+
+
+@transaction.atomic
+def create_or_update_marketplace_goods(
+    marketplace_goods_list: list[MarketplaceGoodSchemaIncoming],
+) -> None:
+    goods = good_repository.fetch_goods_by_ids(
+        [str(item.good_id) for item in marketplace_goods_list]
+    )
+    marketplace_goods = good_repository.fetch_marketplace_goods_by_goods(goods)
+    marketplace_goods.delete()
+    marketplace_goods = []
+    for _ in marketplace_goods_list:
+        item = MarketplaceGood()
+        item.good = good_repository.fetch_good_by_id(_.good_id)
+        item.marketplace = _.marketplace
+        item.mp_id = _.mp_id
+        marketplace_goods.append(item)
+    good_repository.create_marketplace_goods(marketplace_goods)

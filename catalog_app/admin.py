@@ -1,25 +1,26 @@
 from typing import Any
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpRequest
-from django.urls import path
 
-
-from django.utils.html import format_html
 from django.contrib import admin
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect, render
+from django.urls import path
+from django.utils.html import format_html
+
 from catalog_app.models import (
-    Good,
     Category,
-    Offer,
-    Image,
-    PropertyRecord,
-    GoodImage,
-    RelatedGood,
-    SimilarGood,
     Compilation,
     CompilationItem,
+    Good,
+    GoodImage,
+    Image,
+    MarketplaceGood,
+    Offer,
+    PropertyRecord,
+    RelatedGood,
+    SimilarGood,
 )
-from services import upload_properties_file, download_goods_to_file
 from server.admin import make_active
+from services import download_goods_to_file, upload_properties_file
 
 admin.site.site_header = "Панель администрирования goodcup"
 admin.site.site_title = "Панель администрирования goodcup"
@@ -131,6 +132,10 @@ class OfferAdmin(admin.ModelAdmin):
     actions = [make_active]
 
 
+class MarketplaceGoodInLine(admin.TabularInline):
+    model = MarketplaceGood
+
+
 class PropertyRecordInLine(admin.TabularInline):
     model = PropertyRecord
 
@@ -151,12 +156,13 @@ class SimilarGoodInLine(admin.TabularInline):
 
 @admin.register(Good)
 class GoodAdmin(admin.ModelAdmin):
-    inlines = [
+    inlines = (
         PropertyRecordInLine,
         GoodImageInLine,
         RelatedGoodInLine,
         SimilarGoodInLine,
-    ]
+        MarketplaceGoodInLine,
+    )
     fieldsets = (
         (
             None,

@@ -95,6 +95,12 @@ class GoodSchemaOutgoing(GoodSchemaBaseOutgoing):
     similar_goods: list[GoodSchemaBaseOutgoing] | None = Field(default=None)
 
 
+class MarketplaceGoodSchemaIncoming(BaseModel):
+    good_id: str = Field()
+    marketplace: str = Field(max_length=2)
+    mp_id: str = Field(max_length=150)
+
+
 class MostPopularGoodIn90DaysSchemaOutgoing(BaseModel):
     good: GoodSchemaOutgoing = Field()
     quantity: float = Field(default=0.0)

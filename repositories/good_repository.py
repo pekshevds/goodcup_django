@@ -1,5 +1,13 @@
 from django.db.models import Q, QuerySet
-from catalog_app.models import Good, Category, Compilation, CompilationItem, Offer
+
+from catalog_app.models import (
+    Category,
+    Compilation,
+    CompilationItem,
+    Good,
+    MarketplaceGood,
+    Offer,
+)
 
 
 def fetch_all_goods() -> QuerySet[Good]:
@@ -94,6 +102,10 @@ def fetch_good_by_art(art: str) -> Good | None:
     return Good.objects.filter(art=art).first()
 
 
+def fetch_good_by_id(id: str) -> Good | None:
+    return Good.objects.filter(id=id).first()
+
+
 def fetch_goods_by_slugs(slugs: list[str]) -> list[Good] | None:
     return Good.objects.filter(slug__in=slugs).all()
 
@@ -146,3 +158,15 @@ def create_or_update_goods(
                 "is_active",
             ],
         )
+
+
+def create_marketplace_goods(
+    marketplace_goods: list[MarketplaceGood],
+) -> None:
+    MarketplaceGood.objects.bulk_create(marketplace_goods)
+
+
+def fetch_marketplace_goods_by_goods(
+    goods: list[Good],
+) -> QuerySet[MarketplaceGood]:
+    return MarketplaceGood.objects.filter(good__in=goods).all()

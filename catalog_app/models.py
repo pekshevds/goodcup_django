@@ -1,10 +1,19 @@
 from typing import Any
-from transliterate import translit
-from django.utils.text import slugify
+
+from ckeditor.fields import RichTextField
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
+from transliterate import translit
+
 from server.models import Directory, Record
-from ckeditor.fields import RichTextField
+
+
+class MarketplaceChoice(models.TextChoices):
+    YANDEX = "YA", "yandex"
+    OZON = "OZ", "ozon"
+    WILDBERRIES = "WB", "wildberries"
+    SBER = "SB", "sber"
 
 
 class Image(Directory):
@@ -218,6 +227,27 @@ class GoodImage(Record):
     class Meta:
         verbose_name = "Изображение товара"
         verbose_name_plural = "Изображения товаров"
+
+
+class MarketplaceGood(Record):
+    marketplace = models.CharField(
+        max_length=2,
+        choices=MarketplaceChoice.choices,
+        default=MarketplaceChoice.YANDEX,
+    )
+    good = models.ForeignKey(
+        Good,
+        verbose_name="Товар",
+        on_delete=models.CASCADE,
+        related_name="marketplace_goods",
+    )
+    mp_id = models.CharField(
+        verbose_name="Идентификатор товара", max_length=150, blank=False, null=False
+    )
+
+    class Meta:
+        verbose_name = "Товар маркетплейса"
+        verbose_name_plural = "Товары маркетплейсов"
 
 
 class RelatedGood(Record):

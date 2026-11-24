@@ -312,6 +312,7 @@ class DataView(View):
     def post(self, request: HttpRequest, user: User) -> JsonResponse:
         data = DataSchema.model_validate_json(request.body.decode("utf-8"))
         good_service.create_or_update_goods(data.goods)
+        good_service.create_or_update_marketplace_goods(data.marketplace_data)
         property_service.create_properties(data.properties)
         region_service.create_or_update_regions(data.regions)
         price_service.create_or_update_price(data.prices)
@@ -502,8 +503,8 @@ class FeedbackView(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class FeedbackFromMPView(View):
-    def get(self, request: HttpRequest, slug: str = "") -> JsonResponse:
-        if not slug:
+    def get(self, request: HttpRequest, good_slug: str = "") -> JsonResponse:
+        if not good_slug:
             return JsonResponse({}, status=200)
         param = FeedbackParam(wb_nmId_list=[], ya_offerId_list=[])
         return JsonResponse(
