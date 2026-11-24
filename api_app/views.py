@@ -506,7 +506,21 @@ class FeedbackFromMPView(View):
     def get(self, request: HttpRequest, good_slug: str = "") -> JsonResponse:
         if not good_slug:
             return JsonResponse({}, status=200)
-        param = FeedbackParam(wb_nmId_list=[], ya_offerId_list=[])
+        marketplace_data = good_service.fetch_marketplace_data_by_good_slug(
+            slug=good_slug
+        )
+        if not marketplace_data:
+            return JsonResponse({}, status=400)
+        wb_nmId_list = []
+        ya_offerId_list = []
+        for item in marketplace_data:
+            if item.marketplace == "WB":
+                wb_nmId_list.append(int(item.mp_id))
+            if item.marketplace == "YA":
+                ya_offerId_list.append(item.mp_id)
+        param = FeedbackParam(
+            wb_nmId_list=wb_nmId_list, ya_offerId_list=ya_offerId_list
+        )
         return JsonResponse(
             data=fetch_feedbacks_from_mp(param).model_dump(), status=200, safe=False
         )

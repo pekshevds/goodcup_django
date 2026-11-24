@@ -13,6 +13,7 @@ from catalog_app.schemas import (
     GoodSchemaIncoming,
     GoodSchemaOutgoing,
     MarketplaceGoodSchemaIncoming,
+    MarketplaceGoodSchemaOutgoing,
 )
 from client_app.models import Region
 from repositories import good_repository, price_repository
@@ -276,3 +277,16 @@ def create_or_update_marketplace_goods(
         item.mp_id = _.mp_id
         marketplace_goods.append(item)
     good_repository.create_marketplace_goods(marketplace_goods)
+
+
+def fetch_marketplace_data_by_good_slug(
+    slug: str,
+) -> list[MarketplaceGoodSchemaOutgoing] | None:
+    good = good_repository.fetch_good_by_slug(slug)
+    if not good:
+        return None
+    marketplace_data = [
+        MarketplaceGoodSchemaOutgoing(marketplace=item.marketplace, mp_id=item.mp_id)
+        for item in good.marketplace_goods.all()
+    ]
+    return marketplace_data

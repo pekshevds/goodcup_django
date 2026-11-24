@@ -5,25 +5,30 @@ import httpx
 from asgiref.sync import async_to_sync
 from django.conf import settings
 
-from api_app.feedbacks.schemas import Feedback, Feedbacks, FeedbackParam
+from api_app.feedbacks.schemas import Feedback, FeedbackParam, Feedbacks
 
 
 async def fetch_feedbacks_from_wb(nmId: int, take: int = 10) -> Feedbacks:
     result: list[Feedback] = []
     uri = f"https://feedbacks-api.wildberries.ru/api/v1/feedbacks?isAnswered=true&take={take}&skip=0&nmId={nmId}"
     async with httpx.AsyncClient() as client:
-        response = await client.get(
-            uri,
-            headers={"Authorization": settings.AUTHORIZATION_WB},
-        )
         try:
+            response = await client.get(
+                uri,
+                headers={"Authorization": settings.AUTHORIZATION_WB},
+            )
             response.raise_for_status()
         except httpx.HTTPError:
             return Feedbacks(feedbacks=[])
+        except httpx.ConnectTimeout:
+            return Feedbacks(feedbacks=[])
         data = response.json()
         for item in data["data"]["feedbacks"]:
+            user_name = item["userName"]
+            if user_name == "":
+                user_name = "Пользователь ВБ"
             feedback = Feedback(
-                user_name=item["userName"],
+                user_name=user_name,
                 feedback=item["text"],
                 date=datetime.fromisoformat(item["updatedDate"]),
                 valuation=item["productValuation"],
@@ -60,6 +65,8 @@ async def fetch_data_from_ozon(take: int = 10) -> Feedbacks:
         try:
             response.raise_for_status()
         except httpx.HTTPError:
+            return Feedbacks(feedbacks=[])
+        except httpx.ConnectTimeout:
             return Feedbacks(feedbacks=[])
         data = response.json()
         for item in data["reviews"]:
@@ -110,10 +117,15 @@ async def fetch_data_from_yandex(offerIds: list[str], take: int = 10) -> Feedbac
             response.raise_for_status()
         except httpx.HTTPError:
             return Feedbacks(feedbacks=[])
+        except httpx.ConnectTimeout:
+            return Feedbacks(feedbacks=[])
         data = response.json()
         for item in data["result"]["feedbacks"]:
+            user_name = item.get("author", "")
+            if user_name == "":
+                user_name = "Пользователь Яндекс"
             feedback = Feedback(
-                user_name=item.get("author", ""),
+                user_name=user_name,
                 feedback=_extract_text_from_yandex_description(item["description"]),
                 date=datetime.fromisoformat(item["createdAt"]),
                 valuation=item["statistics"]["rating"],
