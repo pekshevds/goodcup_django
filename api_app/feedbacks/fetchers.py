@@ -27,10 +27,12 @@ async def fetch_feedbacks_from_wb(nmId: int, take: int = 10) -> Feedbacks:
             user_name = item["userName"]
             if user_name == "":
                 user_name = "Пользователь ВБ"
+            date_str = item["updatedDate"]
+            date = datetime.fromisoformat(date_str.replace("Z", "+00:03"))
             feedback = Feedback(
                 user_name=user_name,
                 feedback=item["text"],
-                date=datetime.fromisoformat(item["updatedDate"]),
+                date=date,
                 valuation=item["productValuation"],
             )
             result.append(feedback)
@@ -70,10 +72,12 @@ async def fetch_data_from_ozon(take: int = 10) -> Feedbacks:
             return Feedbacks(feedbacks=[])
         data = response.json()
         for item in data["reviews"]:
+            date_str = item["published_at"]
+            date = datetime.fromisoformat(date_str.replace("Z", "+00:03"))
             feedback = Feedback(
                 user_name="Пользователь Озон",
                 feedback=item["text"],
-                date=datetime.fromisoformat(item["published_at"]),
+                date=date,
                 valuation=item["rating"],
             )
             result.append(feedback)
@@ -124,10 +128,12 @@ async def fetch_data_from_yandex(offerIds: list[str], take: int = 10) -> Feedbac
             user_name = item.get("author", "")
             if user_name == "":
                 user_name = "Пользователь Яндекс"
+            date_str = str(item["createdAt"])
+            date = datetime.fromisoformat(date_str.replace("Z", "+00:03"))
             feedback = Feedback(
                 user_name=user_name,
                 feedback=_extract_text_from_yandex_description(item["description"]),
-                date=datetime.fromisoformat(item["createdAt"]),
+                date=date,
                 valuation=item["statistics"]["rating"],
             )
             result.append(feedback)
