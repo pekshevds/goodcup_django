@@ -32,6 +32,7 @@ class CompilationSchemaOutgoing(BaseModel):
     id: str = Field()
     name: str = Field(max_length=150)
     slug: str = Field(max_length=300, default="")
+    seo_text: str = Field(default="")
 
 
 class GoodSchema(BaseModel):

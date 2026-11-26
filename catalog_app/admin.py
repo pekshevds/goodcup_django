@@ -296,6 +296,7 @@ class СompilationAdmin(admin.ModelAdmin):
                         "sort_ordering",
                     ),
                     "comment",
+                    "seo_text",
                 )
             },
         ),

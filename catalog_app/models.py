@@ -327,6 +327,13 @@ class Compilation(Directory):
     description = models.CharField(
         verbose_name="Описание", max_length=2048, blank=True, null=False, default=""
     )
+    seo_text = RichTextField(
+        verbose_name="SEO-текст листинга",
+        blank=True,
+        null=False,
+        default="",
+        config_name="awesome_ckeditor",
+    )
 
     def save(self) -> None:
         self.slug = slugify(translit(f"{self.name}", reversed=True))

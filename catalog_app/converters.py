@@ -1,15 +1,17 @@
 from decimal import Decimal
+
 from django.conf import settings
-from catalog_app.models import Category, Good, Image, PropertyRecord, Compilation
+
+from catalog_app.models import Category, Compilation, Good, Image, PropertyRecord
 from catalog_app.schemas import (
     CategorySchemaOutgoing,
-    GoodSchemaOutgoing,
-    GoodSchemaBaseOutgoing,
-    ImageSchemaOutgoing,
-    PropertySchemaOutgoing,
     CompilationSchemaOutgoing,
+    GoodSchemaBaseOutgoing,
+    GoodSchemaOutgoing,
+    ImageSchemaOutgoing,
     MostPopularGoodIn90DaysSchemaOutgoing,
     MostPopularGoodsIn90DaysSchemaOutgoing,
+    PropertySchemaOutgoing,
 )
 
 
@@ -66,7 +68,10 @@ def compilation_to_outgoing_schema(
     compilation: Compilation,
 ) -> CompilationSchemaOutgoing:
     model = CompilationSchemaOutgoing(
-        id=str(compilation.id), name=compilation.name, slug=compilation.slug
+        id=str(compilation.id),
+        name=compilation.name,
+        slug=compilation.slug,
+        seo_text=compilation.seo_text,
     )
     return model
 
