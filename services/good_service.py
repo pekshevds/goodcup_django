@@ -190,8 +190,7 @@ def fetch_compilations_by_category_slug(
     queryset = good_repository.fetch_compilations_by_category(category=category)
     return CompilationListSchemaOutgoing(
         compilations=[
-            CompilationSchemaOutgoing(id=str(item.id), name=item.name, slug=item.slug)
-            for item in queryset
+            converters.compilation_to_outgoing_schema(item) for item in queryset
         ],
         count=len(queryset),
     )
@@ -203,8 +202,7 @@ def fetch_universal_compilations() -> CompilationListSchemaOutgoing | None:
         return None
     return CompilationListSchemaOutgoing(
         compilations=[
-            CompilationSchemaOutgoing(id=str(item.id), name=item.name, slug=item.slug)
-            for item in queryset
+            converters.compilation_to_outgoing_schema(item) for item in queryset
         ],
         count=len(queryset),
     )
@@ -216,8 +214,7 @@ def fetch_all_active_compilations() -> CompilationListSchemaOutgoing | None:
         return None
     return CompilationListSchemaOutgoing(
         compilations=[
-            CompilationSchemaOutgoing(id=str(item.id), name=item.name, slug=item.slug)
-            for item in queryset
+            converters.compilation_to_outgoing_schema(item) for item in queryset
         ],
         count=len(queryset),
     )
